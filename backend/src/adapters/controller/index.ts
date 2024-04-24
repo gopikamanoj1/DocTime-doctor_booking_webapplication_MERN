@@ -1,22 +1,23 @@
-import authController from "./user/authController";
+import UserController from "./user/UserController";
 import adminAuthController from "./admin/adminAuthController";
-import doctorAuthController from "./doctor/doctorAuthController"
+import doctorController from "./doctor/DoctorController"
 import adminPatientController from "./admin/adminPatientController";
 import adminDoctorController from "./admin/adminDoctorController";
 
 
 export {
 
-    // AUTH
-    authController,
-    adminAuthController ,
-    doctorAuthController,
+    //USER
+    UserController,
+    //DOCTOR
+    doctorController,
 
-    // Listing of Pateint and Doctor
+    //ADMIN
+    adminAuthController,
     adminPatientController,
     adminDoctorController
 
-   
 
-    
+
+
 }

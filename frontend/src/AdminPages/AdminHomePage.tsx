@@ -1,17 +1,10 @@
-import React from 'react'
-import AdminSidebar from '../AdminComponent/SideNavBar/SideNavBar'
-import SideMenu from '../AdminComponent/SideMenu/SideMenu'
-import AdminNavbar from '../AdminComponent/Header/AdminNavbar'
-
-
+import AdminSidebar from "../AdminComponent/SideNavBar/SideNavBar";
 function AdminHomePage() {
   return (
     <div>
-      <AdminNavbar/>
-<AdminSidebar/>
-
-  </div>
-  )
+      <AdminSidebar />
+    </div>
+  );
 }
 
-export default AdminHomePage
+export default AdminHomePage;

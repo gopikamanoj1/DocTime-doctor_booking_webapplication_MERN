@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { Response } from 'express';
 import { log } from 'console';
 
-function generateOtp(): string {
+function generateOtp(): any {
   const digits = '1234567890';
   let otp = '';
   for (let i = 0; i < 4; i++) {
@@ -11,9 +11,9 @@ function generateOtp(): string {
   return otp;
 }
 
-const sendOtp = async (email: string): Promise<{ status: boolean; otp?: string; message?: string }> => {
+const sendOtp = async (email: any): Promise<{ status: boolean; otp?: string; message?: string }> => {
   try {
-    console.log('OTP sending');
+    // console.log(email,"hh");
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -24,6 +24,7 @@ const sendOtp = async (email: string): Promise<{ status: boolean; otp?: string; 
     });
 
     const otp = generateOtp();
+    
     console.log(otp,"otpotpotpotp");
     
 
@@ -39,8 +40,12 @@ const sendOtp = async (email: string): Promise<{ status: boolean; otp?: string; 
           <p style="font-size: 14px; margin-top: 20px;">Click the button below to verify your email:</p>
           <a href="#" style="display: inline-block; padding: 10px 20px; background-color: #2ecc71; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">Verify Email</a>
         </b>`,
-    });    
+    });   
+    // console.log(info,"infoo");
+     
     if (info) {
+      // console.log("hy mailer");
+      
       return { status: true, otp:otp };
     } else {
       return { status: false, message: 'Nodemailer failed error' };

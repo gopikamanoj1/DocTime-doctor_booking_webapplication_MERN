@@ -54,3 +54,19 @@
   filter: blur(10px);
   transform: scale(0.9, 0.9);
 }
+
+
+
+
+
+
+
+@media screen and (min-width: 768px) {
+  .cards {
+    flex-direction: row;
+  }
+  
+  .cards .card {
+    width: calc(33.33% - 20px);
+  }
+}

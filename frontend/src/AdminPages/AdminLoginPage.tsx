@@ -1,4 +1,3 @@
-import React from 'react'
 import AdminLogin from '../AdminComponent/adminLogin/AdminLogin'
 
 function AdminLoginPage() {

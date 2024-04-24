@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
 import '../Otp/Otp.css';
 import { Link, useNavigate } from 'react-router-dom';
-
+import axiosInstance from '../../AxiosConfig/axiosInstance';
 
 function Otp() {
+
   const [enteredOtp, setEnteredOtp] = useState('');
   const inputRefs = [
     useRef<HTMLInputElement>(null),
@@ -45,7 +45,7 @@ function Otp() {
   const handleVerify = async () => {
     try {
       console.log("hhhhhhhhhhhhh");
-      const response = await axios.create({ withCredentials: true }).post('http://localhost:3000/api/auth/verifyOtp', {
+      const response = await axiosInstance.post( '/api/auth/verifyOtp', {
         enteredOtp: enteredOtp,
       });
 

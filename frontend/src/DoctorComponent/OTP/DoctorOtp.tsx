@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
 import './Otp.css';
 import { Link, useNavigate } from 'react-router-dom';
-
+import axiosInstance from '../../AxiosConfig/axiosInstance';
 
 function DoctorOtp() {
   const [enteredOtp, setEnteredOtp] = useState('');
@@ -44,8 +43,7 @@ function DoctorOtp() {
 
   const handleVerify = async () => {
     try {
-      console.log("hhhhhhhhhhhhh");
-      const response = await axios.create({ withCredentials: true }).post('http://localhost:3000/api/auth/doctorVerifyOtp', {
+      const response = await axiosInstance.post('/api/auth/doctorVerifyOtp', {
         enteredOtp: enteredOtp,
       });
 

@@ -1,18 +1,42 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState,useEffect } from "react";
+import {  useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../AxiosConfig/axiosInstance";
 
 const KYCAuthDoctor: React.FC = () => {
-  const [certificateImage, setCertificateImage] = useState<File | null>(null);
-  const [qualificationImage, setQualificationImage] = useState<File | null>(
-    null
-  );
+
   const [aadhaarNumber, setAadhaarNumber] = useState<string>("");
   const [yearsOfExperience, setYearsOfExperience] = useState<number>(0);
   const [hospitalName, setHospitalName] = useState<string>("");
   const [convertedCertificateImage, setConvertedCertificateImage] = useState<string | ArrayBuffer | null>(null);
 const [convertedQualificationImage, setConvertedQualificationImage] = useState<string | ArrayBuffer | null>(null);
+const doctor = useSelector((state: any) => state.persisted.doctorAuth);
+const [kycStatus, setKycStatus] = useState("");
+
+
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data={
+        id:doctor.doctor._id
+      }
+    
+      const response = await axiosInstance.post(
+        "/api/auth/getKycStatus",data
+      );
+      console.log("kyc",response);  
+      
+      // Assuming the response.data contains the kycStatus
+      setKycStatus(response.data.data);
+    } catch (error) {
+      console.error("Error fetching KYC status:", error);
+    }
+  };
+
+  fetchData();
+}, [doctor]);
 
 
   const [error, setError] = useState<string>("");
@@ -20,8 +44,8 @@ const [convertedQualificationImage, setConvertedQualificationImage] = useState<s
   const navigate = useNavigate();
   const Doctor = useSelector((state: any) => state.persisted.doctorAuth);
 
-  // console.log(Doctor, "DoctorDoctorvvDoctor");
-  const email = Doctor.doctor.email;
+
+  const email = Doctor?.doctor?.email ?? null;
 
   const handleYearsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Convert the input value to a number using parseInt
@@ -29,7 +53,9 @@ const [convertedQualificationImage, setConvertedQualificationImage] = useState<s
     // Check if the value is a valid number
     if (!isNaN(value)) {
       setYearsOfExperience(value);
-    } else {
+    } 
+    
+    else {
       // Handle invalid input
       // For example, you can set it to 0 or display an error message
       setYearsOfExperience(0);
@@ -89,9 +115,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       };
   console.log(data,"randum ");
   
-      const response = await axios
-        .create({ withCredentials: true })
-        .post("http://localhost:3000/api/auth/kycAuth", data);
+      const response = await axiosInstance
+        .post("/api/auth/kycAuth", data);
   
       console.log(response.data, "responseresponse");
   
@@ -127,6 +152,13 @@ const handleSubmit = async (e: React.FormEvent) => {
         <div className="bg-gray-100 p-20 rounded-lg  w-200">
           {step === 1 && (
             <>
+              <div className="p-4 border border-gray-300 rounded-lg bg-white shadow-md">
+  <h4 className="text-lg text-red-700 font-semibold">Your Status is: {kycStatus}</h4>
+</div>
+
+<br />
+<br />
+
               <h2 className="text-2xl font-bold mb-4">KYC Authentication</h2>
               <p className="text-gray-600 mb-6">Doctor ID Verification</p>
               <div className="flex items-center mb-6">
@@ -137,12 +169,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   Start Verification
                 </button>
               </div>
-              <button
-                className="text-blue-500 hover:underline"
-                onClick={() => console.log("Need help?")}
-              >
-                Need help?
-              </button>
+            
             </>
           )}
           {step === 2 && (

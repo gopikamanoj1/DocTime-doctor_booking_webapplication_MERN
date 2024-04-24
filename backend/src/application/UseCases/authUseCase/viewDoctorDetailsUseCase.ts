@@ -5,7 +5,6 @@ export default function viewDoctorDetailsUseCase(dependencies: any) {
         try {
             // Pass the ID to the repository method
             const response = await userRepositery.getAllDetailsOfDoctor(id);
-            console.log("usecase data",response)
             
             if (response.status) {
                 return { status: true, data: response.data };

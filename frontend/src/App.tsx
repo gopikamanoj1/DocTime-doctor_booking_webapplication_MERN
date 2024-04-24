@@ -8,7 +8,7 @@ const App = () => {
     <>
       <Navbar />
     
-      <ToastContainer />
+      <ToastContainer  position="top-center" />
         <Outlet />
     </>
   );

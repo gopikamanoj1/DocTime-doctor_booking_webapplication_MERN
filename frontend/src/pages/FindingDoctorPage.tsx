@@ -4,8 +4,12 @@ import Footer from '../components/Footer/Footer'
 
 const FindingDoctorPage = () => {
   return (
-    <div>
+    <div className=''>
+     
+      <div className='px-20  justify-end items-end'>
       <DoctorCard/>
+
+      </div>
       <Footer/>
     </div>
   )

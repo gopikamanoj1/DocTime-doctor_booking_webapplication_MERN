@@ -1,18 +1,13 @@
-import React from 'react'
-import './Loading.css'
-function Loading() {
-  return (
-    <div>
-      <div className="heartbeatloader">
-            <svg className="svgdraw" width="100%" height="100%" viewBox="0 0 150 400" xmlns="http://www.w3.org/2000/svg">
-                <path className="path" d="M 0 200 l 40 0 l 5 -40 l 5 40 l 10 0 l 5 15 l 10 -140 l 10 220 l 5 -95 l 10 0 l 5 20 l 5 -20 l 30 0" fill="transparent" stroke-width="4" stroke="black"></path>
-            </svg>
-            <div className="innercircle"></div>
-            <div className="outercircle"></div>
-        </div>
-    
-    </div>
-  )
-}
+import React from 'react';
 
-export default Loading
+const Loading = () => {
+    return (
+        <div className="flex flex-row gap-2">
+            <div className="w-4 h-4 rounded-full bg-cyan-950 animate-bounce"></div>
+            <div className="w-4 h-4 rounded-full bg-cyan-950 animate-bounce" style={{ animationDelay: '-.3s' }}></div>
+            <div className="w-4 h-4 rounded-full bg-cyan-950 animate-bounce" style={{ animationDelay: '-.5s' }}></div>
+        </div>
+    );
+};
+
+export default Loading;

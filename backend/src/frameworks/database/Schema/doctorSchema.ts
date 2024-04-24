@@ -5,7 +5,6 @@ import mongoose, { Types } from "mongoose";
 const doctorSchema = new mongoose.Schema({
   name: {
     type: String,
-    // required: true,
   },
 
 
@@ -16,45 +15,36 @@ const doctorSchema = new mongoose.Schema({
 
   specialization: {
     type: String,
-    // required: true,
   },
 
-  // image: 
-  //   {
-  //     url: {
-  //       type: String,
-  //       required: true,
-  //     },
-  //   },
 
-  image: String, // Updated to store image URL
+
+  image: String,
 
   phone: {
     type: String,
-    // required: true,
   },
 
 
   email: {
     type: String,
-    // required: true,
     unique: true,
   },
 
 
-  address:[{
+  address: [{
     street: String,
     city: String,
     state: String,
     zipCode: String,
   }],
 
-age:{
-  type:Number
-},
-dob:{
-  type:Date
-},
+  age: {
+    type: Number
+  },
+  dob: {
+    type: Date
+  },
 
   fees: {
     type: Number
@@ -78,7 +68,11 @@ dob:{
     aadhaarNumber: String,
     yearsOfExperience: Number,
     hospitalName: String
-  }]
+  }],
+  isBlocked: {
+    type: Boolean,
+    default: false
+}
 
 
 

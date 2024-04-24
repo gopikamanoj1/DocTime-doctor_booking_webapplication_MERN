@@ -1,6 +1,6 @@
-import mongoose, { Types } from "mongoose";
+    import mongoose, { Types } from "mongoose";
 
-const adminSChema = new mongoose.Schema({
+    const adminSChema = new mongoose.Schema({
 
     name:{
         type:String,

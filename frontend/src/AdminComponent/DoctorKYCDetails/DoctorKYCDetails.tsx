@@ -1,32 +1,18 @@
+
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-
-interface KYCDetail {
-  certificateImage: string;
-  qualificationImage: string;
-  aadhaarNumber: string;
-  yearsOfExperience: number;
-  hospitalName: string;
-}
-
-interface DoctorDetails {
-  _id: string;
-  name: string;
-  email: string;
-  kycStatus: string;
-  kycDetails: KYCDetail[];
-}
-
+import Swal from "sweetalert2";
+import { DoctorDetails } from "../../Interfaces/Doctor/DoctorInteface";
+import { KYCDetail } from "../../Interfaces/Doctor/DoctorInteface";
+import axiosInstance from "../../AxiosConfig/axiosInstance";
 const DoctorKYCDetails: React.FC = () => {
   const { doctorId } = useParams<{ doctorId: string }>();
   const [doctorDetails, setDoctorDetails] = useState<DoctorDetails | null>(
     null
   );
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDoctorsKYCDetails();
@@ -34,10 +20,10 @@ const DoctorKYCDetails: React.FC = () => {
 
   const fetchDoctorsKYCDetails = async () => {
     try {
-      const response = await axios.get<{
+      const response = await axiosInstance.get<{
         status: boolean;
         data: { doctor: DoctorDetails };
-      }>(`http://localhost:3000/api/auth/getKycDetails/${doctorId}`);
+      }>(`/api/auth/getKycDetails/${doctorId}`);
       console.log(response.data, "frontend data");
 
       if (response.data.status && response.data.data.doctor) {
@@ -56,9 +42,34 @@ const DoctorKYCDetails: React.FC = () => {
 
   const handleStatusChange = async (doctorId: string, newStatus: any) => {
     try {
-      await axios.put(`http://localhost:3000/api/auth/kycStatus/${doctorId}`, {
-        kycStatus: newStatus,
-      });
+      if (newStatus === "rejected") {
+        const { value: reason } = await Swal.fire({
+          title: 'Enter reason for rejection',
+          input: 'text',
+          inputLabel: 'Reason',
+          inputPlaceholder: 'Enter reason here...',
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to enter a reason!';
+            }
+          }
+        });
+
+        if (reason) {
+          await axiosInstance.put(`/api/auth/kycStatus/${doctorId}`, {
+            kycStatus: newStatus,
+            rejectionReason: reason
+          });
+        } else {
+          // User clicked Cancel or closed the modal
+          return;
+        }
+      } else {
+        await axiosInstance.put(`/api/auth/kycStatus/${doctorId}`, {
+          kycStatus: newStatus,
+        });
+      }
+
       // Update the local state to reflect the change
       setDoctorDetails((prevDoctorDetails) => ({
         ...prevDoctorDetails!,
@@ -70,116 +81,95 @@ const DoctorKYCDetails: React.FC = () => {
       toast.error("Failed to update KYC status");
     }
   };
+
   const getStatusColorClass = (status: string) => {
     switch (status) {
       case "pending":
-        return "text-orange-500 font-bold"; // or any other Tailwind CSS color class for orange
+        return "text-orange-500 font-bold";
       case "approved":
-        return "text-green-500 font-bold"; // or any other Tailwind CSS color class for green
+        return "text-green-500 font-bold";
       case "rejected":
-        return "text-red-500 font-bold"; // or any other Tailwind CSS color class for red
+        return "text-red-500 font-bold";
       default:
         return "";
     }
   };
 
   return (
-    <div className="">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h3 className="text-lg font-semibold mb-4">{doctorDetails.name}</h3>
-        <p className="text-gray-600 mb-4">{doctorDetails.email}</p>
-        <div className="mb-6">
-          <h4 className="text-lg font-semibold mb-2">
-            <span style={{ fontWeight: "bold", color: "black" }}>
-              {" "}
-              KYC Status{" "}
-            </span>
-          </h4>
+    <div className="pl-64 flex justify-center items-center">
+    <div className="w-full max-w-4xl">
+      <div className="w-full flex justify-center items-center h-16  text-lg font-bold ">KYC Details</div>
+      <div className="bg-white rounded-lg shadow-md  flex w-full h-full justify-between  p-5">
+       <div className="w-1/2 h-full  flex flex-col pl-5">
+           <div className="w-full h-9  items-center flex ">
+           <h3 className="text-1xl font-semibold ">{doctorDetails.name}</h3>
+           </div>
+           <div>
+           <p className="text-gray-600 ">{doctorDetails.email}</p>
+           </div>
+           <div className="w-full  pt-2 mt-3">
+           <div className=" ">
+          <h4 className="text-xl font-semibold mb-2">KYC Status</h4>
           <div className="flex items-center">
-            <p
-              className={`mr-4 ${getStatusColorClass(doctorDetails.kycStatus)}`}
-            >
+            <p className={`mr-4 ${getStatusColorClass(doctorDetails.kycStatus)}`}>
               {doctorDetails.kycStatus}
             </p>
             <select
-              className="border rounded px-2 py-1"
+              className="border rounded px-3 py-1"
               value={doctorDetails.kycStatus}
-              onChange={(e) =>
-                handleStatusChange(doctorDetails._id, e.target.value)
-              }
+              onChange={(e) => handleStatusChange(doctorDetails._id, e.target.value)}
             >
-              <option
-                value="pending"
-                style={{ fontWeight: "bold", color: "orange" }}
-              >
-                Pending
-              </option>
-              <option
-                value="approved"
-                style={{ fontWeight: "bold", color: "green" }}
-              >
-                Approved
-              </option>
-              <option
-                value="rejected"
-                style={{ fontWeight: "bold", color: "red" }}
-              >
-                Rejected
-              </option>
+              <option value="pending" className="font-semibold text-orange-500">Pending</option>
+              <option value="approved" className="font-semibold text-green-500">Approved</option>
+              <option value="rejected" className="font-semibold text-red-500">Rejected</option>
             </select>
           </div>
         </div>
-        <div className="mb-6">
-          <h4 className="text-lg font-semibold mb-2">KYC Details</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {doctorDetails.kycDetails.map(
-              (detail: KYCDetail, index: number) => (
-                <div key={index} className="bg-gray-100 rounded-lg p-4">
-                  <p className="text-gray-600 mb-2">Certificate Image</p>
+           </div>
+        <div className="w-full justify-center flex flex-col gap-5 mt-6">
+        {doctorDetails.kycDetails.map((detail: KYCDetail, ) => (<>
+            <p className="text-gray-600 mb-2">Aadhaar Number: <span className="font-semibold text-red-500">{detail.aadhaarNumber}</span></p>
+            <p className="text-gray-600 mb-2">Years of Experience: <span className="font-semibold text-red-500">{detail.yearsOfExperience}</span></p>
+          <p className="text-gray-600 mb-2">Hospital Name: <span className="font-semibold text-red-500">{detail.hospitalName}</span></p>
+           </>))}
+        </div>
+       </div>
+       <div className="w-1/2 h-full  flex justify-center">
+       <div className="w-full h-full  p-10  ">
+            {doctorDetails.kycDetails.map((detail: KYCDetail, index: number) => (
+              <div key={index} className="bg-gray-100 rounded-lg p-4 flex flex-col ">
+                <div className="w-full flex justify-center items-center">
+                 <div>
+                 <p className="text-gray-600 mb-2">Certificate Image</p>
                   <img
                     src={detail.certificateImage}
                     alt="Certificate Image"
-                    className="h-40 w-full object-cover mb-4 rounded-md"
-                    onError={() =>
-                      console.error("Error loading certificate image")
-                    }
+                    className="h-40 w-10/12 object-cover mb-4 rounded-md "
+                    onError={() => console.error("Error loading certificate image")}
                   />
+                 </div>
+                </div>
+                <div className="w-full flex justify-center items-center" >
+                  <div>
                   <p className="text-gray-600 mb-2">Qualification Image</p>
                   <img
                     src={detail.qualificationImage}
                     alt="Qualification Image"
-                    className="h-40 w-full object-cover mb-4 rounded-md"
-                    onError={() =>
-                      console.error("Error loading qualification image")
-                    }
+                    className="h-40 w-10/12 object-cover mb-4 rounded-md"
+                    onError={() => console.error("Error loading qualification image")}
                   />
-                  <p className="text-gray-600 mb-2">
-                    Aadhaar Number:{" "}
-                    <span style={{ fontWeight: "bold", color: "red" }}>
-                      {" "}
-                      {detail.aadhaarNumber}
-                    </span>
-                  </p>
-                  <p className="text-gray-600 mb-2">
-                    Years of Experience:{" "}
-                    <span style={{ fontWeight: "bold", color: "red" }}>
-                      {detail.yearsOfExperience}
-                    </span>
-                  </p>
-                  <p className="text-gray-600 mb-2">
-                    Hospital Name:{" "}
-                    <span style={{ fontWeight: "bold", color: "red" }}>
-                      {detail.hospitalName}
-                    </span>
-                  </p>
+                  </div>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
-        </div>
+       </div>
       </div>
     </div>
+    </div>
+
   );
 };
 
 export default DoctorKYCDetails;
+

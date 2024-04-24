@@ -5,11 +5,9 @@ export default function adminDoctorUseCase(dependencies: any) {
 
     const executeFunction = async (requestData: any) => {
         try {
-            console.log('haaaaaaaa');
             
             const response = await adminRepository.getAllDoctors(requestData);
-            // console.log(response,"ggggggggggggg");
-            
+                
             if (response.status) {
                 return { status: true, data: response.doctors };
                 

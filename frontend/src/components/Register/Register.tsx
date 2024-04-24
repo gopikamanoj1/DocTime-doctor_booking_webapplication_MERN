@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import './Register.css'
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import axios from 'axios'
-
+import axiosInstance from '../../AxiosConfig/axiosInstance';
 
 const Register: React.FC = () => {
+
   const [name, setname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -38,7 +36,7 @@ const data={
 }
 
 try {
-  const response = await axios.create({ withCredentials: true }).post('http://localhost:3000/api/auth/register', data);
+  const response = await axiosInstance.post('/api/auth/register', data);
 
   console.log(response.data, 'this is response');
 

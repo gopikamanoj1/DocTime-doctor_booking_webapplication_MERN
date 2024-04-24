@@ -7,8 +7,7 @@ function DoctorApp() {
   return (
     <div>
 <DoctorNavbar/>
- 
-    <ToastContainer />
+    <ToastContainer   position="top-center" />
       <Outlet />
     </div>
   )

@@ -1,0 +1,67 @@
+.checkbox-button {
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid rgb(8 51 68);
+    background-color: transparent;
+    color: rgb(8 51 68);
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    width: 200px; /* Set a fixed width for all buttons */
+    text-align: center; /* Center align text */
+    margin-right: 10px; /* Add right margin to create space between buttons */
+  }
+  
+  /* .checkbox-button:hover {
+    background-color: rgb(8 51 68);
+    color: white;
+  } */
+  
+  /* Hide default checkbox */
+  .checkbox-button input {
+    display: none; /* Hide the default checkbox */
+  }
+  
+  /* Create custom checkbox */
+  .checkbox-button:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Show custom checkbox when checked */
+  .checkbox-button input:checked ~ .checkbox-button:before {
+    background-color: rgb(8 51 68);
+  }
+  
+  /* Show checkmark */
+  .checkbox-button input:checked ~ .checkbox-button:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(45deg);
+  }
+  
+  /* Add selected style */
+  .checkbox-button.selected {
+    background-color: rgb(8 51 68);
+    color: white;
+  }
+  
+  /* Remove custom checkbox styles when not checked */
+  .checkbox-button:not(.selected):before {
+    background-color: transparent;
+  }
+  

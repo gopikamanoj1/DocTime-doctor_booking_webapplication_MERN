@@ -1,18 +1,17 @@
-import React from 'react'
 import { ToastContainer } from 'react-toastify';
+import AdminLayout from '../AdminComponent/LayoutComponent/AdminLayout';
 
 import DoctorKYCDetails from '../AdminComponent/DoctorKYCDetails/DoctorKYCDetails'
-import AdminLayout from '../AdminComponent/LayoutComponent/AdminLayout'
 function ShowingKycDetails() {
   return (
     <div>
-       <AdminLayout>
        <ToastContainer />
+        <AdminLayout>
+        <DoctorKYCDetails/>
 
-       <DoctorKYCDetails/>
+        </AdminLayout>
 
-        </AdminLayout> 
-    </div>
+      </div>
   )
 }
 

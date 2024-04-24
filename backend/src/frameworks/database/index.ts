@@ -1,5 +1,5 @@
-import  AuthenticationSchema  from './Schema';
+import  DatabaseSchema  from './Schema';
 
 export {
-    AuthenticationSchema
+    DatabaseSchema
 }

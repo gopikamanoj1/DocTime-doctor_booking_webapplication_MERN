@@ -1,11 +1,14 @@
-import React, { useState,useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import '../adminLogin/AdminLogin.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { setAdmin,clearAdmin } from '../../Redux/slices/adminSlice';
+import { toast } from 'react-toastify';
+import axiosInstance from '../../AxiosConfig/axiosInstance';
+
 
 const AdminLogin: React.FC = () => {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -13,9 +16,9 @@ const AdminLogin: React.FC = () => {
   const Admin =  useSelector((state: any) => state.persisted.adminAuth);
   
 
-  useEffect(() => {
-    console.log(Admin);
-  }, [dispatch]);
+  // useEffect(() => {
+  //   console.log(Admin);
+  // }, [dispatch]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,14 +29,16 @@ const AdminLogin: React.FC = () => {
     };
 
     try {
-      const response = await axios.create({ withCredentials: true }).post('http://localhost:3000/api/auth/admin', data);
-      console.log(response.data, 'this is response');
+      const response = await axiosInstance.post( '/api/auth/admin', data);
+      console.log(response.data, 'this i666s response');
 
-      if (response.data && response.data.status) {
+      if (response.data.status) {
         dispatch(clearAdmin())
         dispatch(setAdmin(response.data.data));
 
-        navigate('/admin/adminHome');
+        navigate('/admin/adminHome'); 
+      }else if ( response.data.status===false){
+        toast.error("Invalid Credentials")
       }
 
     } catch (error) {

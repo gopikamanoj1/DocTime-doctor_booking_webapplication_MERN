@@ -1,13 +1,18 @@
-import React from 'react';
-import AdminSidebar from '../SideNavBar/SideNavBar';
-import AdminNavbar from '../Header/AdminNavbar';
 
-const AdminLayout = ({ children }) => {
+
+import React, { ReactNode } from 'react';
+import AdminSidebar from '../SideNavBar/SideNavBar';
+
+// Define the props type to include children
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   return (
     <div className="flex">
       <AdminSidebar />
       <div className="flex flex-col w-full">
-        <AdminNavbar />
         <main className="p-6">{children}</main>
       </div>
     </div>

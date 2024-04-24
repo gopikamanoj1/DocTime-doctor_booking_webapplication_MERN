@@ -19,9 +19,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser: (state,action)=>{
-      console.log('hihih',action.payload);
-      
+    setUser: (state, action) => {
+      console.log('hihih', action.payload);
+
       state.user = action.payload;
       state.isAuthenticated = true;
       // Store doctor info in local storage
@@ -31,17 +31,24 @@ const authSlice = createSlice({
     clearUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      
+
       // Remove doctor info from local storage
       localStorage.removeItem('User');
       localStorage.removeItem('isAuthenticated');
     },
+
+    updateEmail: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.email = action.payload;
+      }
+    },
   },
 });
 
-export const { setUser, clearUser } = authSlice.actions;
+export const { setUser, clearUser, updateEmail } = authSlice.actions;
+
 export const selectUser = (state: any) => state.persisted.auth.user;
-export const UserIsAuthenticated = (state:any) => state.persisted.auth.isAuthenticated;
+export const UserIsAuthenticated = (state: any) => state.persisted.auth.isAuthenticated;
 
 
 

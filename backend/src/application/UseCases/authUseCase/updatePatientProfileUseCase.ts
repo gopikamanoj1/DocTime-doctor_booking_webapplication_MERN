@@ -1,5 +1,6 @@
 export default function updatePatientProfileUseCase(dependencies: any) {
     const { userRepositery } = dependencies.repositery;
+
   
     const executeFunction = async (data: any) => {
     try {

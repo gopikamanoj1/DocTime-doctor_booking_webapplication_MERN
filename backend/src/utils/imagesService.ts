@@ -4,7 +4,7 @@ AWS.config.update({
     accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
     secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
     region: process.env.YOUR_REGION 
-  });
+});
 
 const s3 = new AWS.S3();
 
@@ -15,6 +15,9 @@ const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
     const convertedFile: any =  Buffer.from(file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
 
     console.log(convertedFile)
+
+    // Delete the existing image first, if it exists
+    // await deleteFromS3(fileName);
 
     const params = {
         Bucket: 'doctime3',
@@ -32,6 +35,28 @@ const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
                 reject(err);
             } else {
                 resolve(data.Location);
+            }
+        });
+    });
+};
+
+const deleteFromS3 = async (fileName: string): Promise<void> => {
+    const params = {
+        Bucket: 'doctime3',
+        Key: fileName,
+    };
+
+    return new Promise((resolve, reject) => {
+        s3.deleteObject(params, (err: any, data: any) => {
+            if (err) {
+                // Ignore error if the file doesn't exist
+                if (err.code === 'NoSuchKey') {
+                    resolve();
+                } else {
+                    reject(err);
+                }
+            } else {
+                resolve();
             }
         });
     });

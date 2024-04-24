@@ -6,9 +6,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
+
+   
+
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
