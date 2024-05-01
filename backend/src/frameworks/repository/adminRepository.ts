@@ -1,5 +1,6 @@
 import { log } from 'console';
 import { DatabaseSchema } from '../database'
+import e from 'express';
 
 
 
@@ -24,19 +25,19 @@ export default {
     }
   },
 
-  adminLogout :async (email:string)=>{
+  adminLogout: async (email: string) => {
     try {
-      const response=await DatabaseSchema.Admin.findOne({email:email})
-      if(response){
-        return {status:true, data:response}
-      }else{
-        return {status:false, mmessege:" error in admin logout "}
+      const response = await DatabaseSchema.Admin.findOne({ email: email })
+      if (response) {
+        return { status: true, data: response }
+      } else {
+        return { status: false, mmessege: " error in admin logout " }
       }
     } catch (error) {
       console.log(error);
-      return {status:false, mmessege:" error in admin logout "}
+      return { status: false, mmessege: " error in admin logout " }
 
-      
+
     }
   },
 
@@ -59,6 +60,22 @@ export default {
   }
   ,
 
+
+  getAllAppoinments: async () => {
+    try {
+       const appoinment=await DatabaseSchema.Appointment.find();
+       const slotes=await DatabaseSchema.Slot.find()
+       if(appoinment&&slotes){
+        return {status: true, data : {appoinment,slotes}}
+       }else{
+        return { status :false , data : "not  found"}
+       }
+    } catch (error) {
+      console.log(error);
+      return {status:false , message: " something went wrong"}
+
+    }
+  },
 
 
   getAllDoctors: async () => {
@@ -119,7 +136,7 @@ export default {
     try {
       const user = await DatabaseSchema.User.findById(userId);
       if (user) {
-        user.isBlocked = !user.isBlocked; // Toggle isBlocked
+        user.isBlocked = !user.isBlocked; 
         const response = await user.save();
         if (response) {
           return { status: true, data: response };

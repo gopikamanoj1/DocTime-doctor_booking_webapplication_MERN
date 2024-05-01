@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 
-
 const DoctorProfile: React.FC = () => {
   const navigate = useNavigate();
 
@@ -59,11 +58,9 @@ const DoctorProfile: React.FC = () => {
     navigate("/doctorHome");
   };
 
-
-
   const handleUpdateEmailClick = () => {
-    // navigate('/updateEmail')
-     };
+    navigate('/UpdateEmailForDoc')
+  };
 
   const convertToBase64 = (
     file: File
@@ -246,8 +243,10 @@ const DoctorProfile: React.FC = () => {
           dob: dob,
         };
 
-        const response = await axiosInstance
-          .post("/api/auth/updateDoctorProfile", data);
+        const response = await axiosInstance.post(
+          "/api/auth/updateDoctorProfile",
+          data
+        );
 
         console.log(response, "fronted res");
         setLoading(false); // Set loading to true when the form is submitted
@@ -300,10 +299,10 @@ const DoctorProfile: React.FC = () => {
   useEffect(() => {
     // Fetch data from local storage
     const doctorProfileData = JSON.parse(
-      localStorage.getItem("doctorProfile") || "{}"    
+      localStorage.getItem("doctorProfile") || "{}"
     );
-    console.log(doctorProfileData,"doctorProfileData");
-    
+    console.log(doctorProfileData, "doctorProfileData");
+
     const storedName = doctorProfileData.name || "";
     const storedEmail = doctorProfileData.email || "";
     const storedPhone = doctorProfileData.phone || "";
@@ -317,7 +316,7 @@ const DoctorProfile: React.FC = () => {
     const storedAge = doctorProfileData.age || "";
     const storedDob = doctorProfileData.dob || "";
 
-    // Update state with fetched data
+    // Update state with fetched data 
     setName(storedName);
     setEmail(storedEmail);
     setPhone(storedPhone);
@@ -344,7 +343,6 @@ const DoctorProfile: React.FC = () => {
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
                   <div className="text-gray-900">
                     <p className="font-medium text-lg">Personal Details</p>
-                    <p>Please fill out all the fields.</p>
 
                     <div className="flex flex-col max-w-md p-6 dark:text-gray-100">
                       <label htmlFor="imageInput" className="cursor-pointer">
@@ -374,6 +372,21 @@ const DoctorProfile: React.FC = () => {
                           )}
                         </div>
                       </label>
+                    </div>
+                    <div>
+                      <p className="text-xl text-gray-600">
+                        Want to change your password?{" "}
+                        <button
+                          className="text-blue-500 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Add your logic to handle password change here
+                            navigate("/changePasswordForDoc");
+                          }}
+                        >
+                          Click here
+                        </button>
+                      </p>
                     </div>
                   </div>
 
@@ -428,8 +441,8 @@ const DoctorProfile: React.FC = () => {
                         </p>
                       )}
                     </div> */}
-                  
-                  <div style={{ position: "relative" }}>
+
+                      <div style={{ position: "relative" }}>
                         <div>
                           <label htmlFor="email">Email Address</label>
                           <div style={{ position: "relative" }}>

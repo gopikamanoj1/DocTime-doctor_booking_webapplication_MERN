@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import {  Link, useNavigate } from 'react-router-dom';
 import '../adminLogin/AdminLogin.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { setAdmin,clearAdmin } from '../../Redux/slices/adminSlice';
@@ -69,7 +69,9 @@ const AdminLogin: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        
+          <span className="forgot-password">
+            <Link to='/admin/forgotPassword' >Forgot Password?</Link>
+          </span>
           <input value="Sign In" type="submit" className="login-button" />
      
       

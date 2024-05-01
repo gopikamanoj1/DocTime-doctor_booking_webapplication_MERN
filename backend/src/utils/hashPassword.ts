@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
     }
   };
 
-  export const verifyHashPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
+  export const  verifyHashPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
     try {
         console.log(password,hashedPassword,"comparing");
         

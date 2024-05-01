@@ -33,8 +33,8 @@ const DoctorLogin: React.FC = () => {
       
       if (response.data && response.data.status) {
         localStorage.setItem("doctorProfile", JSON.stringify(response.data.data));
-        localStorage.setItem("accessToken", JSON.stringify(response.data.accessToken)); // Correctly extract token
-        localStorage.setItem("refreshToken", JSON.stringify(response.data.refreshToken)); // Correctly extract refreshToken
+        localStorage.setItem("token", JSON.stringify(response.data.token)); // Correctly extract token
+        // localStorage.setItem("refreshToken", JSON.stringify(response.data.refreshToken)); 
         dispatch(clearDoctor());
         dispatch(setDoctor(response.data.data));
         navigate("/doctorHome");
@@ -46,34 +46,25 @@ const DoctorLogin: React.FC = () => {
      console.error("Error during login:", error);
     }
   };
-  const handleGoogleLogin = () => {
-    // Implement Google Sign-In logic here
-    // You can use Google Sign-In API or Firebase Authentication for this purpose
-  };
-  const handleGoogleLoginSuccess = (response: any) => {
-    console.log(response); // Handle Google login success
-    // You can dispatch an action to handle the logged-in user or navigate to a different page
-  };
+  // const handleGoogleLogin = () => {
+  //   // Implement Google Sign-In logic here
+  //   // You can use Google Sign-In API or Firebase Authentication for this purpose
+  // };
+  // const handleGoogleLoginSuccess = (response: any) => {
+  //   console.log(response); // Handle Google login success
+  //   // You can dispatch an action to handle the logged-in user or navigate to a different page
+  // };
 
-  const handleGoogleLoginFailure = (error: any) => {
-    console.error("Error during Google login:", error); // Handle Google login failure
-  };
+  // const handleGoogleLoginFailure = (error: any) => {
+  //   console.error("Error during Google login:", error); // Handle Google login failure
+  // };
    
   return (
     <>
       <GoogleOAuthProvider clientId="39339182818-5i8mc5be6q31kap48eqrc5p4ik1bnrma.apps.googleusercontent.com">
         <div>
           <div className="flex justify-center items-center">
-            {/* <div className="w-1/2 bg-slate-500">
-              <div>
-                <img
-                  src="/Banner/medical-banner-with-stethoscope.jpg"
-                  alt=""
-                  className="max-w-full h-auto"
-                />
-              </div>
-            </div> */}
-
+        
             <div className="Login">
               <div className="container">
                 <div className="heading">Welcome Doc</div>
@@ -97,7 +88,7 @@ const DoctorLogin: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <span className="forgot-password">
-                    <a href="#">Forgot Password?</a>
+                    <Link to='/forgotPasswordForDoc'>Forgot Password?</Link>
                   </span>
                   <input
                     value="Sign In"
@@ -116,7 +107,7 @@ const DoctorLogin: React.FC = () => {
                     </p>
                   </div>
                 </form>
-                <div id="signInButton">
+                {/* <div id="signInButton">
                   <GoogleLogin
                     type="standard"
                     // theme='filled_white'
@@ -138,7 +129,7 @@ const DoctorLogin: React.FC = () => {
                         });
                     }}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

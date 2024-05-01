@@ -121,14 +121,19 @@ io.on("connection", (socket: Socket) => {
     console.log(users, 'Users in the socket connection');
   });
 
-  socket.on('sendMessage', async ({ senderId, recieverId, content, converstationId, type }) => {
+  socket.on('sendMessage', async ({ senderId, recieverId, content, converstationId, type, timestamp, // Include the current timestamp
+}) => {
+    console.log('hihi');
+    
     const { sendMessegesUseCase } = dependencies.useCase;
     const data = {
       content,
       recieverId,
       senderId,
       type,
-      converstationId
+      converstationId,
+      timestamp, 
+
     };
     const response = await sendMessegesUseCase(dependencies).executeFunction(data);
 
@@ -136,19 +141,41 @@ io.on("connection", (socket: Socket) => {
       const recipient = users.find((user:any) => user.id === recieverId);
          const sender:any = users.find((user:any) => user.id === senderId)
       if (recipient) {
-        io.to(recipient.socketId).to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type });
+        io.to(recipient.socketId).to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type ,timestamp});
+      }else{
+        io.to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type ,timestamp});
       }
     }
   });
 
-  socket.on("VideoCall",(data:any)=>{
-     const {userId,roomId,appointmentId}=data
-     const datas={
-      roomId,
-      appointmentId
+  socket.on("VideoCall",async(data:any)=>{
+    const {createConsultuseCase  } = dependencies.useCase;
+    console.log('here---',data);
+    
+     const {doctorId,userId,roomId,appointmentId}=data
+     const apiPayload={
+      userId,
+      doctorId,
+      appointmentId,
+      roomId
      }
+
+     const response=await createConsultuseCase(dependencies).executeFunction(apiPayload)
+     if(response.status){
+      console.log('suucesfully created',response.data);
+      
       const user=getUser(userId)
-      io.to(user.socketId).emit('VideoCallResponce',datas)
+      console.log(user,'Users:::');
+      const datas={
+        roomId,
+        appointmentId
+       }
+      if(user){
+        io.to(user.socketId).emit('VideoCallResponce',datas)
+      }
+     }
+     
+     
   })
 
   console.log(users, '-------users----------');
@@ -162,70 +189,6 @@ io.on("connection", (socket: Socket) => {
     console.error(`Socket error for client ${socket.id}:`, error);
   });
 });
-
-
-// ===========================================================================================================
-
-
-
-
-// // Assuming you have the same setup for the socket.io instance and users array as for the users
-
-// let doctors:any = [];
-
-// // Handle doctor connections
-// io.on("connection", (socket: Socket) => {
-//   console.log('Doctor connected', socket.id);
-
-//   socket.on('joinChat', (data) => {
-//     const { chatId, id } = data;
-
-//     // Check if the doctor already exists in the array
-//     const existingDoctorIndex = doctors.findIndex((doctor:any) => doctor.id === id);
-
-//     if (existingDoctorIndex === -1) {
-//       // If the doctor doesn't exist, add them to the array
-//       doctors.push({ id, socketId: socket.id });
-//     } else {
-//       // If the doctor already exists, update their socket ID (in case they reconnected)
-//       doctors[existingDoctorIndex].socketId = socket.id;
-//     }
-
-//     console.log(doctors, 'Doctors in the socket connection');
-//   });
-
-//   socket.on('sendMessage', async ({ senderId, recieverId, content, converstationId, type }) => {
-//     const { sendMessagesUseCase } = dependencies.useCase;
-//     const data = {
-//       content,
-//       recieverId,
-//       senderId,
-//       type,
-//       converstationId
-//     };
-//     const response = await sendMessagesUseCase(dependencies).executeFunction(data);
-
-//     if (response && response.status && response.data) {
-//       const recipient = users.find((user:any) => user.id === recieverId);
-//       const sender = doctors.find((doctor:any) => doctor.id === senderId);
-//       if (recipient) {
-//         io.to(recipient.socketId).to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type });
-//       }
-//     }
-//   });
-
-//   console.log(doctors, '-------doctors----------');
-
-//   socket.on('disconnect', () => {
-//     // Remove the disconnected doctor from the array
-//     doctors = doctors.filter((doctor:any) => doctor.socketId !== socket.id);
-//   });
-
-//   socket.on('error', (error: any) => {
-//     console.error(`Socket error for doctor ${socket.id}:`, error);
-//   });
-// });
-
 
 
 

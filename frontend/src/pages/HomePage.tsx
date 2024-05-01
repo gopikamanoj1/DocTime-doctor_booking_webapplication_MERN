@@ -26,8 +26,9 @@ function HomePage() {
           <br />
           <HowItWorksSection />
           <TestimonialsSection />
-          <AboutSection />
+         
           <BlogSection />
+          <AboutSection />
           <FBanner />
           <FooterBanner />
           <Footer />

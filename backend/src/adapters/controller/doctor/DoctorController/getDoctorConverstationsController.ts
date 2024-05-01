@@ -15,7 +15,7 @@ export default (dependecies: any) => {
         const response = await getDoctorConverstationsUseCase(dependecies).executeFunction(data);
         
 
-        if (response && response.status && response.data) {
+        if (response && response.status) {
             res.json({ status: true, data: response.data });
     
         } else {

@@ -1,11 +1,8 @@
-
-
 import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  
   clearDoctor,
   DoctorIsAuthenticated,
 } from "../../Redux/slices/doctorAuthSlice";
@@ -17,7 +14,7 @@ const DoctorNavbar = () => {
   const dispatch = useDispatch();
   const doctor = useSelector((state: any) => state.persisted.doctorAuth);
   const isAuthenticated = useSelector(DoctorIsAuthenticated);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const storedNavState = localStorage.getItem("nav");
   const [nav, setNav] = useState(
     storedNavState ? JSON.parse(storedNavState) : false
@@ -32,88 +29,65 @@ const DoctorNavbar = () => {
   const handleLogout = () => {
     dispatch(clearDoctor());
     localStorage.removeItem("doctorProfile");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate('/doctorLogin')
-
+    localStorage.removeItem("token");
+    // localStorage.removeItem("refreshToken");
+    navigate("/doctorLogin");
   };
 
   return (
-    <nav className="bg-cyan-950 flex mx-auto px-4 text-white">
-      <img
-        src="/public/imgs/logo 2 p222.png"
-        alt="img"
-        width={100}
-        height={100}
-      />
-
-      <ul className="hidden md:flex justify-between items-center h-24">
-        <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
+    <nav className="navbar bg-cyan-950 flex justify-between items-center mx-auto px-4 text-white">
+      <div className="flex items-center space-x-4">
+        <Link to="/">
+          <img
+            src="/public/imgs/logo 2 p222.png"
+            alt="img"
+            width={100}
+            height={100}
+          />
+        </Link>
+      </div>
+      <ul className="hidden md:flex  justify-between  items-center h-24">
+        <li className="p-2 hover:bg-[#ffffff]  m-2 cursor-pointer duration-300 hover:text-black">
           {isAuthenticated ? (
             <Link to="/doctorHome">Home</Link>
           ) : (
             <Link to="/">Home</Link>
           )}
         </li>
-        <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
+        <li className="p-2 hover:bg-[#ffffff]  m-2 cursor-pointer duration-300 hover:text-black">
           {isAuthenticated ? (
             <Link to="/addSlot">Add Slot</Link>
           ) : (
-            <button onClick={()=>toast.warn("Please Login")}>
-            Add Slot
-              </button>
+            <button onClick={() => toast.warn("Please Login")}>Add Slot</button>
           )}
         </li>
-        <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
+        <li className="p-2 hover:bg-[#ffffff]  m-2 cursor-pointer duration-300 hover:text-black">
           {isAuthenticated ? (
             <Link to="/showDoctorAppoinment">Your Appoinment</Link>
           ) : (
-            <button onClick={()=>toast.warn("Please Login")}>
-          Your Appoinment
-            </button>
-
-          
-          )}
-        </li>
-
-        <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
-          {isAuthenticated ? (
-                      <Link to="/showChat/index">Chat</Link>
-
-          ) : (
-            <button onClick={()=> toast.warn('Please Login')}>
-              Chat
-
-            </button>
-          ) }
-        </li>
-
-
-
-        <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
-          {isAuthenticated ? (
-            <Link to="/kycAuth">kyc
-            
-            
-            </Link>
-          ) : (
-            // <Link to="/login">Video Consultation</Link>
-            <button onClick={()=>toast.warn("Please Login")}>
-              kyc
+            <button onClick={() => toast.warn("Please Login")}>
+              Your Appoinment
             </button>
           )}
         </li>
 
-        {/* <li className="p-4 hover:bg-[#96ebd0] rounded-xl m-2 cursor-pointer duration-300 hover:text-black">
-          {kycStatus === "approved" && <span>KYC Status: Approved</span>}
-          {kycStatus === "pending" && <span>KYC Status: Pending</span>}
-          {kycStatus === "rejected" && <span>KYC Status: Rejected</span>}
-        </li> */}
-
-
+        <li className="p-2 hover:bg-[#ffffff]  m-2 cursor-pointer duration-300 hover:text-black">
+          {isAuthenticated ? (
+            <Link to="/showChat/index">Chat</Link>
+          ) : (
+            <button onClick={() => toast.warn("Please Login")}>Chat</button>
+          )}
+        </li>
+        <li className="p-2 hover:bg-[#ffffff]  m-2 cursor-pointer duration-300 hover:text-black">
+          {isAuthenticated ? (
+            <Link to="/kycAuth">kyc</Link>
+          ) : (
+            <button onClick={() => toast.warn("Please Login")}>kyc</button>
+          )}
+        </li>
       </ul>
 
-      <div className="btt">
+      <div className="btt   ">
         <div>
           {isAuthenticated ? (
             <>

@@ -21,9 +21,11 @@ export default function doctorLoginUseCase(dependencies: any) {
 
       if (isPasswordCorrect) {
         // Generate tokens
-        const { accessToken, refreshToken } = generateToken({ userId: user._id });
-
-        return { status: true, data: user, accessToken, refreshToken };
+        const { token } = generateToken({ userId: user._id });
+        // console.log(token,"token");
+        
+ 
+        return { status: true, data: user, token };
        } else {
         return { status: false, message: 'Incorrect password' };
        }

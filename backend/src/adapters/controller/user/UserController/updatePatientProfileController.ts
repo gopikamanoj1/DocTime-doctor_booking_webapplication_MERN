@@ -11,47 +11,50 @@ export default (dependencies: any) => {
     }
     const updatePatientProfileController = async (req: Request, res: Response) => {
         try {
-
-            console.log('HIHIHIHIHIH');
-
-            const { name, email, phone, street, city, state, zipcode, image, age, dob, gender, bloodGroup } = req.body
-            const imageUrl = await uploadToS3(image, `${email}-PatientprofileImage`);
+            const { name, email, phone, street, city, state, zipcode, age, dob, gender, bloodGroup, image } = req.body;
+      
+            let imageUrl:any= null; // Default value for imageUrl
+      
+            if (image) {
+              // Only upload to S3 if an image is provided
+              imageUrl = await uploadToS3(image, `${email}-PatientProfileImage`);
+            }
+      
             const data = {
-                name,
-                email,
-                phone,
-                gender,
-                street,
-                city,
-                state,
-                zipcode,
-                bloodGroup,
-                image: imageUrl,
-                age,
-                dob
+              name,
+              email,
+              phone,
+              gender,
+              street,
+              city,
+              state,
+              zipcode,
+              bloodGroup,
+              age,
+              dob,
+              image
+            };
+      
+            if (imageUrl) {
+              // Only add `image` if it exists
+              data.image = imageUrl;
             }
-            console.log(data, "data in updateDoctorProfileController");
-            // req.session.doctorProfile = data;
-
-            const response = await updatePatientProfileUseCase(dependencies).executeFunction(data)
-            console.log(response, "res in new contro updatePatientProfileUseCase");
-
-
-
-            if (response) {
-
-                res.status(200).json({ status: true, data: response.data })
+      
+            console.log(data, "Data in updatePatientProfileController");
+      
+            const response = await updatePatientProfileUseCase(dependencies).executeFunction(data);
+      
+            if (response && response.data) {
+              res.status(200).json({ status: true, data: response.data });
             } else {
-                return ({ status: false, messege: "error in updation" })
+              res.status(400).json({ status: false, message: "Error updating profile" });
             }
-
-        } catch (error) {
-            console.log(error, "error in profile controller ");
-
-        }
-
-
-    };
+          } catch (error) {
+            console.error("Error in updatePatientProfileController:", error);
+            res.status(500).json({ status: false, message: "Internal Server Error" });
+          }
+        };
+      
 
     return updatePatientProfileController;
 };

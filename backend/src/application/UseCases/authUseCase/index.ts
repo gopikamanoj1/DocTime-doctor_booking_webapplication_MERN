@@ -20,7 +20,9 @@ import sendMessegesUseCase from './sendMessegesUseCase';
 import createConverstationUseCase from './createConverstationUseCase';
 import getConverstationByIdUseCase from './getConverstationByIdUseCase'
 import getConverstationsUseCase from './getConverstationsUseCase';
-
+import getConsultCallStatusUseCase from './getConsultCallStatusUseCase'
+import forgotPasswordUseCase from './forgotPasswordUseCase';
+import getSearchQueryUseCase from './getSearchQueryUseCase'
 // Add other use cases as needed
 
 export {
@@ -43,7 +45,9 @@ export {
   sendMessegesUseCase,
   createConverstationUseCase,
   getConverstationByIdUseCase,
-  getConverstationsUseCase
-  
+  getConverstationsUseCase,
+  getConsultCallStatusUseCase,
+  forgotPasswordUseCase,
+  getSearchQueryUseCase
   // Add other exports as needed
 };

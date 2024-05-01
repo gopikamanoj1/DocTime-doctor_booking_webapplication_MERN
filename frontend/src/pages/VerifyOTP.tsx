@@ -6,8 +6,9 @@ import Footer from '../components/Footer/Footer'
 function VerifyOTP() {
   return (
     <div>
-        {/* <Navbar/> */}
+      <br /><br /><br />
       <Otp/>
+      <br /><br /><br />
       <Footer/>
     </div>
   )

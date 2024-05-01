@@ -2,8 +2,10 @@ import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRef, useEffect } from 'react'; // Import useRef and useEffect
+import axiosInstance from '../../AxiosConfig/axiosInstance';
+import { error } from 'console';
 const VideoCall = () => {
-    let { roomId }: any = useParams();
+    let { roomId,appoinmentId }: any = useParams();
     const containerRef = useRef(null);
 
     let userID: string;
@@ -14,7 +16,6 @@ const VideoCall = () => {
 
 
 
-  console.log(userData,'--------H---------',doctordata);
   
   if (userData && userData._id && userData.name) {
     userID = userData._id
@@ -30,12 +31,22 @@ const VideoCall = () => {
 
     const navigate = useNavigate();
     
-    const handleLeaveRoom = () => {
+    const handleLeaveRoom = async () => {
         if(userData){
             
             navigate(`/appointmentDetails`);
         }else if(doctordata){
-            navigate(`/showDoctorAppoinment`);
+            const data={
+                appoinmentId
+            }
+            const response= await axiosInstance.post('/api/auth/handleLeave',data)
+            
+            if(response && response?.data?.status){
+                navigate(`/showDoctorAppoinment`);
+            }else{
+                console.log(response?.data?.message,'ERROR HAPPENCE IN THE showDoctorAppoinment');
+            }
+           
         }
         
     }

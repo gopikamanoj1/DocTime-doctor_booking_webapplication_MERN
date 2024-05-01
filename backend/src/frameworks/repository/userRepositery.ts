@@ -75,6 +75,27 @@ export default {
     }
   },
 
+  getUserByEmailForRegister: async (data: any) => {
+    try {
+      const { email } = data
+      console.log(`Email to query: ${email}`);
+
+      const user = await DatabaseSchema.User.findOne({
+        email: email,
+      });
+      console.log(user,"usermmmmmmmmmmmmmmmmm");
+      if (user) {
+        console.log("User found:", user); // Confirm if a user is actually found
+        return { data: user };
+      } else {
+        console.log("No user found"); // Check if this gets logged when there's no user
+        return { status: false };
+      }
+    } catch (error) {
+      console.error('Error in getUserByEmail:', error);
+      throw error;
+    }
+  },
 
   updatePatientProfile: async (data: any) => {
     try {
@@ -168,7 +189,7 @@ export default {
     }
   },
 
-  getDataForCheckout: async (data: any) => {
+  bookAppointment: async (data: any) => {
     try {
       const { doctorEmail, selectedDate, selectedTime } = data;
 
@@ -177,19 +198,15 @@ export default {
       if (!doctor) {
         throw new Error("Doctor not found");
       }
-
       const existingAppointment = await DatabaseSchema.Appointment.findOne({
         doctorId: doctor._id,
         date: selectedDate,
         time: selectedTime,
       });
-
       if (existingAppointment) {
         return { status: false, data: "Another patient already booked at the same time and date" };
       }
-
       const time = await DatabaseSchema.Slot.find({ slotTime: selectedTime });
-
       return { status: true, data: { doctor, time, selectedDate } };
     } catch (error) {
       console.log(error, "error in getDataForCheckout repo");
@@ -239,13 +256,13 @@ export default {
     try {
       const doctors = await DatabaseSchema.Doctor.find({
         name: { $regex: new RegExp(searchParams.doctorName, 'i') },
-        kycStatus: "approved", 
+        kycStatus: "approved",
       }).exec();
-       if(doctors){
+      if (doctors) {
         return { status: true, data: doctors };
-       }else{
+      } else {
         return { status: false, messege: " search doctor not found" };
-       }
+      }
     } catch (error) {
       console.log(error);
       return { status: false, message: "Error in searchDoctors repository" };
@@ -256,17 +273,17 @@ export default {
   appointmentDetails: async (data: any) => {
     try {
       const { userId } = data;
-  
+
       // Find all appointments for the given user
       const appointments = await DatabaseSchema.Appointment.find({ userId });
-  
+
       if (!appointments.length) {
         return { status: false, data: "No Appointments" };
       }
-  
+
       // Fetch the user details
       const user = await DatabaseSchema.User.findById(userId);
-  
+
       // Fetch the doctor details for each appointment
       const doctorDetails = await Promise.all(
         appointments.map(async (appointment) => {
@@ -274,14 +291,14 @@ export default {
           return await DatabaseSchema.Doctor.findById(appointment.doctorId);
         })
       );
-  
+
       // Structure the response to include appointment, doctor, and user details
       const result = appointments.map((appointment, index) => ({
         appointment,
         doctor: doctorDetails[index],
         user,
       }));
-  
+
       return { status: true, data: result };
     } catch (error) {
       console.error("Error in appointmentDetails:", error);
@@ -412,8 +429,8 @@ export default {
 
         const response = await conversation.save();
 
-// console.log(response,"res");
- 
+        // console.log(response,"res");
+
         if (response) {
           return { status: true, data: response };
 
@@ -431,7 +448,7 @@ export default {
     try {
       const { id } = data
       const response = await DatabaseSchema.Messages.find({ converstationId: id })
-      
+
       if (response) {
         return { status: true, data: response }
       } else {
@@ -447,50 +464,117 @@ export default {
   getConverstation: async (data: any) => {
     try {
       const { id } = data;
-      console.log(id,'id');
-      
-  
+      console.log(id, 'id');
+
+
       // Find conversations where the senderId matches the given id
       const conversations: any = await DatabaseSchema.Conversation.find({ "members.userId": id });
-   
-      
-  
-  
+
+
+
+
       // Array to store objects containing both doctor and conversation details
       const doctorConversations: any = [];
-  
+
       for (let i = 0; i < conversations.length; i++) {
         // Get the receiverId from the conversation object
         const receiverId = conversations[i].members[0].doctorId;
-  
-  
+
+
         // Find the doctor details based on the receiverId
         const doctor: any = await DatabaseSchema.Doctor.findById(receiverId);
-  
+
         // Construct an object containing both doctor and conversation details
         const doctorConversation = {
           doctor: doctor,
           conversation: conversations[i]
         };
-  
+
         // Push the object to the array
         doctorConversations.push(doctorConversation);
-      }    
-  
-  
+      }
+
+
       if (doctorConversations.length > 0) {
         return { status: true, data: doctorConversations };
       } else {
-        return { status: true, data: "No conversations found for this doctor" };
+        return { status: true, data: [] };
       }
     } catch (error) {
       console.error(error);
       return { status: false, message: "An error occurred while fetching conversations" };
     }
-  }
+  },
+
+
+  getConsultCallStatus: async (data: any) => {
+    const { userId } = data
+    try {
+      const response: any = await DatabaseSchema.Consult.find({ userId: userId, read: false })
+      if (response) {
+        if (response.length > 0) {
+          return { status: true, data: response }
+        } else {
+          return { status: true, data: [] }
+        }
+      } else {
+        return { status: false, message: "getitng the consult data error" }
+      }
+    } catch (error) {
+      return { status: false, message: `Something went wrong ${error}` }
+    }
+  },
+
+
+  forgotPassword: async (data: any) => {
+    try { 
+      console.log("hai ");
+      
+      const { email, hashedNewPassword } = data
+      const user = await DatabaseSchema.User.findOne({ email: email })
+      console.log(user, "user  user");
+      if (user) {
+        user.password = hashedNewPassword
+        await user.save()
+        return { status: true, data: " password Updated succesfully " }
+      }
+      else {
+        return { status: false, data: " something went wrong " }
+      }
+    } catch (error) {
+      console.log(error);
+
+      return { status: false, data: " something went wrong " }
+
+    }
+  },
+
+  getSearchQuery: async(data:any)=>{
+    const {query}=data
+    try {
+      if(query==""){
+        return {status:true,data:[]}
+      }
+
   
 
-
+      const response = await DatabaseSchema.Doctor.find({
+        kycStatus: "approved",
+        $or: [
+          { name: { $regex: "^" + query, $options: "i" } },
+          { specialization: { $regex: "^" + query, $options: "i" } }
+        ]
+      });
+  
+      if(response){
+        return {status:true,data:response}
+      }else{
+        return {status:false,message:"Search data not found ..!"}
+      }
+    } catch (error) {
+      return {status:false, message:`Something went wrong ...!${error}`}
+    }
+  }
 
 
 

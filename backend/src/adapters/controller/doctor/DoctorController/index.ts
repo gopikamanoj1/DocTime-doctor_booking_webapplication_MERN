@@ -15,29 +15,35 @@ import getDoctorConverstationsController from "./getDoctorConverstationsControll
 import getKycStatusController from "./getKycStatusController";
 import getAppoinmentDetailsController from "./getAppoinmentDetailsController";
 import getConvetsationIdForVideoCallController from "./getConvetsationIdForVideoCallController";
-
-
-
-
+import addPrescriptionController from "./addPrescriptionController";
+import updateConsultCallStatusController from "./updateConsultCallStatusController";
+import changePasswordForDocController from "./changePasswordForDocController";
+import forgotPasswordForDocController from "./forgotPasswordForDocController";
+import updateEmailFORDOCController from "./updateEmailFORDOCController";
 export default (dependencies: any) => {
    return {
 
       doctorRegisterController: doctorRegisterController(dependencies),
       doctorVerifyOtpController: doctorVerifyOtpController(dependencies),
       doctorLoginController: doctorLoginController(dependencies),
-      doctorLogoutController:doctorLogoutController(dependencies),
-      kycController:kycController(dependencies),
-      updateDoctorProfileController:updateDoctorProfileController(dependencies),
-      googleRegisterController:googleRegisterController(dependencies),
-      addSlotController:addSlotController(dependencies),
-      showAppoinmentsController:showAppoinmentsController(dependencies),
-      getAlreadyScheduledSlotesController:getAlreadyScheduledSlotesController(dependencies),
-      getDoctorConverstationByIdController:getDoctorConverstationByIdController(dependencies),
-      doctorSendMessegesController:doctorSendMessegesController(dependencies),
-      getDoctorConverstationsController:getDoctorConverstationsController(dependencies),
-      getKycStatusController:getKycStatusController(dependencies),
-      getAppoinmentDetailsController:getAppoinmentDetailsController(dependencies),
-      getConvetsationIdForVideoCallController:getConvetsationIdForVideoCallController(dependencies),
+      doctorLogoutController: doctorLogoutController(dependencies),
+      kycController: kycController(dependencies),
+      updateDoctorProfileController: updateDoctorProfileController(dependencies),
+      googleRegisterController: googleRegisterController(dependencies),
+      addSlotController: addSlotController(dependencies),
+      showAppoinmentsController: showAppoinmentsController(dependencies),
+      getAlreadyScheduledSlotesController: getAlreadyScheduledSlotesController(dependencies),
+      getDoctorConverstationByIdController: getDoctorConverstationByIdController(dependencies),
+      doctorSendMessegesController: doctorSendMessegesController(dependencies),
+      getDoctorConverstationsController: getDoctorConverstationsController(dependencies),
+      getKycStatusController: getKycStatusController(dependencies),
+      getAppoinmentDetailsController: getAppoinmentDetailsController(dependencies),
+      getConvetsationIdForVideoCallController: getConvetsationIdForVideoCallController(dependencies),
+      addPrescriptionController: addPrescriptionController(dependencies),
+      updateConsultCallStatusController: updateConsultCallStatusController(dependencies),
+      changePasswordForDocController: changePasswordForDocController(dependencies),
+      forgotPasswordForDocController: forgotPasswordForDocController(dependencies),
+      updateEmailFORDOCController: updateEmailFORDOCController(dependencies)
 
 
    }

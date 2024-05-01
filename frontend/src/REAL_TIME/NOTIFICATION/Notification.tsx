@@ -36,6 +36,6 @@ const Notification: React.FC = () => {
       </div>
     </div>
   );
-};
+};  
 
 export default Notification;

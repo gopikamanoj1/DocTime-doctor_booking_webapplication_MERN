@@ -1,40 +1,10 @@
-// // src/axiosInstance.ts
-// import axios from 'axios';
-
-// // Create an Axios instance with default settings
-// const axiosInstance = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL,
-//   timeout: 10000, 
-//   headers: {
-//     'Content-Type': 'application/json', 
-//   },
-// });
-
-// // Use interceptors to set the Authorization header with the token
-// axiosInstance.interceptors.request.use(
-//     (config) => {
-//       const accessToken = localStorage.getItem("accessToken");
-//       if (accessToken) {
-//         config.headers['Authorization'] = `Bearer ${accessToken}`;
-//       }
-//       return config;
-//     },
-//     (error) => {
-//       return Promise.reject(error);
-//     }
-//   );
-
-// export default axiosInstance;
-
-
-
 
 import axios from 'axios';
 
 // Create an Axios instance with default settings
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000, // 10 seconds timeout
+  timeout: 100000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
   },
@@ -64,7 +34,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = localStorage.getItem("refreshToken");
       const originalRequest = error.config;
   
-      if (error.response.status === 401 && !originalRequest._retry) {
+      if (error?.response?.status === 401 && !originalRequest._retry) {
         if (refreshToken) {
           try {
             // Avoid infinite retry loop

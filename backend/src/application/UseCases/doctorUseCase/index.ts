@@ -15,9 +15,14 @@ import getDoctorConverstationsUseCase from "./getDoctorConverstationsUseCase";
 import getKycStatusUseCase from "./getKycStatusUseCase";
 import getAppoinmentDetailsUseCase from "./getAppoinmentDetailsUseCase";
 import getConvetsationIdForVideoCallUseCase from "./getConvetsationIdForVideoCallUseCase";
-
-
+import addPrescriptionUseCase from "./addPrescriptionUseCase";
+import createConsultuseCase from './createConsultUseCase'
+import updateConsultCallStatusUseCase from "./updateConsultCallStatusUseCase";
+import changePasswordForDocUseCase from "./changePasswordForDocUseCase";
+import forgotPasswordForDocUseCase from "./forgotPasswordForDocUseCase";
+import updateEmailForDOCUseCase from "./updateEmailForDOCUseCase";
 export {
+
 
     doctorRegisterUseCase,
     doctorVerifyOtpUseCase,
@@ -34,7 +39,12 @@ export {
     getDoctorConverstationsUseCase,
     getKycStatusUseCase,
     getAppoinmentDetailsUseCase,
-    getConvetsationIdForVideoCallUseCase
+    getConvetsationIdForVideoCallUseCase,
+    addPrescriptionUseCase,
+    createConsultuseCase,updateConsultCallStatusUseCase,
+    changePasswordForDocUseCase,
+    forgotPasswordForDocUseCase,
+    updateEmailForDOCUseCase
 
   
 };

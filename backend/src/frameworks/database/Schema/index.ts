@@ -30,7 +30,7 @@ import { Messages } from './messegesSchema';
 import { Chat } from './chatSchema';
 import { Conversation } from './Converstations';
 import { Prescription } from './prescriptionSchema';
-
+import {Consult} from './consultSchema'
 interface DatabaseSchemas {
     User: typeof User;
     Admin: typeof Admin;
@@ -41,6 +41,7 @@ interface DatabaseSchemas {
     Chat: typeof Chat;
     Conversation: typeof Conversation;
     Prescription: typeof Prescription;
+    Consult: typeof Consult
 }
 
 const databaseSchemas: DatabaseSchemas = {
@@ -52,7 +53,8 @@ const databaseSchemas: DatabaseSchemas = {
     Messages,
     Chat,
     Conversation,
-    Prescription
+    Prescription,
+    Consult
 };
 
 export default databaseSchemas;

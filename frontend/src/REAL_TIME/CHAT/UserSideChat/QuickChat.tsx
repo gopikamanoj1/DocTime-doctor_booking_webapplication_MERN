@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import axiosInstance from "../../../AxiosConfig/axiosInstance";
 interface QuickChatProps {
   onDoctorSelect: (conversationId: any) => void;
   socket:any
@@ -24,15 +24,13 @@ const QuickChat: React.FC<QuickChatProps> = ({ onDoctorSelect ,socket}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/auth/getConverstations?id=${
+        const response = await axiosInstance.get(
+          `/api/auth/getConverstations?id=${
             user ? user._id : null
           }`
         );
         if (response) {
           setDoctors(response.data.data);
-          
-         
         }
       } catch (error) {
         console.error("Error fetching data:", error);

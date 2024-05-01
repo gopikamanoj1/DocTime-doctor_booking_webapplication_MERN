@@ -1,18 +1,16 @@
 // ChatBox.tsx
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns"; // To format the timestamp
 
-import Loading from "../../../Loading/Loading";
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
+import axiosInstance from "../../../AxiosConfig/axiosInstance";
 
 interface ChatBoxProps {
   selectedUser: any; // Define the selectedDoctor prop
   socket: any;
 }
-
 
 const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
   const { convesationId } = useParams();
@@ -20,17 +18,17 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
   const [messageInput, setMessageInput] = useState("");
   const doctor = useSelector((state: any) => state.persisted.doctorAuth);
   const doctorId = doctor?.doctor?._id;
-  console.log(messages, "ooooo");
+  const formatTime = (timestamp: any) => {
+    return format(new Date(timestamp), "hh:mm a"); // 12-hour format with AM/PM
+  };
 
   useEffect(() => {
     if (!convesationId || !doctor) return; // Add null checks
 
     (async () => {
-      const response = await axios
-        .create({ withCredentials: true })
-        .get(
-          `http://localhost:3000/api/auth/getConverstationById?id=${convesationId}`
-        );
+      const response = await axiosInstance.get(
+        `/api/auth/getConverstationById?id=${convesationId}`
+      );
       console.log(response, "this is res doc");
 
       if (response.data.status) {
@@ -45,31 +43,29 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
     if (socket) {
       if (doctorId !== undefined) {
         console.log(doctorId, "not undifined");
-
         socket?.emit("joinChat", { id: doctorId, chatId: convesationId });
       }
     }
-    // }, [convesationId, socket, doctor]);
-  }, [doctorId]);
+  }, [doctor, convesationId, socket]);
 
   useEffect(() => {
-    if (!socket) return; // Add null check
-
-    socket.on("getMessage", (data: any) => {
-      if (data.converstationId === convesationId) {
-        toast.error("doctor");
-        setMessages((prevMessages: any) => [...prevMessages, data]);
-      }
-    });
-  }, [socket, convesationId]);
+    if (socket) {
+      socket.on("getMessage", (data: any) => {
+        if (data.converstationId === convesationId) {
+          setMessages((prevMessages: any) => {
+            const setNewMessage = [...prevMessages, data];
+            return setNewMessage;
+          });
+        }
+      });
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (!socket || !doctorId) return; // Add null checks
 
     socket.emit("joinChat", { id: doctorId, chatId: convesationId });
-  }, [socket, doctorId, convesationId]);
-
-
+  }, [socket, convesationId]);
 
   const sendMessage = async () => {
     const data = {
@@ -79,15 +75,18 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
       senderId: doctor?.doctor._id,
       type: "text",
     };
+    const currentTime = new Date(); // Get the current timestamp
 
     socket?.emit("sendMessage", {
       senderId: doctor?.doctor._id,
       recieverId: selectedUser._id,
       content: messageInput,
       type: "text",
-      conversationId: convesationId,
+      converstationId: convesationId,
+      timestamp: currentTime, // Include the current timestamp
+
     });
-      setMessageInput("");
+    setMessageInput("");
   };
 
   // useEffect(() => {
@@ -124,7 +123,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
               <div className="ml-2 flex flex-col">
                 <div className="text-sm font-semibold">{selectedUser.name}</div>
                 <div className="text-xs text-gray-500">
-                  <p>Last seen:</p>
+                  {/* <p>Last seen:</p> */}
                 </div>
               </div>
             </>
@@ -138,15 +137,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
               <div
                 key={index}
                 className={`col-start-1 col-span-12 md:col-span-8 p-3 rounded-lg ${
-                  msg.senderId === doctorId
-                    ? "justify-start"
-                    : "justify-end"
+                  msg.senderId === doctorId ? "self-end" : "self-start"
                 }`}
               >
                 <div className="flex flex-row items-center">
-                
                   <div className="relative ml-3  text-white text-base bg-cyan-950 py-2 px-4 shadow rounded-xl">
                     <div>{msg.content}</div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      {formatTime(msg.timestamp)}{" "}
+                      {/* Only the time is displayed */}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -187,7 +187,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedUser, socket }) => {
             </div>
           </div>
           <div className="ml-4">
-          <button
+            <button
               onClick={sendMessage}
               className="flex items-center justify-center bg-cyan-800 hover:bg-cyan-950 rounded-xl text-white px-4 py-1 flex-shrink-0"
             >

@@ -4,7 +4,6 @@ export default (dependecies: any) => {
 
   const {loginUseCase}=dependecies.useCase
   const loginController = async (req: Request, res: Response) => {
-   
     const {email,password}=req.body
     console.log(req.body,"hfffffffffffh");
 
@@ -12,9 +11,6 @@ export default (dependecies: any) => {
       email,
       password,
     }
- 
-   
-
   const responce =await loginUseCase(dependecies).executeFunction(data) 
   if(responce.status){
     res.json({status:true,data:responce.data})
@@ -25,3 +21,4 @@ export default (dependecies: any) => {
   };
   return loginController;
 };
+

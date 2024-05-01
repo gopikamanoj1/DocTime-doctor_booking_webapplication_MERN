@@ -29,8 +29,9 @@ function DoctorHomePage() {
       <Banner/>
       <HowItWorksSection />
         <TestimonialsSection />
-        <AboutSection />
+      
         <BlogSection />
+        <AboutSection />
         <FBanner />
         <FooterBanner />
       <Footer/>

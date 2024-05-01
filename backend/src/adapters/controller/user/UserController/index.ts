@@ -20,6 +20,15 @@ import sendMessegesController from "./sendMessegesController"
 import createConverstationController from "./createConverstationController"
 import getConverstationByIdController from "./getConverstationByIdController"
 import getConverstationsController from "./getConverstationsController"
+import getConsultCallStatusController from './getConsultCallStatusConstroller'
+import forgotPasswordController from "./forgotPasswordController"
+import getSearchQueryController from './getSearchQueryController'
+
+
+
+
+
+
 export default (dependencies:any)=>{
  return {
 
@@ -45,11 +54,11 @@ export default (dependencies:any)=>{
     createConverstationController:createConverstationController(dependencies),
     getConverstationByIdController:getConverstationByIdController(dependencies),
     getConverstationsController:getConverstationsController(dependencies),
-
-
+    getConsultCallStatusController:getConsultCallStatusController(dependencies),
+    forgotPasswordController:forgotPasswordController(dependencies),
+    getSearchQueryController:getSearchQueryController(dependencies),
 
     
-
 
  }
 

@@ -14,19 +14,23 @@ export default (dependencies: any) => {
       const data = {
         name,
         email,
-        password: hashedPassword, // Use the hashed password
+        password: hashedPassword,
       };
 
       req.session.userData = data;
 
       // Call the register use case
       const response = await registerUseCase(dependencies).executeFunction(data);
-
+      console.log(response,"response");
+  
       if (response.status) {
         req.session.Otp = response.data;
-        res.json({ status: true });
-      } else {
-        res.json({ status: false, message: response.message });
+        res.json({ status: true , data: response.data });
+      } else  {
+        res.json({ status: false, data: response.data });
+      }
+      if (response.status === false) {
+        console.log("User already exists:", response.data);
       }
     } catch (error) {
       console.error("Error in register controller:", error);

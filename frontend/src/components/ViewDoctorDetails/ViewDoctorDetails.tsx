@@ -10,13 +10,10 @@ import { Doctor } from "../../Interfaces/Doctor/DoctorInteface";
 import { Slot } from "../../Interfaces/Doctor/DoctorInteface";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 import { useSocket } from "../../REAL_TIME/Socket";
-import { Socket } from "socket.io-client";
 const ViewDoctorDetails: React.FC = () => {
-
   const isAuthenticated = useSelector(
     (state: any) => state.persisted.auth.isAuthenticated
   );
-
 
   const { id } = useParams<{ id: string }>();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
@@ -24,20 +21,19 @@ const ViewDoctorDetails: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [userName, setUserName] = useState<string>("");
-  const [conversationId,setConversationId]=useState('')
+  const [conversationId, setConversationId] = useState("");
   const User = useSelector((state: any) => state.persisted.auth);
-  const socket: any  = useSocket();
+  const socket: any = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get<Doctor>(
-          `/api/auth/viewDoctorDetails/${id}`,
- 
+          `/api/auth/viewDoctorDetails/${id}`
         );
         const slotsResponse = await axiosInstance.get<Slot[]>(
-          `/api/auth/getAvailableSlot/${id}`,
+          `/api/auth/getAvailableSlot/${id}`
         );
 
         console.log(slotsResponse.data, "Response for available slots");
@@ -69,8 +65,10 @@ const ViewDoctorDetails: React.FC = () => {
         recieverId: doctor?._id,
       };
 
-      const response = await axiosInstance
-        .post('/api/auth/createConverstation', data);
+      const response = await axiosInstance.post(
+        "/api/auth/createConverstation",
+        data
+      );
       if (response.status) {
         console.log(response, "iioioio");
         // console.log();
@@ -80,10 +78,10 @@ const ViewDoctorDetails: React.FC = () => {
       }
     } catch (error) {}
   };
-  const HandleLogin = async ()=>{
-    toast.warn('Please Login')
-    navigate('/login')
-  }
+  const HandleLogin = async () => {
+    toast.warn("Please Login");
+    navigate("/login");
+  };
 
   const bookAppointment = async () => {
     try {
@@ -120,14 +118,16 @@ const ViewDoctorDetails: React.FC = () => {
       };
       console.log(data, "emaa");
 
-      const response = await axiosInstance.post('/api/auth/bookAppointment',
+      const response = await axiosInstance.post(
+        "/api/auth/bookAppointment",
         data
       );
-      console.log(response, "response vvvvvvvvvvvv");
 
-      if (response) {
+      if (response.data.status === true) {
         localStorage.setItem("appointmentData", JSON.stringify(response.data));
         navigate("/bookAppointment");
+      } else if (response.data.status === false) {
+        toast.warn(response.data.data);
       }
       console.log("res:", response.data);
     } catch (error) {
@@ -135,17 +135,12 @@ const ViewDoctorDetails: React.FC = () => {
     }
   };
 
-
-
-
-
-
-
   return (
     <div className="p-16">
       {doctor && (
         <div className="p-8 bg-slate-300 shadow ">
           <div className="grid grid-cols-1 md:grid-cols-3">
+          
             <div className="  text-center order-last md:order-first mt-20 md:mt-0">
               <div className=" mt-8 bg-slate-100  rounded-lg shadow-lg p-6">
                 <div className="flex justify-between items-center mb-4">
@@ -168,9 +163,7 @@ const ViewDoctorDetails: React.FC = () => {
                     <span className="font-semibold">Specialization:</span>{" "}
                     {doctor.specialization}
                   </p>
-                  <p className="text-gray-800 text-left">
-                    <span className="font-semibold">Phone:</span> {doctor.phone}
-                  </p>
+
                   <p className="text-gray-800 text-left">
                     <span className="font-semibold">Age:</span> {doctor.age}
                   </p>
@@ -215,21 +208,22 @@ const ViewDoctorDetails: React.FC = () => {
                  className="text-white py-2 px-4 uppercase rounded  bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                   Consultation
                 </button> */}
-                
 
-                {isAuthenticated ?  <button
-                  onClick={handleMessege}
-                  className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                >
-                  Message
-                </button> :  <button
-                  onClick={HandleLogin}
-                  className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                >
-                  Message
-                </button>}
-
-              
+                {isAuthenticated ? (
+                  <button
+                    onClick={handleMessege}
+                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                  >
+                    Message
+                  </button>
+                ) : (
+                  <button
+                    onClick={HandleLogin}
+                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                  >
+                    Message
+                  </button>
+                )}
               </div>
               <div className="bg-transparent  p-6">
                 {selectedDate && (
@@ -249,84 +243,94 @@ const ViewDoctorDetails: React.FC = () => {
             </div>
 
             <div className="mt-8">
-      {availableSlots && availableSlots.length > 0 ? (
-        availableSlots.map((slot, index) => (
-          <div
-            key={index}
-            className="mb-2 mt-8 bg-slate-100 rounded-lg shadow-lg p-6"
-          >
-            <h2 className="text-lg font-semibold mb-2">Available Slots</h2>
-            <p className="text-gray-500">
-              Start Date:{" "}
-              <strong className="text-red-700">
-                {new Date(slot.startDate).toLocaleDateString()}
-              </strong>{" "}
-              - End Date:{" "}
-              <strong className="text-red-700">
-                {new Date(slot.endDate).toLocaleDateString()}
-              </strong>
-            </p>
+              {availableSlots && availableSlots.length > 0 ? (
+                availableSlots.map((slot, index) => (
+                  <div
+                    key={index}
+                    className="mb-2 mt-8 bg-slate-100 rounded-lg shadow-lg p-6"
+                  >
+                    <h2 className="text-lg font-semibold mb-2">
+                      Available Slots
+                    </h2>
+                    <p className="text-gray-500">
+                      Start Date:{" "}
+                      <strong className="text-red-700">
+                        {new Date(slot.startDate).toLocaleDateString()}
+                      </strong>{" "}
+                      - End Date:{" "}
+                      <strong className="text-red-700">
+                        {new Date(slot.endDate).toLocaleDateString()}
+                      </strong>
+                    </p>
 
-            <div>
-              <h3 className="font-semibold mb-1">Slot Time:</h3>
-              <ul>
-                {slot.slotTime.map((time, i) => (
-                  <li key={i}>
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        name="selectedTime"
-                        value={time}
-                        onChange={(e) => handleTimeSelection(e.target.value)}
-                        checked={selectedTime === time}
-                        className="form-radio h-5 w-5 text-indigo-600"
-                      />
-                      <span className="ml-2 text-gray-700">{time}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Slot Time:</h3>
+                      <ul>
+                        {slot.slotTime.map((time, i) => (
+                          <li key={i}>
+                            <label className="inline-flex items-center">
+                              <input
+                                type="radio"
+                                name="selectedTime"
+                                value={time}
+                                onChange={(e) =>
+                                  handleTimeSelection(e.target.value)
+                                }
+                                checked={selectedTime === time}
+                                className="form-radio h-5 w-5 text-indigo-600"
+                              />
+                              <span className="ml-2 text-gray-700">{time}</span>
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-            {selectedTime && (
-              <div className="text-left mt-4">
-                {/* Assuming you're using a date picker component */}
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={handleDateSelection}
-                  minDate={slot.startDate}
-                  maxDate={slot.endDate}
-                  inline
-                />
-              </div>
-            )}
+                    {selectedTime && (
+                      <div className="text-left mt-4">
+                        {/* Assuming you're using a date picker component */}
+                        <DatePicker
+                          selected={selectedDate}
+                          onChange={handleDateSelection}
+                          minDate={slot.startDate}
+                          maxDate={slot.endDate}
+                          inline
+                        />
+                      </div>
+                    )}
 
-            <div className="text-left mt-8">
-              {isAuthenticated ? (
-                <button
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={bookAppointment}
-                >
-                  Book Appointment
-                </button>
+                    <div className="text-left mt-8">
+                      {isAuthenticated ? (
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                          onClick={bookAppointment}
+                        >
+                          Book Appointment
+                        </button>
+                      ) : (
+                        <button
+                          className="text-red-600 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                          onClick={HandleLogin}
+                        >
+                          Please Login
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
               ) : (
-                <button
-                  className="text-red-600 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={HandleLogin}
-                >
-                  Please Login
-                </button>
+                <div className="flex justify-center items-center h-64">
+                  <h2 className="text-xl text-gray-500 font-semibold">
+                    No available slots
+                  </h2>
+                </div>
               )}
             </div>
-          </div>
-        ))
-      ) : (
-        <div className="flex justify-center items-center h-64">
-          <h2 className="text-xl text-gray-500 font-semibold">No available slots</h2>
-        </div>
-      )}
-    </div>
 
+
+
+
+          
 
           </div>
           <div className="mt-12 flex flex-col justify-center">

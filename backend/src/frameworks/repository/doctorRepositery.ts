@@ -1,6 +1,7 @@
 
 import randomstring from 'randomstring';
 import { DatabaseSchema } from '../database'
+import databaseSchemas from '../database/Schema';
 
 let otp: string;
 
@@ -27,25 +28,25 @@ export default {
   },
 
 
-  getkycStatus:async (data:any)=>{
+  getkycStatus: async (data: any) => {
     try {
-      const {id}=data
-      const  doctor=await DatabaseSchema.Doctor.findById(id)
-    if(doctor){
-      const kycStatus=doctor.kycStatus
+      const { id } = data
+      const doctor = await DatabaseSchema.Doctor.findById(id)
+      if (doctor) {
+        const kycStatus = doctor.kycStatus
 
-      console.log(kycStatus,"kyc status");
-      
-      return {status:true,data:kycStatus}
-    }else{
-      return { status:false, data:"error in getting kyc status"}
-    } 
+        console.log(kycStatus, "kyc status");
+
+        return { status: true, data: kycStatus }
+      } else {
+        return { status: false, data: "error in getting kyc status" }
+      }
     } catch (error) {
-      console.log("error",error);
-      
+      console.log("error", error);
+
     }
   },
-  
+
   createDoctor: async (data: any) => {
     try {
       const { name, email, password } = data;
@@ -276,7 +277,7 @@ export default {
       if (response) {
         return { status: true, data: response }
       } else {
-        return { status: false, message: "Messages not found ..!" }
+        return { status: false, data: [] }
       }
     } catch (error) {
       console.log(error);
@@ -294,22 +295,25 @@ export default {
 
       const conversation: any = await DatabaseSchema.Conversation.find({ "members.doctorId": id })
 
-      
+
 
       const userConversations: any = [];
       for (let i = 0; i < conversation.length; i++) {
 
         const userId = conversation[i].members[0].userId;
-       
+
 
         const user: any = await DatabaseSchema.User.findById(userId);
-          // Construct an object containing both doctor and conversation details
+        console.log(userId,"THIS IS USER ",i);
+        
+        if(user){
           const userConversation = {
             user: user,
             conversation: conversation[i]
           };
-
-        userConversations.push(userConversation);
+          userConversations.push(userConversation);
+        }
+       
       }
 
       if (userConversations.length > 0) {
@@ -319,21 +323,23 @@ export default {
       }
 
       else {
-        return { status: true, data: "users not Found" }
+        return { status: true, data: [] }
       }
     } catch (error) {
       console.log(error);
+      return { status: true, data: [] }
+
 
     }
   },
 
 
-  
-  getAppoinmentDetails: async (data:any)=>{
+
+  getAppoinmentDetails: async (data: any) => {
     try {
       const { id } = data; // Extract the doctorId from the data object
       const appointments = await DatabaseSchema.Appointment.find({ doctorId: id }); // Use 'find' with query object
-      
+
       if (appointments.length > 0) {
         console.log(appointments, "Appointments");
         return { status: true, data: appointments }; // Return all matching appointments
@@ -341,42 +347,220 @@ export default {
         return { status: false, data: "No appointments found" }; // If no appointments are found
       }
     } catch (error) {
-      console.error(error); 
-      return { status: false, data: "An error occurred while fetching appointments" }; 
+      console.error(error);
+      return { status: false, data: "An error occurred while fetching appointments" };
+    }
+  },
+
+
+
+  getConvetsationIdForVideoCall: async (data: any) => {
+    try {
+      const { userId, doctorId } = data
+
+      const response = await DatabaseSchema.Conversation.findOne({
+        userId: userId,
+        doctorId: doctorId,
+      });
+      console.log(response, "reddddddddd");
+
+      if (response) {
+        return { status: true, data: response }
+      } else {
+        return { status: false, messege: "data not found" }
+      }
+    } catch (error) {
+      console.log(error);
+      return { status: false, messege: "data not found" }
+    }
+  },
+
+
+  addPrescription: async (data: any) => {
+    try {
+      const { appointmentId, prescriptionDate, medicines, fees } = data;
+
+      // Find the appointment by its ID
+      const appointment = await databaseSchemas.Appointment.findById(appointmentId);
+  
+      if (!appointment) {
+        return { status: false, message: "Appointment not found" };
+      }
+  
+      const { userId, doctorId } = appointment; // Extract the doctorId and userId
+  
+      if (!prescriptionDate || !medicines.length) {
+        return { status: false, message: "Required fields are missing" };
+      }
+  
+      // Create the new Prescription document
+      const newPrescription = new databaseSchemas.Prescription({
+        doctorId,
+        userId,
+        prescriptionDate,
+        medicines,
+      });
+  
+      // Save the new prescription
+      const savedPrescription = await newPrescription.save();
+  
+      return {
+        status: true,
+        data: savedPrescription,
+      };
+    } catch (error) {
+      console.error("Error adding prescription:", error);
+      return {
+        status: false,
+        message: "Internal Server Error",
+      };
+    }
+  },
+
+  createConsultation: async (data: any) => {
+    try {
+      const { userId, doctorId, appointmentId, roomId } = data
+      const responce = await DatabaseSchema.Consult.create({
+        userId,
+        doctorId,
+        appointmentId,
+        roomId
+      })
+
+      if (responce) {
+        return { status: true, data: responce }
+      } else {
+        return { status: false, message: "consult reation failed" }
+      }
+
+    } catch (error) {
+      return { status: false, message: `something went wrong ${error}` }
+    }
+
+  },
+
+  updateConsultCallStatus: async (data: any) => {
+    try {
+      const { appoinmentId } = data
+      const response = await DatabaseSchema.Consult.findOneAndUpdate({ appoinmentId : appoinmentId }, {
+        read: true
+      }, { new: true })
+      if (response) {
+        return { status: true, data: response }
+      } else {
+        return { status: false , data : " data not found"}
+      }
+
+    } catch (error) {
+      console.log(error);   
+      return { status: false , data : " something weny wrong"}
+
+    }
+  },
+
+  findDoctorForChangePassword : async (email:any)=>{
+    try {
+      const doctor= await databaseSchemas.Doctor.findOne({email:email})
+      console.log(doctor,"iceeee");
+      
+      if (doctor) {
+        return { status: true, data: doctor };
+      } else {
+        return { status: false };
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+
+  },
+
+
+  changePasswordForDoc: async (data: any) => {
+    try {
+      const { email, currentPassword, hashedNewPassword } = data;
+      console.log("uiui", data);
+
+
+      // Find the user by email
+      const user = await DatabaseSchema.Doctor.findOne({ email: email });
+
+      console.log(user, "user in repo");
+
+      if (user) {
+        // Update the password field
+        user.password = hashedNewPassword;
+
+        // Save the updated user
+        await user.save();
+
+        return { status: true, data: "Password changed successfully" };
+      } else {
+        // Return false if user is not found
+        return { status: false, data: "User not found" };
+      }
+    } catch (error) {
+      // Log and handle errors
+      console.log(error, "error in changing password repo");
+      return { status: false, data: "Internal Server Error" };
+    }
+  },
+
+
+
+  forgotPasswordForDoc: async(data:any)=>{
+   try { 
+    console.log("hai ");
+    
+    const { email, hashedNewPassword } = data
+    const user = await DatabaseSchema.Doctor.findOne({ email: email })
+    console.log(user, "user  user");
+    if (user) {
+      user.password = hashedNewPassword
+      await user.save()
+      return { status: true, data: " password Updated succesfully " }
+    }
+    else {
+      return { status: false, data: " something went wrong " }
+    }
+  } catch (error) {
+    console.log(error);
+
+    return { status: false, data: " something went wrong " }
+
   }
+
+
 },
 
 
 
-  getConvetsationIdForVideoCall: async (data:any)=>{
-    try {
-      const { userId, doctorId}=data
+updateEmailDoc: async (data: any) => {
+  try {
+    const { email, newEmail } = data
+    console.log(newEmail, "ppp");
 
-      const response=await DatabaseSchema.Conversation.findOne({
-        userId: userId,
-        doctorId: doctorId,
-      });
-      console.log(response,"reddddddddd");
-      
-      if(response){
-        return { status: true , data : response}
-      }else{
-        return { status: false , messege : "data not found"}
-      }
-    } catch (error) {
-      console.log(error);
-      return { status: false , messege : "data not found"}
+
+    const user = await DatabaseSchema.Doctor.findOne({ email: email })
+    console.log(user, "user in repo");
+
+    if (user) {
+      user.email = newEmail
+      await user.save()
+      return { status: true, data: user };
+
+
+    } else {
+      return { status: false, data: "Email Updating failed" };
+
     }
+
+  } catch (error) {
+    console.log(error, "error in update email repo");
+    return { status: false, data: "Password updation failed" }
+
   }
-
-
-
-
-
-
-
-
-
+},
 
 
 

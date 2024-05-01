@@ -32,17 +32,24 @@ const PatientProfile: React.FC = () => {
   const [dobError, setDOBError] = useState<string | null>(null);
   const [bloodGroupError, setBloodGroupError] = useState<string | null>(null);
   const [genderError, setGenderError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
     const file: File | null = event.target.files ? event.target.files[0] : null;
     if (file) {
-      const convertedFile: string | ArrayBuffer | null = await convertToBase64(
-        file
-      );
-      if (event.target.id === "imageInput") {
-        setImage(convertedFile);
+      const imageValidationError = validateImage(file);
+      if (imageValidationError) {
+        setImageError(imageValidationError); // Set the error message
+        setImage(null); // Reset the image if validation fails
+      } else {
+        const convertedFile: string | ArrayBuffer | null =
+          await convertToBase64(file);
+        if (event.target.id === "imageInput") {
+          setImage(convertedFile); // Set the image if valid
+          setImageError(null); // Clear any previous error
+        }
       }
     }
   };
@@ -64,6 +71,29 @@ const PatientProfile: React.FC = () => {
         resolve(null);
       };
     });
+  };
+  const validateImageType = (file: File) => {
+    const validImageTypes = ["image/jpeg", "image/png"]; // List of allowed types
+    if (!validImageTypes.includes(file.type)) {
+      return "Only JPEG and PNG images are allowed";
+    }
+    return null;
+  };
+
+  const validateImageSize = (file: File) => {
+    const maxSizeInBytes = 15 * 1024 * 1024; // 15 MB in bytes
+    if (file.size > maxSizeInBytes) {
+      return "Image must be less than 2 MB";
+    }
+    return null;
+  };
+
+  const validateImage = (file: File) => {
+    let error = validateImageType(file); // Check the type
+    if (!error) {
+      error = validateImageSize(file); // Check the size
+    }
+    return error; // Return the error message or null if valid
   };
   const validateAge = (value: string) => {
     const ageRegex = /^\d{1,3}$/;
@@ -97,7 +127,7 @@ const PatientProfile: React.FC = () => {
     return true;
   };
   const handleUpdateEmailClick = () => {
- navigate('/updateEmail')
+    navigate("/updateEmail");
   };
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -211,8 +241,10 @@ const PatientProfile: React.FC = () => {
           gender: gender,
         };
 
-        const response = await axiosInstance
-          .post('/api/auth/updatePatientProfile', data);
+        const response = await axiosInstance.post(
+          "/api/auth/updatePatientProfile",
+          data
+        );
         localStorage.removeItem("User");
 
         console.log(response, "fronted res");
@@ -236,7 +268,12 @@ const PatientProfile: React.FC = () => {
       }
     }
   };
-
+  useEffect(() => {
+    if (imageError) {
+      const timer = setTimeout(() => setImageError(null), 5000); // Clear error after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [imageError]);
   useEffect(() => {
     // Clear validation errors after 5 seconds
     const timer = setTimeout(() => {
@@ -316,7 +353,6 @@ const PatientProfile: React.FC = () => {
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
                   <div className="text-gray-900">
                     <p className="font-medium text-lg">Personal Details</p>
-                    <p>Please fill out all the fields.</p>
 
                     <div className="flex flex-col max-w-md p-6 dark:text-gray-100">
                       <label
@@ -348,25 +384,29 @@ const PatientProfile: React.FC = () => {
                             </button>
                           )}
                         </div>
-                      </label>
 
+                        {imageError && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {imageError}
+                          </p> // Display error if present
+                        )}
+                      </label>
                     </div>
                     <div>
-      <p className="text-xl text-gray-600">
-        Want to change your password?{' '}
-        <button
-         
-          className="text-blue-500 hover:underline"
-          onClick={(e) => {
-            e.preventDefault();
-            // Add your logic to handle password change here
-            navigate('/changePassword')
-          }}
-        >
-          Click here
-        </button>
-      </p>
-    </div>
+                      <p className="text-xl text-gray-600">
+                        Want to change your password?{" "}
+                        <button
+                          className="text-blue-500 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Add your logic to handle password change here
+                            navigate("/changePassword");
+                          }}
+                        >
+                          Click here
+                        </button>
+                      </p>
+                    </div>
                   </div>
 
                   <div className="lg:col-span-2">
@@ -419,7 +459,6 @@ const PatientProfile: React.FC = () => {
                           </p>
                         )}
                       </div> */}
-
 
                       <div style={{ position: "relative" }}>
                         <div>

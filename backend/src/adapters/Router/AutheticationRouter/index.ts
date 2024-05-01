@@ -5,7 +5,7 @@ import { adminAuthController } from '../../controller';
 import { doctorController } from '../../controller'
 import { adminPatientController } from '../../controller'
 import { adminDoctorController } from '../../controller';
-
+import { adminDashBoardController } from '../../controller';
 export default (dependencies: any) => {
   const router = express();
 
@@ -21,7 +21,7 @@ export default (dependencies: any) => {
     bookAppointmentController, createPaymentIntentController, loadSuccessController,
     searchDoctrsController, checkOTPController, appointmentDetailsController,
     changePasswordController, updateEmailController, sendMessegesController, createConverstationController,
-    getConverstationByIdController, getConverstationsController
+    getConverstationByIdController, getConverstationsController, getConsultCallStatusController,forgotPasswordController,getSearchQueryController
   } = UserController(dependencies);
 
   router.post('/login', loginController);
@@ -41,12 +41,14 @@ export default (dependencies: any) => {
   router.post('/searchDoctrs', searchDoctrsController)
   router.post('/appointmentDetails', appointmentDetailsController)
   router.post('/changePassword', changePasswordController)
+  router.post ('/forgotPassword',forgotPasswordController)
   router.post('/updateEmail', updateEmailController)
   router.post('/sendMesseges', sendMessegesController)
   router.post('/createConverstation', createConverstationController)
   router.get('/getConverstationById', getConverstationByIdController)
   router.get('/getConverstations', getConverstationsController)
-
+  router.get('/getConsultCallStatus', getConsultCallStatusController)
+  router.get("/getSearchQuery",getSearchQueryController)
   // ===============================================================================================
   // DOCTOR ROUTES
   // ===============================================================================================
@@ -54,7 +56,9 @@ export default (dependencies: any) => {
     doctorLogoutController, kycController, updateDoctorProfileController,
     googleRegisterController, addSlotController, showAppoinmentsController, getAlreadyScheduledSlotesController,
     getDoctorConverstationByIdController, doctorSendMessegesController, getDoctorConverstationsController,
-    getKycStatusController,getAppoinmentDetailsController,getConvetsationIdForVideoCallController
+    getKycStatusController, getAppoinmentDetailsController, getConvetsationIdForVideoCallController,
+    addPrescriptionController, updateConsultCallStatusController,changePasswordForDocController,
+    forgotPasswordForDocController,updateEmailFORDOCController
   } = doctorController(dependencies)
 
 
@@ -73,9 +77,14 @@ export default (dependencies: any) => {
   router.post('/sendFromDocMesseges', doctorSendMessegesController)
   router.get('/getDoctorConverstations', getDoctorConverstationsController)
   // router.post('/handleDeleteForScheduledSlot',handleDeleteForScheduledSlotController)
-router.post('/getKycStatus',getKycStatusController)
-router.post('/getAppoinmentDetails',getAppoinmentDetailsController)
-router.post('/getConvetsationIdForVideoCall',getConvetsationIdForVideoCallController)
+  router.post('/getKycStatus', getKycStatusController)
+  router.post('/getAppoinmentDetails', getAppoinmentDetailsController)
+  router.post('/getConvetsationIdForVideoCall', getConvetsationIdForVideoCallController)
+  router.post('/addPrescription', addPrescriptionController)
+  router.post('/handleLeave', updateConsultCallStatusController)
+ router.post('/changePasswordForDoc',changePasswordForDocController)
+router.post('/forgotPasswordForDoc',forgotPasswordForDocController)
+router.post('/updateEmailFORDOC',updateEmailFORDOCController)
 
   // ===============================================================================================
   // ADMIN ROUTES
@@ -99,9 +108,9 @@ router.post('/getConvetsationIdForVideoCall',getConvetsationIdForVideoCallContro
 
 
 
+  const { getAllAppoinmentsController } = adminDashBoardController(dependencies)
 
-
-
+  router.get('/getAllAppoinments', getAllAppoinmentsController)
 
 
 

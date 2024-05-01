@@ -1,78 +1,33 @@
-import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import axiosInstance from "../../AxiosConfig/axiosInstance";
+import React, { useState } from 'react';
 
-const ChangePassword = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [showSendOTPButton, setShowSendOTPButton] = useState(true);
-  const [showOTPField, setShowOTPField] = useState(false);
-  const [otp, setOTP] = useState("");
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [verified, setVerified] = useState(false);
-  const handleSendOTP = async () => {
-    const data = {
-      email: email,
-    };
-    const response = await axiosInstance.post("/api/auth/generateOtp", data);
-    if (response.data.status) {
-      toast.success("OTP Sent Successfully");
+const ForgotPassword: React.FC = () => {
+    const [email, setEmail] = useState("");
+    const [showSendOTPButton, setShowSendOTPButton] = useState(true);
+    const [showOTPField, setShowOTPField] = useState(false);
+    const [otp, setOTP] = useState("");
+    const [showPasswordFields, setShowPasswordFields] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [verified, setVerified] = useState(false);
+
+  const handleSendOTP = () => {
+    // Logic to send OTP to the provided email
+    console.log(`Sending OTP to ${email}`);
+  };
+
+  const handleVerifyOTP = () => {
+    // Logic to verify the OTP
+    console.log(`Verifying OTP: ${otp}`);
+  };
+
+  const handleSavePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword === confirmPassword) {
+      // Logic to reset the password
+      console.log(`Password reset for email: ${email}`);
     } else {
-      toast.warn("OTP Sent Failed");
-    }
-
-    setShowSendOTPButton(false);
-    setShowOTPField(true);
-  };
-
-  const handleVerifyOTP = async () => {
-    const data = {
-      otp,
-      email,
-    };
-
-    try {
-      const response = await axiosInstance.post("/api/auth/checkOTP", data);
-
-      if (response.data.status) {
-        toast.success("OTP Verified");
-        setShowPasswordFields(true); // Show password fields after OTP verification
-        setVerified(true);
-      } else {
-        toast.warn(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      toast.error("An error occurred while verifying OTP");
-    }
-  };
-
-  const handleSavePassword = async () => {
-    try {
-      if (newPassword !== confirmPassword) {
-        toast.warn("Please enter the correct password");
-      } else {
-        const data = {
-          email,
-          currentPassword,
-          newPassword,
-        };
-        const response = await axiosInstance.post(
-          "/api/auth/changePassword",
-          data
-        );
-        if (response) {
-          toast.success("Password Changed ");
-          navigate("/myprofile");
-        }
-      }
-    } catch (error) {
-      console.log(error, "error in password changing");
+      console.error('Passwords do not match');
     }
   };
 
@@ -87,7 +42,7 @@ const ChangePassword = () => {
           <div className="flex flex-col items-start justify-center mx-auto md:h-screen lg:py-0">
             <div className="w-full p-6 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-cyan-950 dark:border-gray-700 sm:p-8">
               <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Change Password
+                Forgot Password
               </h2>
               <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
                 <div>
@@ -225,4 +180,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default ForgotPassword;

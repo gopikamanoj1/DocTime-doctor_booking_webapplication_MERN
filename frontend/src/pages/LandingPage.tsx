@@ -20,8 +20,9 @@ function LandingPage() {
         <br />
         <HowItWorksSection />
         <TestimonialsSection />
-        <AboutSection />
+       
         <BlogSection />
+        <AboutSection />
         <FBanner />
         <FooterBanner />
         <Footer />

@@ -6,6 +6,7 @@ import Navbar from './components/Navbar/Navbar';
 const App = () => {
   return (
     <>
+    
       <Navbar />
     
       <ToastContainer  position="top-center" />

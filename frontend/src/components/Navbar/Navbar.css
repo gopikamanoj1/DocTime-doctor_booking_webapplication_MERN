@@ -13,9 +13,10 @@ nav {
    .btn2 {
     margin-top: 28px;
     /* margin-left: 100px; */
+    margin-bottom: 27px;
     position: relative;
     display: inline-block;
-    padding: 10px 15px; /* Adjust the padding values */
+    padding: 10px 15px;
     border: 2px solid transparent;
     text-transform: uppercase;
     color: hsl(0, 0%, 0%);

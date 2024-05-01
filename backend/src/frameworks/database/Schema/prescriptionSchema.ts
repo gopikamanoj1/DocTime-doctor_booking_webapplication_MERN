@@ -7,7 +7,6 @@ const prescriptionSchema = new mongoose.Schema({
     userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     prescriptionDate: {
         type: Date,
-        required: true,
         default: Date.now,
     },
     medicines: [
@@ -26,10 +25,7 @@ const prescriptionSchema = new mongoose.Schema({
             },
         },
     ],
-    fees: {
-        type: Number,
-        required: true,
-    },
+   
 
 
 });

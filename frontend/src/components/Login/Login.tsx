@@ -65,7 +65,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="Login">
-      <div className="container">
+      <div className="container bg-black">
         <div className="heading">Welcome</div>
         <form className="form" onSubmit={handleLogin}>
           <input
@@ -87,11 +87,11 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <span className="forgot-password">
-            <a href="#">Forgot Password?</a>
+            <Link to='/forgotPassword'>Forgot Password?</Link>
           </span>
           <input value="Sign In" type="submit" className="login-button" />
 
-          <div className="social-account-container">
+          {/* <div className="social-account-container">
             <span className="title">Or Sign in with</span>
             <div className="social-accounts">
               <div className="google-login-button" onClick={handleGoogleLogin}>
@@ -99,7 +99,7 @@ const Login: React.FC = () => {
                 <span style={{ marginLeft: "30px" }}>Google</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div>
             {" "}

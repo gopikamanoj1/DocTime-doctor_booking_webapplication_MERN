@@ -3,7 +3,7 @@ import adminAuthController from "./admin/adminAuthController";
 import doctorController from "./doctor/DoctorController"
 import adminPatientController from "./admin/adminPatientController";
 import adminDoctorController from "./admin/adminDoctorController";
-
+import adminDashBoardController from "./admin/adminDashBoardController"
 
 export {
 
@@ -15,7 +15,8 @@ export {
     //ADMIN
     adminAuthController,
     adminPatientController,
-    adminDoctorController
+    adminDoctorController,
+    adminDashBoardController
 
 
 

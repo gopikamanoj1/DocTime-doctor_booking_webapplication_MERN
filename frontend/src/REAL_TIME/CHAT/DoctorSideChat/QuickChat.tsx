@@ -1,8 +1,7 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import axiosInstance from "../../../AxiosConfig/axiosInstance";
 interface QuickChatProps {
   onUserSelect: (conversationId: any) => void;
   socket: any;
@@ -12,20 +11,19 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
   const [users, setUsers] = useState<any[]>([]); // Changed state type to array of objects
   const [selectedUser, setSelectedUser] = useState<any>(null); // State variable to store the selected doctor
   const doctor = useSelector((state: any) => state.persisted.doctorAuth);
-  const doctorId = doctor ? doctor.doctor._id : null;
+  const doctorId = doctor?.doctor?._id;
 
   const handleDoctorSelection = (user: any) => {
     setSelectedUser(user);
   };
-  
-  console.log(selectedUser,"ithaan user");
-  
+
+  console.log(users, "ithaan user");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/auth/getDoctorConverstations?id=${doctorId}`
+        const response = await axiosInstance.get(
+          `/api/auth/getDoctorConverstations?id=${doctorId}`
         );
         if (response) {
           setUsers(response.data.data);
@@ -37,6 +35,18 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
 
     fetchData();
   }, [convesationId, socket]);
+
+  // useEffect(()=>{
+   
+  //   if(convesationId != "index"){
+  //     (async()=>{
+  //       const response = await axiosInstance.get(`/api/auth/getConverstations?id=${convesationId}`)
+  //       if(response.data.status){
+  //         console.log(response.data.data,"TTTTTTT");
+  //       }
+  //     })()
+  //   }
+  // },[selectedUser])
 
   return (
     <div>
@@ -83,57 +93,55 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
           )}
         </div> */}
 
-        {/* Display list of doctors */}
+        {/* Display list of users */}
         <div className="flex flex-col mt-8">
           <div className="flex flex-row items-center justify-between text-xs">
             <span className="font-bold">Active Conversations</span>
             <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
-              {users.length}
+              {users && users?.length}
             </span>
           </div>
           <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
-            {users.map((user, index) => (
-              <button
-                key={index}
-                className={`flex flex-row items-center hover:bg-indigo-100 rounded-xl p-2 ${
-                  selectedUser === user ? "bg-indigo-300" : ""
-                }`}
-                onClick={() => {
-                
-                  //   onDoctorSelect({
-                  //     conversationId: doctor.conversation._id,
-                  //     doctor: doctor.doctor,
-                  //   });
-                  //   handleDoctorSelection(doctor);
-                  // }}
-
-                  onUserSelect({
-                    convesationId: user.conversation._id,
-                    user: user.user,
-                  });
-                  handleDoctorSelection(user);
-                }}
-              >
-                <div className="h-8 w-8 bg-indigo-500 rounded-full overflow-hidden">
-                  {user.image ? (
-                    <img
-                      src={user.image}
-                      alt={user.name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full w-full text-black ">
-                      {user.user.name
-                        ? user.user.name.charAt(0).toUpperCase()
-                        : "U"}
-                    </div>
-                  )}
-                </div>
-                <div className="ml-2 text-sm font-semibold">
-                  {user.user.name}
-                </div>
-              </button>
-            ))}
+            {users   && users.length > 0 &&  (
+              <>
+               
+                {users &&
+                  users.map((user, index) => (
+                    <button
+                      key={index}
+                      className={`flex flex-row items-center hover:bg-indigo-100 rounded-xl p-2 ${
+                        selectedUser === user ? "bg-indigo-300" : ""
+                      }`}
+                      onClick={() => {
+                        onUserSelect({
+                          convesationId: user.conversation._id,
+                          user: user.user,
+                        });
+                        handleDoctorSelection(user);
+                      }}
+                    >
+                      <div className="h-8 w-8 bg-indigo-500 rounded-full overflow-hidden">
+                        {user.image ? (
+                          <img
+                            src={user.image}
+                            alt={user.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full w-full text-black ">
+                            {user.user.name
+                              ? user.user.name.charAt(0).toUpperCase()
+                              : "U"}
+                          </div>
+                        )}
+                      </div>
+                      <div className="ml-2 text-sm font-semibold">
+                        {user.user.name}
+                      </div>
+                    </button>
+                  ))}
+              </>
+            )}
           </div>
         </div>
       </div>

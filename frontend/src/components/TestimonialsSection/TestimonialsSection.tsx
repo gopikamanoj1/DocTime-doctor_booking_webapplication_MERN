@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Transition } from '@headlessui/react';
 
 const TestimonialsSection: React.FC = () => {
-  // Sample testimonials data (replace with actual data from your backend)
+  // Sample testimonials data
   const testimonials = [
     {
       id: 1,
@@ -24,25 +25,53 @@ const TestimonialsSection: React.FC = () => {
       testimonial:
         'As a pediatrician, I rely on this platform to efficiently manage my appointments and provide better care to my young patients. Highly recommended!',
     },
-    // Add more testimonials as needed
   ];
 
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Set a timeout to make transitions visible (optional)
+    const timeout = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <section className="bg-gray-100 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-6">Testimonials</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    // <section className=" rounded-sm bg-gradient-to-r from-cyan-600 to-cyan-950 py-16">
+    <section
+    className="bg-gradient-to-r from-cyan-600 to-cyan-950 py-16 px-6 sm:px-8 lg:px-12 m-10 rounded-xl"
+  >
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        <h2 className="text-4xl font-extrabold text-white text-center mb-10">Testimonials</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white rounded-lg shadow-lg p-6">
-              <p className="text-lg text-gray-800 mb-4">{testimonial.testimonial}</p>
-              <div className="flex items-center">
-               
-                <div className="ml-4">
-                  <div className="text-base font-medium text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-500">{testimonial.profession}</div>
+            <Transition
+              key={testimonial.id}
+              show={isVisible} // The required show prop
+              enter="transform transition duration-500"
+              enterFrom="opacity-0 translate-y-10"
+              enterTo="opacity-100 translate-y-0"
+              leave="transform transition duration-500"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-10"
+            >
+              <div className="bg-white rounded-lg shadow-xl p-8 hover:shadow-2xl transition duration-300 ease-in-out">
+                <p className="text-m text-gray-800 mb-6 italic">
+                  "{testimonial.testimonial}"
+                </p>
+                <div className="flex items-center">
+                  <div className="bg-cyan-950 text-white rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold">
+                    {testimonial.name[0]}
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-lg font-medium text-gray-900">{testimonial.name}</div>
+                    <div className="text-sm text-gray-600">{testimonial.profession}</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Transition>
           ))}
         </div>
       </div>

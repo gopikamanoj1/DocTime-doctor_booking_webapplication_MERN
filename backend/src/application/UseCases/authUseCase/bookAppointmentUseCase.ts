@@ -1,14 +1,14 @@
 export default function bookAppointmentUseCase(dependencies: any) {
     const { userRepositery } = dependencies.repositery;
 
-    const executeFunction = async (data: any) => { 
+    const executeFunction = async (data: any) => {
         try {
-            const response = await userRepositery.getDataForCheckout(data);
-            
+            const response = await userRepositery.bookAppointment(data);
+
             if (response.status) {
                 return { status: true, data: response.data };
             } else {
-                return { status: false, message: response.message };
+                return { status: false, data: response.data };
             }
         } catch (error) {
             console.log(error);

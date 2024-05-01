@@ -5,8 +5,6 @@ export default function getAlreadyScheduledSlotesUseCase(dependencies: any) {
         try {
             const response = await doctorRepositery.getAlreadyScheduledSlotes(data);
             console.log(response,"ll");
-            
-            
             if (response.status) {
                 return { status: true, data: response.data };
             } else {

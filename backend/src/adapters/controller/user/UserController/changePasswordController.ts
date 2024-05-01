@@ -8,31 +8,20 @@ export default (dependencies: any) => {
     const changePasswordController = async (req: Request, res: Response) => {
         try {
             const { email, newPassword,currentPassword} = req.body
-
-            const hashedCurrentPassword = await hashPassword(currentPassword);
-
-
             const hashedNewPassword = await hashPassword(newPassword);
-
             const data = {
                 email,currentPassword, hashedNewPassword
             }
-
-
             const response = await changePasswordUseCase(dependencies).executeFunction(data)
-
-
-            console.log(response,"contro res");
-            
-
+            console.log(response,"contro res")
             if (response && response.status && response.data) {
                 res.json({ status: true, data: response.data });
-
             } else {
-                res.json({ status: false, message: "Data not found" });
+                res.json({ status: false, data: response.data });
             }
-
         } catch (error) {
+
+            res.json({ status: false, data: "somehting went wrong" });
 
         }
     };

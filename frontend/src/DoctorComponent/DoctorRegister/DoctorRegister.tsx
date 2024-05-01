@@ -351,7 +351,7 @@ const DoctorRegister: React.FC = () => {
               >
                 Register
               </button>
-              <div id='signInButton'>
+              {/* <div id='signInButton'>
                 <GoogleLogin
                   type='standard'
                   // theme='filled_white'
@@ -372,7 +372,7 @@ const DoctorRegister: React.FC = () => {
                       });
                   }}
                 />
-              </div>
+              </div> */}
               {/* Error message */}
               {errors.registration && <p className="text-red-600">{errors.registration}</p>}
               {errors.googleSignIn && <p className="text-red-600">{errors.googleSignIn}</p>}

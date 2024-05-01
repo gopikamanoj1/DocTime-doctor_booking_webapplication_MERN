@@ -42,6 +42,9 @@ const authSlice = createSlice({
         state.user.email = action.payload;
       }
     },
+
+
+      
   },
 });
 

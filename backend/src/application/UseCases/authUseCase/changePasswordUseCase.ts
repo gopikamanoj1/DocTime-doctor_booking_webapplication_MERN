@@ -11,11 +11,10 @@ export default function changePasswordUseCase(dependencies: any) {
 
             if (response1.status) {
                 const user = response1.user;
-                console.log(user,"j999999");
-                
+
 
                 const isPasswordCorrect = await verifyHashPassword(data.currentPassword, user.password);
-console.log(isPasswordCorrect,"ddd");
+                console.log(isPasswordCorrect, "ddd");
 
                 if (isPasswordCorrect) {
                     const response = await userRepositery.changePassword(data);
@@ -27,6 +26,9 @@ console.log(isPasswordCorrect,"ddd");
                     } else {
                         return { status: false, message: response.message };
                     }
+                }else{
+                    return { status: false, data: "  Current Password is Wrong" };
+
                 }
             } else {
                 return { status: false, data: "invalid Current password" };

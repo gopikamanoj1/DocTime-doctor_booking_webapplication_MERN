@@ -1,16 +1,16 @@
 // ChatBox.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
+import axiosInstance from "../../../AxiosConfig/axiosInstance";
+import { format } from "date-fns"; // To format the timestamp
 
 interface ChatBoxProps {
-  selectedDoctor: any; 
+  selectedDoctor: any;
   socket: any;
 }
-
 
 const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
   const { convesationId } = useParams();
@@ -18,14 +18,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
   const [messageInput, setMessageInput] = useState("");
   const User = useSelector((state: any) => state.persisted.auth);
   const userId = User?.user?._id;
-
+  const messageRef = useRef<any>(null);
+  const formatTime = (timestamp: any) => {
+    return format(new Date(timestamp), "hh:mm a"); // 12-hour format with AM/PM
+  };
 
   useEffect(() => {
     (async () => {
-      const response = await axios
-        .create({ withCredentials: true })
+      const response = await axiosInstance
         .get(
-          `http://localhost:3000/api/auth/getConverstationById?id=${convesationId}`
+          `/api/auth/getConverstationById?id=${convesationId}`
         );
       // console.log(response,"this is res");
 
@@ -35,8 +37,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
         toast.error(response.data.data);
       }
     })();
-  }, [socket, convesationId, userId]);
-
+  }, [convesationId, userId]);
 
   useEffect(() => {
     if (socket) {
@@ -44,10 +45,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
         socket?.emit("joinChat", { id: userId, chatId: convesationId });
       }
     }
-  }, [convesationId, socket, User]);
+  }, [convesationId, socket]);
 
-
-
+  useEffect(() => {
+    messageRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   useEffect(() => {
     if (socket) {
       socket.on("getMessage", (data: any) => {
@@ -59,10 +61,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
         }
       });
     }
-  }, [socket, convesationId]);
+  }, [socket]);
 
-
-  
   const sendMessage = async () => {
     const data = {
       converstationId: convesationId,
@@ -71,6 +71,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
       senderId: User.user._id,
       type: "text",
     };
+    const currentTime = new Date(); // Get the current timestamp
+
 
     socket?.emit("sendMessage", {
       senderId: User.user._id,
@@ -78,6 +80,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
       content: messageInput,
       type: "text",
       converstationId: convesationId,
+      timestamp: currentTime, // Include the current timestamp
+
     });
     setMessageInput("");
   };
@@ -101,8 +105,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
                 <div className="text-sm font-semibold">
                   {selectedDoctor.name}
                 </div>
-                <div className="text-xs text-gray-500"> 
-                  <p>Last seen:</p>
+                <div className="text-xs text-gray-500">
+                  {/* <p>Last seen:</p> */}
                 </div>
               </div>
             </>
@@ -119,15 +123,20 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
                 }`}
               >
                 <div className="flex flex-row items-center">
-                  {/* <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-            {msg.sender}
-          </div> */}
+                 
                   <div className="relative ml-3  text-white text-base bg-cyan-950 py-2 px-4 shadow rounded-xl">
                     <div>{msg.content}</div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      {formatTime(msg.timestamp)}{" "}
+                      {/* Only the time is displayed */}
+                    </div>
+                    <div ref={messageRef}></div>
                   </div>
                 </div>
+               
               </div>
             ))}
+           
           </div>
         </div>
 

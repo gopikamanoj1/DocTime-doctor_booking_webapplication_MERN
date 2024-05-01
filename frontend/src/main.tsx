@@ -38,7 +38,7 @@ import ViewDoctorDetailsPage from './pages/ViewDoctorDetailsPage';
 import UpdateEmailComponent from './components/UpdateEmail/UpdateEmailComponent';
 import CelenderPage from './DoctorPages/CelenderPage';
 import CheckoutPage from './pages/CheckoutPage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
+import ForgotPassword from './pages/ForgotPasswordPage';
 import SuccessPage from './pages/SuccessPage';
 import AppointmentDetailsPage from './pages/AppointmentDetailsPage';
 import AppointmentListPage from './DoctorPages/AppointmentListPage';
@@ -47,7 +47,11 @@ import ChatPageForDoc from './pages/ChatPageForDoc';
 import ErrorPage from './Error/ErrorPage';
 import VideoCall from './REAL_TIME/VIDEO_CALL/VideoCall';
 import DoctorAppointmentTablePage from './DoctorPages/DoctorAppointmentTablePage';
-
+import WalletPage from './AdminPages/WalletPage';
+import ChangePasswordForDocPage from './DoctorPages/changePasswordForDocPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import ForgotPasswordForDocPage from './DoctorPages/ForgotPasswordForDocPage';
+import UpdateEmailForDoc from './DoctorComponent/DoctorProfile/UpdateEmailForDoc';
 
 // USER_ROUTES
 // ==========================================================================================================
@@ -73,12 +77,12 @@ const userRoutes = (
     <Route path='/updateEmail' element={<UpdateEmailComponent/>}></Route>
     <Route path='/bookAppointment' element={<CheckoutPage/>}></Route>
     <Route path='/successAppointment' element={<SuccessPage/>}></Route>
-    <Route path='/changePassword' element={<ChangePasswordPage/>}></Route>
+    <Route path='/forgotPassword' element={<ForgotPassword/>}></Route>
     <Route path='/appointmentDetails' element={<AppointmentDetailsPage/>}></Route>
     <Route path='/showChatPage/:convesationId' element={<ChatPage/>}> </Route>
-
+    <Route path='/changePassword' element={<ChangePasswordPage/>} ></Route>
   </Route>
-);
+); 
  
 
 // DOCTOR_ROUTER
@@ -101,10 +105,13 @@ const doctorRouter=(
         <Route path='/showAppoinments' element={<AppointmentListPage/>}></Route>
         <Route path='/showChat/:convesationId' element={<ChatPageForDoc/>}> </Route>
         <Route  path='/showDoctorAppoinment' element={<DoctorAppointmentTablePage/>} ></Route>
-        <Route path='/videoCall/:roomId' element={<VideoCall/>} ></Route>
+        <Route path='/videoCall/:roomId/:appoinmentId' element={<VideoCall/>} ></Route>
+        <Route path='/changePasswordForDoc' element={<ChangePasswordForDocPage/>} ></Route>
+          <Route  path='/forgotPasswordForDoc' element={<ForgotPasswordForDocPage/>} ></Route>
+          <Route path='/UpdateEmailForDoc' element={<UpdateEmailForDoc/>}>
 
+          </Route>
 
-    
 
   </Route>
 )
@@ -124,6 +131,8 @@ const adminRoute = (
     <Route path="/admin/getAllUsers" element={<UserListingPage />} />
     <Route path='/admin/getAllDoctors' element={<DoctorListingPage/>}></Route>
     <Route path="/admin/getKycDetails/:doctorId"  element={<ShowingKycDetails/>}></Route>
+    <Route path='/admin/wallet' element={<WalletPage/>} ></Route> 
+    
   </Route>
   </Route>
 );

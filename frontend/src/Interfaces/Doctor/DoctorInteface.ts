@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 export interface Doctor {
+  [x: string]: SetStateAction<Doctor | null>;
     _id: string;
     name: string;
     password: string;
