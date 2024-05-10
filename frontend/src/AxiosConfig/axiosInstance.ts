@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an Axios instance with default settings
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "http://doctime.live",
   timeout: 100000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
