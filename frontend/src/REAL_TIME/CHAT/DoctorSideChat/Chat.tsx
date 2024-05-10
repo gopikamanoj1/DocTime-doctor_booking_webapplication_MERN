@@ -1,15 +1,11 @@
 // Chat.js (parent component)
-import React, { useEffect, useState } from "react";
+import  { useState } from "react";
 import ChatBox from "./ChatBox";
 import QuickChat from "./QuickChat";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
-import { toast } from "react-toastify";
+
 import {useSocket} from '../../Socket'
 import { Socket } from "socket.io-client";
-
-
-
 
 function Chat() {
 
@@ -25,21 +21,16 @@ function Chat() {
 
   };
 
-
-
-  
-
-
-  return (
-    <div>
-      <div className="flex h-screen antialiased text-gray-800">
-        <div className="flex flex-row h-full w-full overflow-x-hidden">
-          <QuickChat onUserSelect={handleUserSelection} socket={socket} />
-          <ChatBox selectedUser={selectedUser} socket={socket} />
+    return (
+      <div>
+        <div className="flex h-screen antialiased text-gray-800">
+          <div className="flex flex-row h-full w-full overflow-x-hidden">
+            <QuickChat onUserSelect={handleUserSelection} socket={socket} />
+            <ChatBox selectedUser={selectedUser} socket={socket} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default Chat;

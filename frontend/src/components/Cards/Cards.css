@@ -1,26 +1,24 @@
 .cards {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 40px;
   max-width: 500px;
   display: flex;
-
   justify-content: center;
   align-items: center;
-  /* height: 100vh; */
-  margin: 0 auto; /* This centers the div horizontally */
+  margin: 0 auto; 
 }
 
 .cards .red {
-  background-color: #233a51;
+  background: linear-gradient(45deg, #233a51, #827f7f, #434849);
 }
 
 .cards .blue {
-  background-color: #233a51;
+  background: linear-gradient(45deg, #233a51, #827f7f, #434849);
 }
 
 .cards .green {
-  background-color: #233a51;
+  background: linear-gradient(45deg, #233a51, #827f7f, #434849);
 }
 
 .cards .card {

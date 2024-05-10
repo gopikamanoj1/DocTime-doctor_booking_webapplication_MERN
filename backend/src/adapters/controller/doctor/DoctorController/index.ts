@@ -20,6 +20,7 @@ import updateConsultCallStatusController from "./updateConsultCallStatusControll
 import changePasswordForDocController from "./changePasswordForDocController";
 import forgotPasswordForDocController from "./forgotPasswordForDocController";
 import updateEmailFORDOCController from "./updateEmailFORDOCController";
+import uploadImageController from "./uploadImageController";
 export default (dependencies: any) => {
    return {
 
@@ -43,7 +44,8 @@ export default (dependencies: any) => {
       updateConsultCallStatusController: updateConsultCallStatusController(dependencies),
       changePasswordForDocController: changePasswordForDocController(dependencies),
       forgotPasswordForDocController: forgotPasswordForDocController(dependencies),
-      updateEmailFORDOCController: updateEmailFORDOCController(dependencies)
+      updateEmailFORDOCController: updateEmailFORDOCController(dependencies),
+      uploadImageController:uploadImageController(dependencies)
 
 
    }

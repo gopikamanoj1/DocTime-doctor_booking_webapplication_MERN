@@ -102,7 +102,7 @@
 // export default DoctorCard;
 
 
-
+  
 import React, { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SearchBar from '../Navbar/SearchBar';
@@ -180,22 +180,28 @@ interface DoctorItemProps {
 }
 
 const DoctorItem: React.FC<DoctorItemProps> = ({ doctor }) => (
-  <div className="bg-gray-200 rounded-lg shadow-md transition transform hover:scale-105 duration-300 ease-in-out">
-    <div className="relative overflow-hidden h-48 flex justify-center items-center">
-      <img className="w-full h-full object-cover" src={doctor.image} alt={`Doctor ${doctor.name}`} />
-    </div>
-    <div className="flex flex-col justify-center items-center py-4 px-6"> {/* Adjust padding for mobile */}
-      <h3 className="text-xl font-semibold mb-2 text-center">{`DR. ${doctor.name}`}</h3> {/* Center text */}
-      <p className="text-rose-800 font-semibold">{doctor.specialization}</p>
-      <p className="text-gray-600">{doctor.email}</p>
-      <p className="text-green-950 font-semibold">{`FEES: Rs.${doctor.fees}`}</p>
-      <div className="mt-4">
-        <Link to={`/viewDoctorDetails/${doctor._id}`}>
-          <button className="bg-cyan-800 hover:bg-cyan-950 text-white font-bold py-2 px-4 rounded">View Details</button>
-        </Link>
-      </div>
+  <div className="bg-gray-200 rounded-lg shadow-md transition transform hover:scale-105 duration-300 ease-in-out p-6"> {/* Outer padding for spacing */}
+  <div className="relative overflow-hidden h-48 w-full flex justify-center items-center mb-4"> {/* Image container with margin */}
+    <img className="w-full h-full object-cover" src={doctor.image} alt={`Doctor ${doctor.name}`} /> {/* Adjust image */}
+  </div>
+
+  <div className="flex flex-col justify-center items-center"> {/* Flex column for content */}
+    <h3 className="text-lg md:text-xl font-semibold text-center mb-2"> {/* Responsive text size */}
+      {`DR. ${doctor.name}`}
+    </h3>
+    <p className="text-rose-800 font-semibold text-center">{doctor.specialization}</p> {/* Centered text */}
+    <p className="text-gray-600 text-center">{doctor.email}</p> {/* Email */}
+    <p className="text-green-950 font-semibold text-center">{`FEES: Rs.${doctor.fees}`}</p> {/* Fees */}
+
+    <div className="mt-4"> {/* Spacing for the button */}
+      <Link to={`/viewDoctorDetails/${doctor._id}`}>
+        <button className="bg-cyan-800 hover:bg-cyan-950 text-white font-bold py-2 px-4 rounded"> {/* Button styling */}
+          View Details
+        </button>
+      </Link>
     </div>
   </div>
+</div>
 );
 
 export default DoctorCard;

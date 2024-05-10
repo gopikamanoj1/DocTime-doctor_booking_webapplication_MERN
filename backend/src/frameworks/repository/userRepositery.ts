@@ -2,6 +2,7 @@
 import randomstring from 'randomstring';
 import { DatabaseSchema } from '../database'
 import { log } from 'console';
+import databaseSchemas from '../database/Schema';
 
 
 
@@ -83,7 +84,7 @@ export default {
       const user = await DatabaseSchema.User.findOne({
         email: email,
       });
-      console.log(user,"usermmmmmmmmmmmmmmmmm");
+      console.log(user, "usermmmmmmmmmmmmmmmmm");
       if (user) {
         console.log("User found:", user); // Confirm if a user is actually found
         return { data: user };
@@ -398,6 +399,78 @@ export default {
   },
 
 
+
+  sendAudio: async (data: any) => {
+    try {
+      const { recieverId,
+        senderId,
+        type,
+        converstationId,
+        timestamp,
+        content
+      } = data
+      console.log(data, "updatedData=========================");
+
+
+      const message = new DatabaseSchema.Messages({
+        converstationId: converstationId,
+        content: content,
+        senderId: senderId,
+        receiverId: recieverId,
+        type: type,
+      })
+      const responce = await message.save()
+      console.log(responce,"saved");
+      
+      if (responce) {
+        return { status: true, data: responce }
+      } else {
+        return { status: true, message: "Message failed..!" }
+      }
+
+    } catch (error) {
+      console.log(error);
+      return { status: true, message: `something went wrong failed ${error}` }
+    }
+  },
+
+
+  sendImage: async (data: any) => {
+    try {
+      const { recieverId,
+        senderId,
+        type,
+        converstationId,
+        timestamp,
+        content
+      } = data
+      console.log(data, "updatedData==== iamge =====================");
+
+
+      const message = new DatabaseSchema.Messages({
+        converstationId: converstationId,
+        content: content,
+        senderId: senderId,
+        receiverId: recieverId,
+        type: type,
+        timestamp
+      })
+      const responce = await message.save()
+      console.log(responce,"saved");
+      
+      if (responce) {
+        return { status: true, data: responce }
+      } else {
+        return { status: true, message: "image auload  failed..!" }
+      }
+
+    } catch (error) {
+      console.log(error);
+      return { status: true, message: `something went wrong failed ${error}` }
+    }
+  },
+
+
   createConversation: async (data: any) => {
     try {
       const { senderId, recieverId } = data;
@@ -527,9 +600,9 @@ export default {
 
 
   forgotPassword: async (data: any) => {
-    try { 
+    try {
       console.log("hai ");
-      
+
       const { email, hashedNewPassword } = data
       const user = await DatabaseSchema.User.findOne({ email: email })
       console.log(user, "user  user");
@@ -549,14 +622,14 @@ export default {
     }
   },
 
-  getSearchQuery: async(data:any)=>{
-    const {query}=data
+  getSearchQuery: async (data: any) => {
+    const { query } = data
     try {
-      if(query==""){
-        return {status:true,data:[]}
+      if (query == "") {
+        return { status: true, data: [] }
       }
 
-  
+
 
       const response = await DatabaseSchema.Doctor.find({
         kycStatus: "approved",
@@ -565,14 +638,60 @@ export default {
           { specialization: { $regex: "^" + query, $options: "i" } }
         ]
       });
-  
-      if(response){
-        return {status:true,data:response}
-      }else{
-        return {status:false,message:"Search data not found ..!"}
+
+      if (response) {
+        return { status: true, data: response }
+      } else {
+        return { status: false, message: "Search data not found ..!" }
       }
     } catch (error) {
-      return {status:false, message:`Something went wrong ...!${error}`}
+      return { status: false, message: `Something went wrong ...!${error}` }
+    }
+  },
+
+
+  downloadPrescription: async (data: any) => {
+    try {
+      const { appoinmentId } = data
+      const prescription = await databaseSchemas.Prescription.findOne({
+        appointmentId: appoinmentId, 
+      });
+      
+      if (!prescription) {
+        return { status: false, data: [] };
+      }
+
+      // Extract the doctorId and userId from the found prescription
+      const { doctorId, userId } = prescription;
+
+      // Find the doctor separately using the doctorId
+      const doctor = await databaseSchemas.Doctor.findById(doctorId);
+
+      if (!doctor) {
+        return { status: false, message: "Doctor not found." };
+      }
+
+      // Find the user separately using the userId
+      const user = await databaseSchemas.User.findById(userId);
+
+      if (!user) {
+        return { status: false, message: "User not found." };
+      }
+
+      // Return all related information
+      return {
+        status: true,
+        message: "Prescription, doctor, and user found.",
+        data: {
+          prescription,
+          doctor,
+          user,
+        },
+      };
+
+    } catch (error) {
+      console.log(error);
+
     }
   }
 

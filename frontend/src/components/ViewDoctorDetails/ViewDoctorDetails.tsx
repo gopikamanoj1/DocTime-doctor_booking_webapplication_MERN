@@ -51,7 +51,7 @@ const ViewDoctorDetails: React.FC = () => {
 
   const handleTimeSelection = (time: string) => {
     setSelectedTime(time);
-    setSelectedDate(null); // Reset selected date when a new time is selected
+    // setSelectedDate(null); // Reset selected date when a new time is selected
   };
 
   const handleDateSelection = (date: Date | null) => {
@@ -140,7 +140,6 @@ const ViewDoctorDetails: React.FC = () => {
       {doctor && (
         <div className="p-8 bg-slate-300 shadow ">
           <div className="grid grid-cols-1 md:grid-cols-3">
-          
             <div className="  text-center order-last md:order-first mt-20 md:mt-0">
               <div className=" mt-8 bg-slate-100  rounded-lg shadow-lg p-6">
                 <div className="flex justify-between items-center mb-4">
@@ -193,7 +192,6 @@ const ViewDoctorDetails: React.FC = () => {
                   {` Dr.${doctor.name}`}
                 </h1>
                 <p className="font-light text-gray-600 mt-3">{doctor.email}</p>
-                {/* You can add more sections of doctor details here */}
               </div>
               <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl relative">
                 <img
@@ -203,12 +201,6 @@ const ViewDoctorDetails: React.FC = () => {
                 />
               </div>
               <div className="space-x-8 p-5 flex justify-center items-center">
-                {/* <button 
-                onClick={handleVideoCall}                       
-                 className="text-white py-2 px-4 uppercase rounded  bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-                  Consultation
-                </button> */}
-
                 {isAuthenticated ? (
                   <button
                     onClick={handleMessege}
@@ -263,39 +255,41 @@ const ViewDoctorDetails: React.FC = () => {
                       </strong>
                     </p>
 
-                    <div>
-                      <h3 className="font-semibold mb-1">Slot Time:</h3>
-                      <ul>
-                        {slot.slotTime.map((time, i) => (
-                          <li key={i}>
-                            <label className="inline-flex items-center">
-                              <input
-                                type="radio"
-                                name="selectedTime"
-                                value={time}
-                                onChange={(e) =>
-                                  handleTimeSelection(e.target.value)
-                                }
-                                checked={selectedTime === time}
-                                className="form-radio h-5 w-5 text-indigo-600"
-                              />
-                              <span className="ml-2 text-gray-700">{time}</span>
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="text-left mt-4">
+                      <h2>Select Date</h2>
+                      <DatePicker
+                        selected={selectedDate}
+                        onChange={handleDateSelection}
+                        minDate={slot.startDate}
+                        maxDate={slot.endDate}
+                        inline
+                      />
                     </div>
 
-                    {selectedTime && (
-                      <div className="text-left mt-4">
-                        {/* Assuming you're using a date picker component */}
-                        <DatePicker
-                          selected={selectedDate}
-                          onChange={handleDateSelection}
-                          minDate={slot.startDate}
-                          maxDate={slot.endDate}
-                          inline
-                        />
+                    {selectedDate && (
+                      <div>
+                        <h3 className="font-semibold mb-1">Slot Time:</h3>
+                        <ul>
+                          {slot.slotTime.map((time, i) => (
+                            <li key={i}>
+                              <label className="inline-flex items-center">
+                                <input
+                                  type="radio"
+                                  name="selectedTime"
+                                  value={time}
+                                  onChange={(e) =>
+                                    handleTimeSelection(e.target.value)
+                                  }
+                                  checked={selectedTime === time}
+                                  className="form-radio h-5 w-5 text-indigo-600"
+                                />
+                                <span className="ml-2 text-gray-700">
+                                  {time}
+                                </span>
+                              </label>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
 
@@ -326,12 +320,6 @@ const ViewDoctorDetails: React.FC = () => {
                 </div>
               )}
             </div>
-
-
-
-
-          
-
           </div>
           <div className="mt-12 flex flex-col justify-center">
             <p className="text-gray-800 text-center font-light lg:px-16">

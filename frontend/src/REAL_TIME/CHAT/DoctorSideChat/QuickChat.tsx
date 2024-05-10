@@ -17,7 +17,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
     setSelectedUser(user);
   };
 
-  console.log(users, "ithaan user");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,18 +34,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
 
     fetchData();
   }, [convesationId, socket]);
-
-  // useEffect(()=>{
-   
-  //   if(convesationId != "index"){
-  //     (async()=>{
-  //       const response = await axiosInstance.get(`/api/auth/getConverstations?id=${convesationId}`)
-  //       if(response.data.status){
-  //         console.log(response.data.data,"TTTTTTT");
-  //       }
-  //     })()
-  //   }
-  // },[selectedUser])
 
   return (
     <div>
@@ -70,28 +57,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
           </div>
           <div className="ml-2 font-bold text-2xl">QuickChat</div>
         </div>
-
-        {/* <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg">
-          {selectedDoctor && (
-            <div  className="flex items-center mb-4">
-              <div className="h-20 w-20 rounded-full border overflow-hidden">
-                <img
-                  src={selectedDoctor.image}
-                  alt="Avatar"
-                  className="h-full w-full"
-                />
-              </div>
-              <div className="text-sm font-semibold mt-2">{selectedDoctor.name}</div>
-              <div className="text-xs text-gray-500">{selectedDoctor.specialization}</div>
-              <div className="flex flex-row items-center mt-3">
-                <div className="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
-                  <div className="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
-                </div>
-                <div className="leading-none ml-1 text-xs">Active</div>
-              </div>
-            </div>
-          )}
-        </div> */}
 
         {/* Display list of users */}
         <div className="flex flex-col mt-8">

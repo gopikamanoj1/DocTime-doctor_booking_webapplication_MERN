@@ -203,6 +203,10 @@ const Register = () => {
       if (response.data && response.data.status) {
         // Navigation happens after successful registration
         navigate('/verifyOtp');
+        localStorage.removeItem("userEmail");
+
+        localStorage.setItem("userEmail", email);
+
       } else {
         toast.warn(response.data.data);
         setIsLoading(false); // Stop loading if registration fails

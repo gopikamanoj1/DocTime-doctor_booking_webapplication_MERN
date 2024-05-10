@@ -8,17 +8,65 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
+const getAudioContentType = (extension: string): string => {
+    switch (extension.toLowerCase()) {
+      case 'mp3':
+        return 'audio/mpeg';
+      case 'wav':
+        return 'audio/wav';
+      case 'ogg':
+        return 'audio/ogg';
+      default:
+        return 'application/octet-stream';
+    }
+  };
+
+  const convertBase64ToBuffer = (base64: string): Buffer => {
+    const base64Data = base64.replace(/^data:audio\/\w+;base64,/, ''); 
+    return Buffer.from(base64Data, 'base64'); 
+  };
+  
+  
+   const uploadAudioToS3 = async (
+    audioBase64: string,
+    fileName: string
+  ): Promise<string> => {
+    const base64Data = audioBase64.replace(/^data:audio\/\w+;base64,/, ''); // Strip metadata
+    const buffer = Buffer.from(base64Data, 'base64'); // Convert to buffer
+  
+    const params = {
+      Bucket: 'doctime3',
+      Key: fileName,
+      Body: buffer,
+      ContentType: 'audio/mpeg', // Change based on the audio type
+    };
+  console.log(params,"jjjj");
+  
+    return new Promise((resolve, reject) => {
+      s3.upload(params, (err:any, data:any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data.Location); // Return the file URL
+        }
+      });
+    });
+  };
+
+
+
+
+//=================//====================//====================//====================//=====================//===================//
+
+
+
+
 const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
     const fileExtension = getFileExtension(file); // Function to get the file extension
     const contentType = getContentType(fileExtension); // Function to get the content type
 
     const convertedFile: any =  Buffer.from(file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
-
-    console.log(convertedFile)
-
-    // Delete the existing image first, if it exists
-    // await deleteFromS3(fileName);
-
+         
     const params = {
         Bucket: 'doctime3',
         Key: fileName,
@@ -27,7 +75,6 @@ const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
         ContentType: contentType,
     };
 
-    console.log(params, "Upload params")
 
     return new Promise((resolve, reject) => {
         s3.upload(params, (err: any, data: any) => {
@@ -39,6 +86,7 @@ const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
         });
     });
 };
+
 
 const deleteFromS3 = async (fileName: string): Promise<void> => {
     const params = {
@@ -87,4 +135,4 @@ const getContentType = (extension: string): string => {
     }
 };
 
-export default uploadToS3;
+export { uploadToS3,uploadAudioToS3};

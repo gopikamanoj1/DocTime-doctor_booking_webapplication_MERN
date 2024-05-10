@@ -23,6 +23,9 @@ import getConverstationsUseCase from './getConverstationsUseCase';
 import getConsultCallStatusUseCase from './getConsultCallStatusUseCase'
 import forgotPasswordUseCase from './forgotPasswordUseCase';
 import getSearchQueryUseCase from './getSearchQueryUseCase'
+import downloadPrescriptionUseCase from './downloadPrescriptionUseCase';
+import sendAudioUseCase from './sendAudioUseCase';
+import sendImageUseCase from './sendImageUseCase';
 // Add other use cases as needed
 
 export {
@@ -48,6 +51,9 @@ export {
   getConverstationsUseCase,
   getConsultCallStatusUseCase,
   forgotPasswordUseCase,
-  getSearchQueryUseCase
+  getSearchQueryUseCase,
+  downloadPrescriptionUseCase,
+  sendAudioUseCase,
+  sendImageUseCase
   // Add other exports as needed
 };

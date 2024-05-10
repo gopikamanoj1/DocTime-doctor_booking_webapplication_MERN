@@ -8,6 +8,7 @@ import FooterBanner from "../components/Footer/FooterBanner";
 import FBanner from "../components/FBanner/FBanner";
 import TestimonialsSection from "../components/TestimonialsSection/TestimonialsSection";
 import AboutSection from "../components/AboutSection/AboutSection";
+import FAQ from '../components/AboutSection/FAQ'
 
 function LandingPage() {
   return (
@@ -23,6 +24,7 @@ function LandingPage() {
        
         <BlogSection />
         <AboutSection />
+        <FAQ/>
         <FBanner />
         <FooterBanner />
         <Footer />

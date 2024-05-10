@@ -1,10 +1,7 @@
 
 
-
-
-
 import { Request, Response } from "express";
-import uploadToS3 from "../../../../utils/imagesService";
+import {uploadToS3} from "../../../../utils/imagesService";
 
 export default (dependencies: any) => {
     const { kycUseCase } = dependencies.useCase;

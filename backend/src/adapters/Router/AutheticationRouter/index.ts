@@ -21,7 +21,8 @@ export default (dependencies: any) => {
     bookAppointmentController, createPaymentIntentController, loadSuccessController,
     searchDoctrsController, checkOTPController, appointmentDetailsController,
     changePasswordController, updateEmailController, sendMessegesController, createConverstationController,
-    getConverstationByIdController, getConverstationsController, getConsultCallStatusController,forgotPasswordController,getSearchQueryController
+    getConverstationByIdController, getConverstationsController, getConsultCallStatusController, forgotPasswordController,
+    getSearchQueryController, downloadPrescriptionController
   } = UserController(dependencies);
 
   router.post('/login', loginController);
@@ -41,14 +42,15 @@ export default (dependencies: any) => {
   router.post('/searchDoctrs', searchDoctrsController)
   router.post('/appointmentDetails', appointmentDetailsController)
   router.post('/changePassword', changePasswordController)
-  router.post ('/forgotPassword',forgotPasswordController)
+  router.post('/forgotPassword', forgotPasswordController)
   router.post('/updateEmail', updateEmailController)
   router.post('/sendMesseges', sendMessegesController)
   router.post('/createConverstation', createConverstationController)
   router.get('/getConverstationById', getConverstationByIdController)
   router.get('/getConverstations', getConverstationsController)
   router.get('/getConsultCallStatus', getConsultCallStatusController)
-  router.get("/getSearchQuery",getSearchQueryController)
+  router.get("/getSearchQuery", getSearchQueryController)
+  router.post('/downloadPrescription', downloadPrescriptionController)
   // ===============================================================================================
   // DOCTOR ROUTES
   // ===============================================================================================
@@ -57,8 +59,8 @@ export default (dependencies: any) => {
     googleRegisterController, addSlotController, showAppoinmentsController, getAlreadyScheduledSlotesController,
     getDoctorConverstationByIdController, doctorSendMessegesController, getDoctorConverstationsController,
     getKycStatusController, getAppoinmentDetailsController, getConvetsationIdForVideoCallController,
-    addPrescriptionController, updateConsultCallStatusController,changePasswordForDocController,
-    forgotPasswordForDocController,updateEmailFORDOCController
+    addPrescriptionController, updateConsultCallStatusController, changePasswordForDocController,
+    forgotPasswordForDocController, updateEmailFORDOCController, uploadImageController
   } = doctorController(dependencies)
 
 
@@ -82,9 +84,10 @@ export default (dependencies: any) => {
   router.post('/getConvetsationIdForVideoCall', getConvetsationIdForVideoCallController)
   router.post('/addPrescription', addPrescriptionController)
   router.post('/handleLeave', updateConsultCallStatusController)
- router.post('/changePasswordForDoc',changePasswordForDocController)
-router.post('/forgotPasswordForDoc',forgotPasswordForDocController)
-router.post('/updateEmailFORDOC',updateEmailFORDOCController)
+  router.post('/changePasswordForDoc', changePasswordForDocController)
+  router.post('/forgotPasswordForDoc', forgotPasswordForDocController)
+  router.post('/updateEmailFORDOC', updateEmailFORDOCController)
+  router.post('/upload', uploadImageController)
 
   // ===============================================================================================
   // ADMIN ROUTES

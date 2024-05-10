@@ -23,7 +23,7 @@ import getConverstationsController from "./getConverstationsController"
 import getConsultCallStatusController from './getConsultCallStatusConstroller'
 import forgotPasswordController from "./forgotPasswordController"
 import getSearchQueryController from './getSearchQueryController'
-
+import downloadPrescriptionController from "./downloadPrescriptionController"
 
 
 
@@ -57,6 +57,7 @@ export default (dependencies:any)=>{
     getConsultCallStatusController:getConsultCallStatusController(dependencies),
     forgotPasswordController:forgotPasswordController(dependencies),
     getSearchQueryController:getSearchQueryController(dependencies),
+    downloadPrescriptionController:downloadPrescriptionController(dependencies)
 
     
 

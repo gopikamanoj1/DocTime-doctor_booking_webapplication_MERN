@@ -30,7 +30,7 @@ const ChangePassword = () => {
         toast.success(response.data.data)
         navigate('/myprofile')
         console.log(response);
-      }else if(response.data.status==-false){
+      }else if(response.data.status===false){
             toast.warn(response.data.data)
       }
     } catch (error) {}

@@ -1,4 +1,3 @@
-import React from 'react';
 
 function Footer() {
   return (
@@ -15,16 +14,16 @@ function Footer() {
             <h5 className="text-lg font-semibold mb-4">Quick Links</h5>
             <ul>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Home</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Home</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Doctors</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Doctors</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Appointments</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Appointments</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Contact</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Contact</a>
               </li>
             </ul>
           </div>
@@ -32,16 +31,16 @@ function Footer() {
             <h5 className="text-lg font-semibold mb-4">Services</h5>
             <ul>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Cardiology</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Cardiology</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Pediatrics</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Pediatrics</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Dermatology</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Dermatology</a>
               </li>
               <li className="mb-2">
-                <a href="#!" className="text-sm hover:text-blue-600 transition-colors">Orthopedics</a>
+                <a href="" className="text-sm hover:text-blue-600 transition-colors">Orthopedics</a>
               </li>
             </ul>
           </div>

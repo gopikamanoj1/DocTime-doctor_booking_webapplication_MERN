@@ -193,154 +193,155 @@ const DoctorCalendar: React.FC = () => {
   };
 
   return (
-    <div className="">
-      <div className="mx-auto p-4 flex bg-cyan-50">
-        <div className="w-1/2 pr-8 pl-8   flex justify-center items-center  ">
-          <div className="mb-4">
-            <div className="mb-4 p-10">
-              <SmallCalendar
-                selectedStartDate={selectedStartDate}
-                selectedEndDate={selectedEndDate}
-                setSelectedStartDate={setSelectedStartDate}
-                setSelectedEndDate={setSelectedEndDate}
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-bold mb-2">Select Time Slots</h2>
-                <div className="space-y-2 p-6 ">
-                  {timeSlots.map((slot, index) => (
-                    <button
-                      key={index}
-                      className={`checkbox-button ${
-                        selectedSlots.some(
-                          (s) => s.start.getTime() === slot.start.getTime()
-                        ) && "selected"
-                      }`}
-                      onClick={() => handleSlotSelect(slot)}
-                    >
-                      <span className="text-xl">
-                        {moment(slot.start).format("h:mm A")} -{" "}
-                        {moment(slot.end).format("h:mm A")}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className=" rounded-lg  text-center">
+    <div className=" mx-auto px-4 py-4">
+    {/* Use flex-direction for responsive design */}
+    <div className="flex flex-col md:flex-row gap-4 bg-cyan-50">
+
+      {/* Left Section */}
+      <div className="md:w-1/2 w-full p-4 flex flex-col items-center">
+        <SmallCalendar
+          selectedStartDate={selectedStartDate}
+          selectedEndDate={selectedEndDate}
+          setSelectedStartDate={setSelectedStartDate}
+          setSelectedEndDate={setSelectedEndDate}
+        />
+        <div className="p-4">
+          <h2 className="text-lg md:text-xl font-bold mb-2">Select Time Slots</h2>
+          <div className="flex flex-wrap  gap-4 justify-center md:justify-start">
+            {timeSlots.map((slot, index) => (
               <button
-                className="bg-cyan-950 hover:bg-cyan-900 text-white font-bold py-2 px-8 rounded "
-                onClick={handleConfirmSlots}
+                key={index}
+                className={`checkbox-button ${
+                  selectedSlots.some(
+                    (s) => s.start.getTime() === slot.start.getTime()
+                  )
+                    ? "selected"
+                    : ""
+                }`}
+                onClick={() => handleSlotSelect(slot)}
               >
-                Save Date And Time
+                <span className="text-sm md:text-base">
+                  {moment(slot.start).format("h:mm A")} - {moment(slot.end).format("h:mm A")}
+                </span>
               </button>
-            </div>
+            ))}
           </div>
         </div>
-        <div className="w-1/2 pl-4 p-10">
-          <h2 className="text-xl font-semibold mb-2 text-rose-800">
-            Selected Date:
-          </h2>
-          {selectedStartDate && selectedEndDate ? (
-            <p className="mb-4">
-              {`${moment(selectedStartDate).format("MMM D, YYYY")} - ${moment(
-                selectedEndDate
-              ).format("MMM D, YYYY")}`}
-            </p>
-          ) : (
-            "No date Scheduled"
-          )}
 
-          <div className="overflow-x-auto ">
-            <table className="table-auto w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2 text-rose-500 text-center">
-                    Time Slot
-                  </th>
-                  {/* <th className="px-4 py-2 text-rose-500">Actions</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {selectedTimeSlots.map((slot, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="px-4 py-2 text-center">{slot}</td>
-
-                    <td className="px-4 py-2 flex items-center">
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
-                        onClick={() => handleDelete(index)} // Pass the index to the function
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <br />
-          <br />
-          <div className="flex justify-center">
-            <button
-              className="bg-cyan-950 hover:bg-cyan-900 text-white font-bold py-2 px-8 rounded"
-              onClick={handleConfirmAvailableSlots}
-            >
-              Confirm Your Available Slots
-            </button>
-          </div>
-        </div>
+        <button
+          className="bg-cyan-950 hover:bg-cyan-900 text-white font-bold py-2 px-8 rounded"
+          onClick={handleConfirmSlots}
+        >
+          Save Date and Time
+        </button>
       </div>
 
-      <div className="w-auto  h-auto p-10">
-        <div className="flex justify-between items-center text-center">
-          <h2 className="text-xl font-bold text-gray-800  p-10">
-            Already Scheduled Slots
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {alreadyScheduledSlotes.map((slot) => (
-            <div
-              key={slot._id}
-              className="bg-cyan-50 shadow-md rounded-lg p-6 pt-9 relative"
-            >
-              <div className="  flex justify-end ">
-                <div className="text-center">
-                  <Button variant="outlined" color="error">
-                    <button onClick={handleDeleteForScheduledSlot}>
+      {/* Right Section */}
+      <div className="md:w-1/2 w-full p-4">
+        <h2 className="text-xl font-semibold text-rose-800 mb-2">Selected Date:</h2>
+        {selectedStartDate && selectedEndDate ? (
+          <p className="mb-4">
+            {`${moment(selectedStartDate).format("MMM D, YYYY")} - ${moment(
+              selectedEndDate
+            ).format("MMM D, YYYY")}`}
+          </p>
+        ) : (
+          <p>No date Scheduled</p>
+        )}
+
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-center">Time Slot</th>
+                <th className="px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedTimeSlots.map((slot, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2 text-center">{slot}</td>
+                  <td className="px-4 py-2 flex items-center justify-center">
+                    <button
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                      onClick={() => handleDelete(index)}
+                    >
                       Delete
                     </button>
-                  </Button>
-                </div>
-              </div>
-              <p className="text-black mb-2">
-                Start Date:{" "}
-                <strong className="text-red-900 text-xl">
-                  {moment(slot.startDate).format("MMM D, YYYY")}
-                </strong>
-              </p>
-              <p className="text-black mb-2">
-                End Date:
-                <strong className="text-red-900 text-xl">
-                  {" "}
-                  {moment(slot.endDate).format("MMM D, YYYY")}
-                </strong>
-              </p>
-              <div className="mt-4">
-                <p className="text-gray-600 font-semibold">Slot Times:</p>
-                <ul className="list-disc list-inside">
-                  {slot.slotTime.map((time: string, index: number) => (
-                    <li key={index} className="text-gray-600">
-                      {time}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+
+        <button
+          className="bg-cyan-950 hover:bg-cyan-900 text-white font-bold py-2 px-8 rounded mt-4"
+          onClick={handleConfirmAvailableSlots}
+        >
+          Confirm Available Slots
+        </button>
       </div>
     </div>
+
+    {/* Already Scheduled Slots */}
+    <div className="mt-10">
+      <div className="text-center">
+        <h2 className="text-xl font-bold text-gray-800">Already Scheduled Slots</h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {alreadyScheduledSlotes.map((slot:any) => (
+          <div key={slot._id} className="bg-cyan-50 shadow-md rounded-lg p-6">
+            <div className="flex justify-end mb-4">
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleDeleteForScheduledSlot}
+              >
+                Delete
+              </button>
+            </div>
+            <p className="text-black mb-2">
+              Start Date:{" "}
+              <strong className="text-red-900 text-xl">
+                {moment(slot.startDate).format("MMM D, YYYY")}
+              </strong>
+            </p>
+            <p className="text-black mb-2">
+              End Date:{" "}
+              <strong className="text-red-900 text-xl">
+                {moment(slot.endDate).format("MMM D, YYYY")}
+              </strong>
+            </p>
+            <ul className="list-disc list-inside">
+              {slot.slotTime.map((time:any, index:any) => (
+                <li key={index} className="text-gray-600">
+                  {time}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
   );
 };
 
 export default DoctorCalendar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

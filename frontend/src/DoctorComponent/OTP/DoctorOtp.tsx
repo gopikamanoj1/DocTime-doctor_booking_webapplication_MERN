@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import './Otp.css';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import axiosInstance from '../../AxiosConfig/axiosInstance';
+import { toast } from "react-toastify";
 
 function DoctorOtp() {
   const [enteredOtp, setEnteredOtp] = useState('');
@@ -27,6 +28,23 @@ function DoctorOtp() {
     }
   };
 
+  const handleGetOtp = async () => {
+    try {
+      const email = localStorage.getItem("doctorEmail");
+      const data = {
+        email,
+      };
+      const response = await axiosInstance.post("/api/auth/generateOtp", data);
+      if (response) {
+        toast.success("OTP Sent Successfully");
+      } else {
+        toast.error("Failed to Send OTP");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      toast.error("Failed to Send OTP");
+    }
+  };
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     // Handle backspace to remove the last entered digit
     if (e.key === 'Backspace' && index > 0) {
@@ -50,7 +68,7 @@ function DoctorOtp() {
       // Handle the response from the backend
       console.log(response.data);
       if (response.data && response.data.status) {
-        // Redirect to "/enterOtp" after successful registration
+        localStorage.removeItem("doctorEmail");
         navigate('/doctorLogin');
       } else {
         setError("User registration failed");
@@ -86,7 +104,7 @@ function DoctorOtp() {
         </button>
         <button className="exitBtn">×</button>
         <p className="resendNote">
-          Didn't receive the code? <Link to='/resendOtp' className="resendBtn">Resend Code</Link>
+          Didn't receive the code? <button onClick={handleGetOtp} className="resendBtn">Resend Code</button>
         </p>
       </form>
     </div>

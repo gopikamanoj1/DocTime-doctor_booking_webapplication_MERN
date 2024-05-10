@@ -7,8 +7,8 @@ const AboutSection: React.FC = () => {
     <section className="bg-gradient-to-r from-cyan-600 to-cyan-950 py-16">
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-extrabold text-white">About Us</h2>
-          <p className="text-m text-gray-200 mt-4">
+          <h2 className="text-3xl font-extrabold text-white">About Us</h2>
+          <p className="text-sm text-gray-200 mt-4">
             Welcome to our doctor booking platform! Our mission is to revolutionize the way people access healthcare
             services by making the process of booking appointments simple, convenient, and efficient.
           </p>

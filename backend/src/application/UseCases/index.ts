@@ -6,7 +6,8 @@ import {
     appointmentDetailsUseCase, changePasswordUseCase, updateEmailUseCase,
     sendMessegesUseCase, createConverstationUseCase,
     getConverstationByIdUseCase, getConverstationsUseCase,
-    getConsultCallStatusUseCase, forgotPasswordUseCase,getSearchQueryUseCase
+    getConsultCallStatusUseCase, forgotPasswordUseCase,getSearchQueryUseCase,
+    downloadPrescriptionUseCase,sendAudioUseCase,sendImageUseCase
 
 } from './authUseCase'
 export {
@@ -32,7 +33,9 @@ export {
     getConverstationsUseCase,
     getConsultCallStatusUseCase,
     forgotPasswordUseCase,
-    getSearchQueryUseCase
+    getSearchQueryUseCase,downloadPrescriptionUseCase,
+    sendAudioUseCase,
+    sendImageUseCase
 
 
 

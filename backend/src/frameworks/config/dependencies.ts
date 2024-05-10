@@ -7,7 +7,8 @@ import {
     loginUseCase, registerUseCase, verifyOtpUseCase, findDoctorUseCase, updatePatientProfileUseCase,
     viewDoctorDetailsUseCase, generateOtpUseCase, getAvailableSlotUseCase, bookAppointmentUseCase, loadSuccessUseCase,
     searchDoctrsUseCase, checkOTPUseCase, appointmentDetailsUseCase, changePasswordUseCase, updateEmailUseCase,
-    sendMessegesUseCase, createConverstationUseCase, getConverstationByIdUseCase, getConverstationsUseCase,getConsultCallStatusUseCase,forgotPasswordUseCase,getSearchQueryUseCase
+    sendMessegesUseCase, createConverstationUseCase, getConverstationByIdUseCase, getConverstationsUseCase,getConsultCallStatusUseCase,
+    forgotPasswordUseCase,getSearchQueryUseCase,downloadPrescriptionUseCase,sendAudioUseCase,sendImageUseCase
 } from '../../application/UseCases'
 
 
@@ -86,7 +87,10 @@ const useCase: any = {
     getSearchQueryUseCase,
     changePasswordForDocUseCase,
     forgotPasswordForDocUseCase,
-    updateEmailForDOCUseCase
+    updateEmailForDOCUseCase,
+    downloadPrescriptionUseCase,
+    sendAudioUseCase,
+    sendImageUseCase
 
 
 

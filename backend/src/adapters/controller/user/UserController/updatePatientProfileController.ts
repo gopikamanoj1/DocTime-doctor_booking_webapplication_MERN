@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import session from "express-session";
-import uploadToS3 from "../../../../utils/imagesService";
+import {uploadToS3} from "../../../../utils/imagesService";
 
 
 export default (dependencies: any) => {

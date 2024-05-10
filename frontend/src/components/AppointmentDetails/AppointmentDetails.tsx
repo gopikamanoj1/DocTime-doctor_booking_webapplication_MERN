@@ -3,6 +3,10 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 import { useSocket } from "../../REAL_TIME/Socket";
 import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+import { toast } from "react-toastify";
+
+Modal.setAppElement("#root"); // or your main app element's id
 
 // Define the structure of your appointment data
 interface Doctor {
@@ -36,6 +40,8 @@ const AppointmentDetails: React.FC = () => {
   );
   const [joinRoomId, setJoinRoomId]: [string | null, any] = useState(null);
   const [consultCallStatus, setConsultCallStatus] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prescription, setPrescription] = useState<any | null>(null); // Correct type for prescription
   const navigate = useNavigate();
 
   const handleJoin = (id: any) => {
@@ -55,6 +61,30 @@ const AppointmentDetails: React.FC = () => {
     }
   };
 
+  const showPrescription = async (appoinmentId: any) => {
+    console.log(appoinmentId, "hai");
+    const data = {
+      appoinmentId,
+    };
+    console.log(data, "appoooin");
+
+    const response = await axiosInstance.post(
+      "/api/auth/downloadPrescription",
+      data
+    );
+
+    if (response.data && response.data.data) {
+      console.log("Fetched Prescription:", response.data.data); // Log fetched data
+      setPrescription(response.data.data); // Ensure data is properly set
+      setIsModalOpen(true); // Open the modal after setting data
+    } else if (response.data.status === false) {
+      toast.error("No prescription found");
+    }
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPrescription(null); // Clear prescription data when closing
+  };
   useEffect(() => {
     (async () => {
       const response = await axiosInstance.get(
@@ -115,10 +145,11 @@ const AppointmentDetails: React.FC = () => {
 
   if (appointmentDetails.length === 0) {
     return (
-      <div className="flex justify-center items-center h-full w-full">
-        <div className="text-center bg-red-100 text-red-700 p-6 rounded-lg shadow-lg">
+  
+      <div className="p-6 h-screen bg-gray-50 flex flex-col items-center ">
+        <div className="w-full max-w-2xl text-center   bg-red-100 text-red-700 p-6 rounded-lg shadow-lg">
           <p className="text-xl font-semibold">No Appointments</p>
-          <p className="text-sm">
+          <p className="text-sm p-6">
             Please schedule an appointment to get started.
           </p>
         </div>
@@ -147,6 +178,7 @@ const AppointmentDetails: React.FC = () => {
 
               <th className="border px-3 py-2">Specialty</th>
               <th className="border px-3 py-2">Consultation</th>
+              <th className="border px-3 py-2">Prescription</th>
             </tr>
           </thead>
           <tbody>
@@ -192,11 +224,96 @@ const AppointmentDetails: React.FC = () => {
                   ) : (
                     <td className="border px-3 py-2">-----</td>
                   )}
+                  <td
+                    onClick={() => showPrescription(appointment._id)}
+                    className="border px-3 text-green-700 py-2 hover:underline"
+                  >
+                    check your prescription
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel="Prescription Modal"
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.75)",
+            },
+            content: {
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              borderRadius: "0.5rem",
+              padding: "1.5rem",
+              border: "none",
+              boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)",
+            },
+          }}
+        >
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            {prescription ? (
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-gray-800">
+                  Prescription Details
+                </h2>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Doctor:</span>{" "}
+                  {prescription.doctor.name}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Appointment ID:</span>{" "}
+                  {prescription.prescription.appointmentId}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Prescription Date:</span>{" "}
+                  {new Date(
+                    prescription.prescription.prescriptionDate
+                  ).toDateString()}
+                </p>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Medicines:
+                  </h3>
+                  <ul className="list-disc pl-5">
+                    {prescription.prescription.medicines?.map(
+                      (medicine: any, index: any) => (
+                        <li key={index} className="text-gray-500">
+                          <span className="font-semibold">
+                            Name:
+                            <span className="text-red-700">
+                              {medicine.name}
+                            </span>{" "}
+                            - Dosage:{" "}
+                            <span className="text-red-700">
+                              {medicine.dosage}{" "}
+                            </span>
+                            -Instructions :{" "}
+                            <span className="text-red-700">
+                              {medicine.instructions}
+                            </span>{" "}
+                          </span>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+                <button
+                  onClick={closeModal}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition ease-in-out duration-300"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <p className="text-gray-700">Loading...</p>
+            )}
+          </div>
+        </Modal>
       </div>
     </div>
   );

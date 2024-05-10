@@ -305,6 +305,8 @@ const PatientProfile: React.FC = () => {
   useEffect(() => {
     // Fetch data from local storage
     const patientProfileData = JSON.parse(localStorage.getItem("User") || "{}");
+    console.log(patientProfileData,'Goooooops');
+    
     const storedName = patientProfileData.data.name;
     const storedEmail = patientProfileData.data.email;
     const storedPhone = patientProfileData.data.phone;
@@ -323,7 +325,6 @@ const PatientProfile: React.FC = () => {
     const storedState = firstAddress.state || "";
 
     const storedBloodGroup = patientProfileData.data.bloodGroup || "";
-    // const storedImage = patientProfileData.data.image || '';
     const storedAge = patientProfileData.data.age || "";
     const storedDob = patientProfileData.data.dob || "";
 

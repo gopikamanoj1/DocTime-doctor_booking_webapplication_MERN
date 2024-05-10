@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 
 const TestimonialsSection: React.FC = () => {
-  // Sample testimonials data
   const testimonials = [
     {
       id: 1,
@@ -30,7 +29,6 @@ const TestimonialsSection: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Set a timeout to make transitions visible (optional)
     const timeout = setTimeout(() => {
       setIsVisible(true);
     }, 100);
@@ -39,17 +37,16 @@ const TestimonialsSection: React.FC = () => {
   }, []);
 
   return (
-    // <section className=" rounded-sm bg-gradient-to-r from-cyan-600 to-cyan-950 py-16">
     <section
-    className="bg-gradient-to-r from-cyan-600 to-cyan-950 py-16 px-6 sm:px-8 lg:px-12 m-10 rounded-xl"
-  >
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-        <h2 className="text-4xl font-extrabold text-white text-center mb-10">Testimonials</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      className="bg-gradient-to-r from-cyan-600 to-cyan-950 py-16 px-6 sm:px-8 lg:px-12 m-10 rounded-xl"
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-12"> {/* Responsive padding */}
+        <h2 className="text-2xl font-extrabold text-white text-center mb-10">Testimonials</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> {/* Adjusted grid layout */}
           {testimonials.map((testimonial) => (
             <Transition
               key={testimonial.id}
-              show={isVisible} // The required show prop
+              show={isVisible}
               enter="transform transition duration-500"
               enterFrom="opacity-0 translate-y-10"
               enterTo="opacity-100 translate-y-0"
@@ -57,16 +54,16 @@ const TestimonialsSection: React.FC = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-10"
             >
-              <div className="bg-white rounded-lg shadow-xl p-8 hover:shadow-2xl transition duration-300 ease-in-out">
-                <p className="text-m text-gray-800 mb-6 italic">
+              <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 hover:shadow-2xl transition duration-300 ease-in-out"> {/* Adjusted padding */}
+                <p className="text-sm sm:text-sm text-gray-800 mb-6 italic"> {/* Responsive text size */}
                   "{testimonial.testimonial}"
                 </p>
                 <div className="flex items-center">
-                  <div className="bg-cyan-950 text-white rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold">
+                  <div className="bg-cyan-950 text-white rounded-full w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-sm font-bold"> {/* Responsive avatar size */}
                     {testimonial.name[0]}
                   </div>
                   <div className="ml-4">
-                    <div className="text-lg font-medium text-gray-900">{testimonial.name}</div>
+                    <div className="text-lg sm:text-xl font-medium text-gray-900">{testimonial.name}</div> {/* Adjusted text size */}
                     <div className="text-sm text-gray-600">{testimonial.profession}</div>
                   </div>
                 </div>

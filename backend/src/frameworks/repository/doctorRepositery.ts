@@ -395,6 +395,7 @@ export default {
   
       // Create the new Prescription document
       const newPrescription = new databaseSchemas.Prescription({
+        appointmentId,
         doctorId,
         userId,
         prescriptionDate,

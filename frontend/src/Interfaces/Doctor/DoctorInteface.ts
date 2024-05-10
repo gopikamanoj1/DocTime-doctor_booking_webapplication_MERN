@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 export interface Doctor {
-  [x: string]: SetStateAction<Doctor | null>;
+    data:any;  
     _id: string;
     name: string;
     password: string;
@@ -20,6 +20,7 @@ export interface Doctor {
   }
 
   export interface Slot {
+    data:any;  
     _id: string;
     doctor: string;
     startDate: Date;

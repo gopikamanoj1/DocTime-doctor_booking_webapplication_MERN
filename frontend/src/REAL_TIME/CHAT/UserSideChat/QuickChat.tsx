@@ -1,6 +1,4 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../AxiosConfig/axiosInstance";
 interface QuickChatProps {
@@ -8,7 +6,6 @@ interface QuickChatProps {
   socket:any
 }
 const QuickChat: React.FC<QuickChatProps> = ({ onDoctorSelect ,socket}) => {
-  const { convesationId } = useParams();
   const [doctors, setDoctors] = useState<any[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null); // State variable to store the selected doctor
   const user = useSelector((state: any) => state.persisted.auth.user);
@@ -17,7 +14,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onDoctorSelect ,socket}) => {
   const handleDoctorSelection = (doctor: any) => {
     setSelectedDoctor(doctor);
   };
-// console.log(selectedDoctor,"ithaan doc");
 
   
 
@@ -64,29 +60,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onDoctorSelect ,socket}) => {
           </div>
           <div className="ml-2 font-bold text-2xl">QuickChat</div>
         </div>
-
-        {/* <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg">
-          {selectedDoctor && (
-            <div  className="flex items-center mb-4">
-              <div className="h-20 w-20 rounded-full border overflow-hidden">
-                <img
-                  src={selectedDoctor.image}
-                  alt="Avatar"
-                  className="h-full w-full"
-                />
-              </div>
-              <div className="text-sm font-semibold mt-2">{selectedDoctor.name}</div>
-              <div className="text-xs text-gray-500">{selectedDoctor.specialization}</div>
-              <div className="flex flex-row items-center mt-3">
-                <div className="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
-                  <div className="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
-                </div>
-                <div className="leading-none ml-1 text-xs">Active</div>
-              </div>
-            </div>
-          )}
-        </div> */}
-
         {/* Display list of doctors */}
         <div className="flex flex-col mt-8">
           <div className="flex flex-row items-center justify-between text-xs">
@@ -101,7 +74,7 @@ const QuickChat: React.FC<QuickChatProps> = ({ onDoctorSelect ,socket}) => {
                 <button
                   key={index}
                   className={`flex flex-row items-center hover:bg-indigo-100 rounded-xl p-2 ${
-                    selectedDoctor === doctor ? "bg-indigo-300" : ""
+                    selectedDoctor === doctor ? "bg-indigo-400" : ""
                   }`}
                   onClick={() => {
                     onDoctorSelect({

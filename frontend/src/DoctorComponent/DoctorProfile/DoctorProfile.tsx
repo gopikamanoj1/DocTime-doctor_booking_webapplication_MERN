@@ -5,9 +5,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
+import { useSelector } from "react-redux";
 
 const DoctorProfile: React.FC = () => {
   const navigate = useNavigate();
+  const Doctor = useSelector((state:any)=>state.persisted.doctorAuth);
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -254,9 +256,8 @@ const DoctorProfile: React.FC = () => {
         if (response.data.data) {
           // Check the status property of the response data
           toast.success("Successfully Updated");
-          localStorage.setItem("doctorProfile", JSON.stringify(response.data));
-
-          // toast.success("hy");
+          localStorage.removeItem("doctorProfile");
+          localStorage.setItem("doctorProfile", JSON.stringify(response.data.data));
         } else {
           toast.error("Error updating doctor profile");
         }
@@ -301,36 +302,56 @@ const DoctorProfile: React.FC = () => {
     const doctorProfileData = JSON.parse(
       localStorage.getItem("doctorProfile") || "{}"
     );
-    console.log(doctorProfileData, "doctorProfileData");
+    console.log(doctorProfileData, "goooooooooooooo;opojzsp");
 
-    const storedName = doctorProfileData.name || "";
-    const storedEmail = doctorProfileData.email || "";
-    const storedPhone = doctorProfileData.phone || "";
-    const storedSpecialization = doctorProfileData.specialization || "";
-    const storedStreet = doctorProfileData.address[0].street || "";
-    const storedCity = doctorProfileData.address[0].city || "";
-    const storedState = doctorProfileData.address[0].state || "";
-    const storedZipcode = doctorProfileData.address[0].zipCode || "";
+ 
+
+    if (doctorProfileData) {
+      console.log('HERE',doctorProfileData);
+      
+      const storedSpecialization = doctorProfileData.specialization || "";
+      const storedName = doctorProfileData.name || "";
+      const storedEmail = doctorProfileData.email || "";
+      const storedPhone = doctorProfileData.phone || "";
+      if(doctorProfileData.address && doctorProfileData.address.length >0  ){
+        const storedStreet = doctorProfileData?.address[0]?.street || "";
+        const storedCity = doctorProfileData?.address[0]?.city || "";
+        const storedState = doctorProfileData?.address[0]?.state || "";
+        const storedZipcode = doctorProfileData?.address[0]?.zipCode || "";
+        setStreet(storedStreet);
+        setCity(storedCity);
+        setState(storedState);
+        setZipcode(storedZipcode);
+      }
+     
+   
+
     const storedFees = doctorProfileData.fees || "";
     const storedImage = doctorProfileData.image || "";
     const storedAge = doctorProfileData.age || "";
     const storedDob = doctorProfileData.dob || "";
+console.log(storedName,storedEmail,storedPhone,storedSpecialization,storedFees,storedImage,storedFees,storedImage,')))))))))))))))))))))))');
 
     // Update state with fetched data 
     setName(storedName);
     setEmail(storedEmail);
     setPhone(storedPhone);
     setSpecialization(storedSpecialization);
-    setStreet(storedStreet);
-    setCity(storedCity);
-    setState(storedState);
-    setZipcode(storedZipcode);
     setFees(storedFees);
     setImage(storedImage);
     setAge(storedAge);
     setDOB(storedDob);
+    console.log('updated');
+    
+  } else {
+    console.warn("Address data is missing or undefined");
+  }
   }, []);
 
+  useEffect(()=>{
+console.log(name,email,phone,specialization,age,fees,dob,'TTTTTT');
+
+  },[name,email,phone,specialization,age,fees,dob])
   return (
     <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
       {loading ? (

@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 const Success = () => {
-
-
-// useEffect(()=>{
-//     localStorage.removeItem("selectedDateTime");
-// })
  
 
   return (
-    <div className="bg-gray-100 h-screen">
+    <div className="bg-white h-screen">
       <div className="bg-white p-6  md:mx-auto">
         <svg
           viewBox="0 0 24 24"
