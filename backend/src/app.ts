@@ -75,7 +75,8 @@ declare module 'express-session' {
 
 
 const io: Server = require('socket.io')(3001, {
-  cors: { origin: "http://localhost:5173" }
+  cors: { origin:
+     ["http://localhost:5173", "http://doctime.live"] }
 });
 
 

@@ -19,7 +19,7 @@ const expressConfig = (app: Express): AWS.S3 => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser(process.env.COOKIEPARSERSECRET));
-  app.use(express.static("public/"));
+  app.use(express.static("public/frontend/dist"));
   app.use(
     cors({
       origin: ["http://localhost:5173"],
