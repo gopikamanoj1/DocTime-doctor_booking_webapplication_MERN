@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const imagesService_1 = require("../../../../utils/imagesService");
 exports.default = (dependencies) => {
     const { updateDoctorProfileUseCase } = dependencies.useCase;
     if (!updateDoctorProfileUseCase) {
@@ -10,7 +9,7 @@ exports.default = (dependencies) => {
         try {
             console.log(process.env.YOUR_ACCESS_KEY_ID, 'HHHHHHHHHHHHHHH');
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image, age, dob } = req.body;
-            const imageUrl = await (0, imagesService_1.uploadToS3)(image, `${email}-profileImage`);
+            // const imageUrl= await uploadToS3(image, `${email}-profileImage`);
             const data = {
                 name,
                 email,
@@ -21,7 +20,7 @@ exports.default = (dependencies) => {
                 state,
                 zipcode,
                 fees,
-                image: imageUrl,
+                image,
                 age,
                 dob
             };

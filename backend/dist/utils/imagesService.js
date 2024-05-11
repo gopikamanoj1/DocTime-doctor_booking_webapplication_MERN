@@ -59,7 +59,7 @@ const uploadToS3 = async (file, fileName) => {
         Bucket: 'doctime3',
         Key: fileName,
         Body: convertedFile,
-        // ACL: 'public-read',
+        ACL: 'public-read',
         ContentType: contentType,
     };
     return new Promise((resolve, reject) => {

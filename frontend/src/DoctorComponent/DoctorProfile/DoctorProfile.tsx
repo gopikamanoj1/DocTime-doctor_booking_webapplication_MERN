@@ -52,6 +52,7 @@ const DoctorProfile: React.FC = () => {
         file
       );
       if (event.target.id === "imageInput") {
+        
         setImage(convertedFile);
       }
     }

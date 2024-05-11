@@ -19,7 +19,7 @@ export default (dependencies: any) => {
             
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image,age,dob } = req.body
 
-            const imageUrl= await uploadToS3(image, `${email}-profileImage`);
+            // const imageUrl= await uploadToS3(image, `${email}-profileImage`);
             const data = {
                 name,
                 email,
@@ -30,7 +30,7 @@ export default (dependencies: any) => {
                 state,
                 zipcode,
                 fees,
-                image:imageUrl,
+                image,
                 age,
                 dob
             }
