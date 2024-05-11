@@ -1,39 +1,38 @@
-// ChatBox.tsx
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../AxiosConfig/axiosInstance";
-import { format } from "date-fns"; // To format the timestamp
-import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline"; // Importing an icon for image upload
-import EmojiPicker from "emoji-picker-react"; // Correct import
+import { format } from "date-fns"; 
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline"; 
+import EmojiPicker from "emoji-picker-react"; 
 import AudioWaveLoader from "../AudioChat/AudioWaveLoader";
 import SendIcon from "../AudioChat/SendIcon";
 import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css"; // Ensure the CSS is imported
+import "react-h5-audio-player/lib/styles.css"; 
 interface ChatBoxProps {
   selectedDoctor: any;
   socket: any;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false); // State to toggle emoji picker
-
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false); 
   const [isRecording, setIsRecording] = useState(false);
   const [audioData, setAudioData] = useState<Blob | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-
   const { convesationId } = useParams();
   const [messages, setMessages] = useState<any[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const User = useSelector((state: any) => state.persisted.auth);
   const userId = User?.user?._id;
   const messageRef = useRef<any>(null);
+
+
   const formatTime = (timestamp: any) => {
     return format(new Date(timestamp), "hh:mm a"); // 12-hour format with AM/PM
   };
@@ -42,8 +41,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
     setEmojiPickerOpen((prev) => !prev);
   };
 
-
-   
   const onEmojiClick = (emoji: any) => {
     console.log(emoji, "Selected Emoji");
     setMessageInput((prev) => prev + (emoji.native || emoji.emoji || "")); // Append any valid property
@@ -156,18 +153,20 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         setIsRecording(true); // Update state to indicate recording
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         setAudioStream(stream); // Save the stream for later stopping
-  
+
         // Initialize or reinitialize the MediaRecorder
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
-  
+
         mediaRecorder.ondataavailable = (event) => {
           console.log("Data available:", event.data.size, event.data.type); // Confirm the Blob details
-          setAudioData(new Blob([event.data], { type: 'audio/wav' })); // Update audioData
+          setAudioData(new Blob([event.data], { type: "audio/wav" })); // Update audioData
         };
-  
+
         mediaRecorder.start(); // Start recording
       } catch (error) {
         console.error("Error accessing microphone:", error);
@@ -176,14 +175,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
       console.error("getUserMedia is not supported in this browser");
     }
   };
-  
 
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       console.log("Stopping recording...");
       mediaRecorderRef.current.stop(); // Stop the recording
       setIsRecording(false); // Update state
-  
+
       if (audioStream) {
         console.log("Stopping audio stream...");
         audioStream.getTracks().forEach((track) => track.stop()); // Stop the stream
@@ -191,42 +189,37 @@ const ChatBox: React.FC<ChatBoxProps> = ({ selectedDoctor, socket }) => {
       }
     }
   };
-  
-
-  
 
   const sendAudio = () => {
     stopRecording(); // Stop recording before sending
-  
+
     setTimeout(() => {
       console.log("Audio Data after stopping:", audioData); // Check if `audioData` is set
-  
+
       if (audioData) {
         const reader = new FileReader();
         reader.onload = () => {
           const base64Audio = reader.result;
 
-        // Emit the audio data via socket
-        socket.emit("audioStream", {
-          content: base64Audio,
-          senderId: User.user._id,
-          recieverId: selectedDoctor._id,
-          converstationId: convesationId,
-          type: "voice_note",
-          timestamp: new Date(),
-        });
+          // Emit the audio data via socket
+          socket.emit("audioStream", {
+            content: base64Audio,
+            senderId: User.user._id,
+            recieverId: selectedDoctor._id,
+            converstationId: convesationId,
+            type: "voice_note",
+            timestamp: new Date(),
+          });
 
-        setAudioData(null); // Reset `audioData` after sending
-      };
+          setAudioData(null); // Reset `audioData` after sending
+        };
 
-      reader.readAsDataURL(audioData); // Convert `Blob` to Base64
-    } else {
-      console.error("No audio data to send");
-    }
-  }, 2000); // Add a delay to ensure `audioData` is finalized
-};
-
-
+        reader.readAsDataURL(audioData); // Convert `Blob` to Base64
+      } else {
+        console.error("No audio data to send");
+      }
+    }, 2000); // Add a delay to ensure `audioData` is finalized
+  };
 
   return (
     <div className="w-full h-5/6 p-6">

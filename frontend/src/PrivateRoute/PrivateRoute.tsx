@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectUser,UserIsAuthenticated } from '../Redux/slices/authSlice';
+import { UserIsAuthenticated } from '../Redux/slices/authSlice';
 import { DoctorIsAuthenticated } from '../Redux/slices/doctorAuthSlice';
 import { AdminIsAuthenticated } from '../Redux/slices/adminSlice';
 
@@ -31,7 +31,6 @@ export const DoctorPublicRoute = () => {
 };
 export const DoctorPrivateRoute = () => {
   const  isAuthenticated  = useSelector(DoctorIsAuthenticated);
-  
   return isAuthenticated ? <Outlet /> : <Navigate to='/doctorLogin' replace />;
 
 };

@@ -5,6 +5,8 @@ interface GenerateTokenOptions {
   userId: any;
 }
 const generateToken = ({  userId }: GenerateTokenOptions): { token: string }=> {
+  console.log(process.env.JWT_SECRET,'(((((((((((');
+  
   const token = jwt.sign({ userId }, process.env.JWT_SECRET as string, {
     expiresIn: '30d',
   });

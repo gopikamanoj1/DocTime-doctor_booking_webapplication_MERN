@@ -109,7 +109,7 @@ io.on("connection", (socket: Socket) => {
       // If the user doesn't exist, add them to the array
       users.push({ id, socketId: socket.id });
     } else {
-      // If the user already exists, update their socket ID (in case they reconnected)
+     
       users[existingUserIndex].socketId = socket.id;
     }
 

@@ -11,9 +11,7 @@ export const useSocket = (): Socket<any>| null => {
             secure: true,
             transports: ['polling', 'websocket'], 
         }); 
-
         setSocket(newSocket);
-
         return () => {  
             newSocket.disconnect();
         };

@@ -14,7 +14,6 @@ function Chat() {
 
   const navigate = useNavigate();
   const handleUserSelection = (data: { convesationId: any; user: any }) => {
-    // console.log(data.user,'THIS IS DATAAA_');
     
     setSelectedUser(data.user);
     navigate(`/showChat/${data.convesationId}`);

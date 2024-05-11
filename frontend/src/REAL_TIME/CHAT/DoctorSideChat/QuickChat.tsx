@@ -17,7 +17,6 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
     setSelectedUser(user);
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,9 +66,8 @@ const QuickChat: React.FC<QuickChatProps> = ({ onUserSelect, socket }) => {
             </span>
           </div>
           <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
-            {users   && users.length > 0 &&  (
+            {users && users.length > 0 && (
               <>
-               
                 {users &&
                   users.map((user, index) => (
                     <button
