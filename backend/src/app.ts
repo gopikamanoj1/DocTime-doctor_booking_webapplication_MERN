@@ -134,10 +134,13 @@ io.on("connection", (socket: Socket) => {
 
     if (response && response.status && response.data) {
       const recipient = users.find((user:any) => user.id === recieverId);
-         const sender:any = users.find((user:any) => user.id === senderId)
+      const sender:any = users.find((user:any) => user.id === senderId)
       if (recipient) {
+        console.log('in the resptned');
+        
         io.to(recipient.socketId).to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type ,timestamp});
       }else{
+        console.log('in the sender');
         io.to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type ,timestamp});
       }
     }
