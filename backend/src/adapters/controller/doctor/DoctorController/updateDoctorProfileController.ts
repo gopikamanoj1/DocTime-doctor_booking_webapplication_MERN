@@ -19,22 +19,21 @@ export default (dependencies: any) => {
             
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image,age,dob } = req.body
 
+            let img:string=''
             if(image){
                 const s3UrlRegex = /^https:\/\/doctime3\.s3\.amazonaws\.com/;
                 const base64Regex = /^data:image\/([a-zA-Z]*);base64,/;
             
                 if (s3UrlRegex.test(image)) {
-                   
+                   img=image
                     console.log('Image is hosted on Amazon S3');
                 } else if (base64Regex.test(image)) {
-                   
+                    const imageUrl:any= await uploadToS3(image, `${email}-profileImage`);
+                    img=imageUrl
                     console.log('Image is a base64 string');
-                } else {
-                   
-                    console.log('Image format is not recognized');
-                }
+                } 
             }
-            // const imageUrl= await uploadToS3(image, `${email}-profileImage`);
+            // 
             const data = {
                 name,
                 email,
@@ -45,7 +44,7 @@ export default (dependencies: any) => {
                 state,
                 zipcode,
                 fees,
-                image,
+                image: img,
                 age,
                 dob
             }
