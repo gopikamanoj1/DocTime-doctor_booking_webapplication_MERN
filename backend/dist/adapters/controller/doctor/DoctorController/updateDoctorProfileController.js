@@ -8,6 +8,7 @@ exports.default = (dependencies) => {
     }
     const updateDoctorProfileController = async (req, res) => {
         try {
+            console.log(req.body, 'HHHHHHHHHHHHHHH');
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image, age, dob } = req.body;
             const imageUrl = await (0, imagesService_1.uploadToS3)(image, `${email}-profileImage`);
             const data = {
