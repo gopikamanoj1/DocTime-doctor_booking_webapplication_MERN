@@ -80,7 +80,6 @@ io.on("connection", (socket) => {
             users.push({ id, socketId: socket.id });
         }
         else {
-            // If the user already exists, update their socket ID (in case they reconnected)
             users[existingUserIndex].socketId = socket.id;
         }
         console.log(users, 'Users in the socket connection');
