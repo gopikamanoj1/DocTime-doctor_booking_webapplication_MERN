@@ -54,6 +54,7 @@ const uploadToS3 = async (file, fileName) => {
     const fileExtension = getFileExtension(file); // Function to get the file extension
     const contentType = getContentType(fileExtension); // Function to get the content type
     const convertedFile = Buffer.from(file.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+    console.log(convertedFile);
     const params = {
         Bucket: 'doctime3',
         Key: fileName,
@@ -64,9 +65,11 @@ const uploadToS3 = async (file, fileName) => {
     return new Promise((resolve, reject) => {
         s3.upload(params, (err, data) => {
             if (err) {
+                console.log(err, 'ERROR FROM S3');
                 reject(err);
             }
             else {
+                console.log("SUCCESS FROM S3");
                 resolve(data.Location);
             }
         });
