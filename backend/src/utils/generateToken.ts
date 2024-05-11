@@ -5,9 +5,8 @@ interface GenerateTokenOptions {
   userId: any;
 }
 const generateToken = ({  userId }: GenerateTokenOptions): { token: string }=> {
-  console.log(process.env.JWT_SECRET,'(((((((((((');
   
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET as string, {
+  const token = jwt.sign({ userId }, "abc@123", {
     expiresIn: '30d',
   });
   return {token};
@@ -15,7 +14,7 @@ const generateToken = ({  userId }: GenerateTokenOptions): { token: string }=> {
 export default generateToken;
 // Function to verify a JWT token and return the decoded payload
 export const verifyToken = (token: string) => {
-   return jwt.verify(token, process.env.JWT_SECRET as string);
+   return jwt.verify(token, "abc@123");
  };
 
 

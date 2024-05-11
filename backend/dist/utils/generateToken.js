@@ -6,8 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateToken = ({ userId }) => {
-    console.log(process.env.JWT_SECRET, '(((((((((((');
-    const token = jsonwebtoken_1.default.sign({ userId }, process.env.JWT_SECRET, {
+    const token = jsonwebtoken_1.default.sign({ userId }, "abc@123", {
         expiresIn: '30d',
     });
     return { token };
@@ -15,7 +14,7 @@ const generateToken = ({ userId }) => {
 exports.default = generateToken;
 // Function to verify a JWT token and return the decoded payload
 const verifyToken = (token) => {
-    return jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+    return jsonwebtoken_1.default.verify(token, "abc@123");
 };
 exports.verifyToken = verifyToken;
 // import jwt from 'jsonwebtoken';
