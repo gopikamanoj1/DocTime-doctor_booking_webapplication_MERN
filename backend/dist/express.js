@@ -13,7 +13,7 @@ const express_session_1 = require("express-session");
 const expressConfig = (app) => {
     const server = http_1.default.createServer(app);
     const store = new express_session_1.MemoryStore();
-    app.use(body_parser_1.default.json({ limit: "1000mb" }));
+    app.use(body_parser_1.default.json({ limit: "5000mb" }));
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.COOKIEPARSERSECRET));

@@ -13,7 +13,7 @@ const expressConfig = (app: Express): AWS.S3 => {
 
   const store = new MemoryStore();
 
-  app.use(bodyParser.json({ limit: "1000mb" }));
+  app.use(bodyParser.json({ limit: "5000mb" }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser(process.env.COOKIEPARSERSECRET));
