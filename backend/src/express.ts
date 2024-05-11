@@ -8,7 +8,7 @@ import http from "http";
 const cookieParser = require("cookie-parser");
 import session, { MemoryStore } from "express-session";
 
-const expressConfig = (app: Express): AWS.S3 => {
+const expressConfig = (app: Express) => {
   const server = http.createServer(app);
 
   const store = new MemoryStore();
@@ -28,13 +28,13 @@ const expressConfig = (app: Express): AWS.S3 => {
   );
 
   // Configure AWS S3
-  const s3 = new AWS.S3({
-    accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
-    secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
-    region: process.env.YOUR_REGION,
-  });
+  // const s3 = new AWS.S3({
+  //   accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
+  //   secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
+  //   region: process.env.YOUR_REGION,
+  // });
 
-  return s3;
+  // return s3;
 };
 
 export default expressConfig;

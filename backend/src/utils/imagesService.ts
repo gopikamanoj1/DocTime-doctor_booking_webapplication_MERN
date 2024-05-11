@@ -1,14 +1,18 @@
 import AWS from 'aws-sdk';
 
-AWS.config.update({
-    accessKeyId: process.env.YOUR_ACCESS_KEY_ID as string ,
-    secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY as string,
-    region: process.env.YOUR_REGION  as string 
+// AWS.config.update({
+//     accessKeyId: process.env.YOUR_ACCESS_KEY_ID as string ,
+//     secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY as string,
+//     region: process.env.YOUR_REGION  as string 
+// });
+
+
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.YOUR_ACCESS_KEY_ID as string ,
+  secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY as string,
+  region: process.env.YOUR_REGION  as string 
 });
-
-
-
-const s3 = new AWS.S3();
 
 const getAudioContentType = (extension: string): string => {
     switch (extension.toLowerCase()) {

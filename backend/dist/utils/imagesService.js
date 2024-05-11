@@ -5,12 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadAudioToS3 = exports.uploadToS3 = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-aws_sdk_1.default.config.update({
+// AWS.config.update({
+//     accessKeyId: process.env.YOUR_ACCESS_KEY_ID as string ,
+//     secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY as string,
+//     region: process.env.YOUR_REGION  as string 
+// });
+const s3 = new aws_sdk_1.default.S3({
     accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
     secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
     region: process.env.YOUR_REGION
 });
-const s3 = new aws_sdk_1.default.S3();
 const getAudioContentType = (extension) => {
     switch (extension.toLowerCase()) {
         case 'mp3':

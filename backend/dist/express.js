@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const http_1 = __importDefault(require("http"));
 const cookieParser = require("cookie-parser");
 const express_session_1 = require("express-session");
@@ -24,11 +23,11 @@ const expressConfig = (app) => {
         credentials: true,
     }));
     // Configure AWS S3
-    const s3 = new aws_sdk_1.default.S3({
-        accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
-        secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
-        region: process.env.YOUR_REGION,
-    });
-    return s3;
+    // const s3 = new AWS.S3({
+    //   accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
+    //   secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
+    //   region: process.env.YOUR_REGION,
+    // });
+    // return s3;
 };
 exports.default = expressConfig;
