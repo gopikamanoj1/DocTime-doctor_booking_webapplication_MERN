@@ -28,8 +28,8 @@ exports.default = (dependecies) => {
                     }
                 ],
                 mode: "payment",
-                success_url: `http://localhost:5173/successAppointment`,
-                cancel_url: "http://localhost:5173/findDoctor",
+                success_url: `https://doctime.live/successAppointment`,
+                cancel_url: "https://doctime.live/findDoctor",
                 billing_address_collection: 'required',
                 customer_email: 'customer@example.com',
             });

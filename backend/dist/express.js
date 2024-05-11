@@ -16,12 +16,10 @@ const expressConfig = (app) => {
     app.use(body_parser_1.default.json({ limit: "100mb" }));
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
-    app.use(express_1.default.json());
-    app.use(express_1.default.urlencoded({ extended: false }));
     app.use(cookieParser(process.env.COOKIEPARSERSECRET));
-    app.use(express_1.default.static("public/"));
+    app.use(express_1.default.static("public/frontend/dist"));
     app.use((0, cors_1.default)({
-        origin: ["http://localhost:5173"],
+        origin: ["https://doctime.live"],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         credentials: true,
     }));

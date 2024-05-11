@@ -16,13 +16,12 @@ const expressConfig = (app: Express): AWS.S3 => {
   app.use(bodyParser.json({ limit: "100mb" }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser(process.env.COOKIEPARSERSECRET));
   app.use(express.static("public/frontend/dist"));
+ 
   app.use(
     cors({
-      origin: ["http://localhost:5173"],
+      origin: ["https://doctime.live"],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
     })
