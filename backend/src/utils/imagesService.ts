@@ -6,6 +6,8 @@ AWS.config.update({
     region: process.env.YOUR_REGION 
 });
 
+
+
 const s3 = new AWS.S3();
 
 const getAudioContentType = (extension: string): string => {

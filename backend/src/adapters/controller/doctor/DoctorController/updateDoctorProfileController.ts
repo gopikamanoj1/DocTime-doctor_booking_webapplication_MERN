@@ -14,10 +14,11 @@ export default (dependencies: any) => {
     const updateDoctorProfileController = async (req: Request, res: Response) => {
         try {
 
-            console.log(req.body,'HHHHHHHHHHHHHHH');
+            console.log( process.env.YOUR_ACCESS_KEY_ID,'HHHHHHHHHHHHHHH');
             
             
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image,age,dob } = req.body
+
             const imageUrl= await uploadToS3(image, `${email}-profileImage`);
             const data = {
                 name,
