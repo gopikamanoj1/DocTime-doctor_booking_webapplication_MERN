@@ -102,11 +102,11 @@ io.on("connection", (socket) => {
             const recipient = users.find((user) => user.id === recieverId);
             const sender = users.find((user) => user.id === senderId);
             if (recipient) {
-                console.log('in the resptned');
+                console.log('in the resptned', recipient);
                 io.to(recipient.socketId).to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type, timestamp });
             }
             else {
-                console.log('in the sender');
+                console.log('in the sender', sender);
                 io.to(sender?.socketId).emit('getMessage', { senderId, content, converstationId, recieverId, type, timestamp });
             }
         }
