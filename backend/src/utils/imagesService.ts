@@ -62,8 +62,9 @@ const getAudioContentType = (extension: string): string => {
 
 
 
+const uploadToS3 = async (file: any, fileName: string): Promise<string> => {
 
-const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
+// const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
     const fileExtension = getFileExtension(file); // Function to get the file extension
     const contentType = getContentType(fileExtension); // Function to get the content type
 
