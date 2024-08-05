@@ -65,7 +65,7 @@ app.use((0, express_session_1.default)(sessionOptions));
 // Configure Express
 (0, express_1.default)(app);
 const io = require('socket.io')(server, {
-    cors: { origin: ["http://localhost:5173", "http://localhost:3000"] }
+    cors: { origin: ["http://localhost:5173", "http://localhost:3000", 'https://doctime-doctor-booking-webapplication-42qm.onrender.com', 'https://doctime-doctor-booking-webapplication.onrender.com'] }
 });
 let users = [];
 const addUser = (userId, socketId) => {

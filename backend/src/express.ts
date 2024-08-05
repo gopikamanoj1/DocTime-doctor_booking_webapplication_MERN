@@ -33,7 +33,7 @@ const expressConfig = (app: Express) => {
 
   app.use(
     cors({
-      origin: ["http://localhost:5173", "http://localhost:3000"],
+      origin: ["http://localhost:5173", "http://localhost:3000", 'https://doctime-doctor-booking-webapplication-42qm.onrender.com', 'https://doctime-doctor-booking-webapplication.onrender.com'],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
     })

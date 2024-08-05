@@ -80,7 +80,7 @@ declare module 'express-session' {
 
 const io: Server = require('socket.io')(server,{
   cors: { origin:
-     ["http://localhost:5173", "http://localhost:3000"] }
+     ["http://localhost:5173", "http://localhost:3000", 'https://doctime-doctor-booking-webapplication-42qm.onrender.com', 'https://doctime-doctor-booking-webapplication.onrender.com'] }
 });
 
 
