@@ -6,6 +6,9 @@ import { doctorController } from '../../controller'
 import { adminPatientController } from '../../controller'
 import { adminDoctorController } from '../../controller';
 import { adminDashBoardController } from '../../controller';
+import upload from '../../../utils/multerConfig';
+
+
 export default (dependencies: any) => {
   const router = express();
 
@@ -31,7 +34,7 @@ export default (dependencies: any) => {
   router.get('/logout', logoutController);
   router.get('/resendOtp', resendOtpController);
   router.get('/findDoctor', findDoctorController);
-  router.post('/updatePatientProfile', updatePatientProfileController);
+  router.post('/updatePatientProfile',upload.single('image'), updatePatientProfileController);
   router.get('/viewDoctorDetails/:id', viewDoctorDetailsController);
   router.get('/getAvailableSlot/:id', getAvailableSlotController);
   router.post('/generateOtp', generateOtpController);
@@ -69,7 +72,7 @@ export default (dependencies: any) => {
   router.post('/doctorVerifyOtp', doctorVerifyOtpController);
   router.get('/doctorLogout', doctorLogoutController)
   router.post('/kycAuth', kycController);
-  router.post('/updateDoctorProfile', updateDoctorProfileController)
+  router.post('/updateDoctorProfile',upload.single('image'), updateDoctorProfileController)
   router.get('/google', googleRegisterController);
   // router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
   router.post('/addSlot', addSlotController)

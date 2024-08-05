@@ -1,5 +1,5 @@
 
-import { uploadToS3 } from "../../../utils/imagesService";
+import { uploadImage } from "../../../utils/imagesService";
 
 export default function sendImageUseCase(dependencies: any) {
     const { userRepositery } = dependencies.repositery;
@@ -16,7 +16,7 @@ export default function sendImageUseCase(dependencies: any) {
         const fileName = `${senderId}_${converstationId}_${Date.now()}.mp3`;
 
         // Upload the audio to S3 and get the file URL
-        let imageUrl = await uploadToS3(content, fileName);
+        let imageUrl = await uploadImage(content);
 
 
         const data = {
@@ -27,7 +27,6 @@ export default function sendImageUseCase(dependencies: any) {
             timestamp,
             content: imageUrl,
         };
-        console.log("koko image sending usecase data ", data);
 
         const response = await userRepositery.sendImage(data)
         console.log(response, "image sending usecase ");

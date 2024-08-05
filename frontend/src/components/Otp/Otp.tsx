@@ -1,29 +1,182 @@
-import React, { useState, useRef } from "react";
-import "../Otp/Otp.css";
-import { Link, useNavigate } from "react-router-dom";
+
+// function Otp() {
+//   const [enteredOtp, setEnteredOtp] = useState("");
+//   const inputRefs = [
+//     useRef<HTMLInputElement>(null),
+//     useRef<HTMLInputElement>(null),
+//     useRef<HTMLInputElement>(null),
+//     useRef<HTMLInputElement>(null),
+//   ];
+//   const [error, setError] = useState<string>("");
+//   const navigate = useNavigate();
+
+//   const handleGetOtp = async () => {
+//     try {
+//       const email = localStorage.getItem("userEmail");
+//       const data = {
+//         email,
+//       };
+//       const response = await axiosInstance.post("/api/auth/generateOtp", data);
+//       if (response) {
+//         toast.success("OTP Sent Successfully");
+//       } else {
+//         toast.error("Failed to Send OTP");
+//       }
+//     } catch (error) {
+//       console.error("Error sending OTP:", error);
+//       toast.error("Failed to Send OTP");
+//     }
+//   };
+
+//   const handleInputChange = (index: number, value: string) => {
+//     // Handle input change and move to the next input field
+//     if (value) {
+//       setEnteredOtp((prevOtp) => prevOtp + value);
+//     }
+
+//     if (index < inputRefs.length - 1) {
+//       inputRefs[index + 1].current?.focus();
+//     }
+//   };
+
+//   const handleKeyDown = (
+//     index: number,
+//     e: React.KeyboardEvent<HTMLInputElement>
+//   ) => {
+//     // Handle backspace to remove the last entered digit
+//     if (e.key === "Backspace" && index > 0) {
+//       const currentInput = inputRefs[index].current;
+//       const previousInput = inputRefs[index - 1].current;
+
+//       // If the current input is empty, remove the digit from the previous input
+//       if (currentInput && previousInput && !currentInput.value) {
+//         setEnteredOtp((prevOtp) => prevOtp.slice(0, -1));
+//         previousInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleVerify = async () => {
+//     try {
+//       console.log("hhhhhhhhhhhhh");
+//       const response = await axiosInstance.post("/api/auth/verifyOtp", {
+//         enteredOtp: enteredOtp,
+//       });
+      
+//       // Handle the response from the backend
+//       console.log(response.data);
+//       if (response.data && response.data.status) {
+//         localStorage.removeItem("userEmail");
+
+//         // Redirect to "/enterOtp" after successful registration
+//         navigate("/login");
+//       } else {
+//         setError("User registration failed");
+//       }
+//     } catch (error) {
+//       console.error("Error verifying OTP:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="otpDiv">
+//       <form className="otp-Form">
+//         <span className="mainHeading">Enter OTP</span>
+//         <p className="otpSubheading">
+//           We have sent a verification code to your Email
+//         </p>
+//         <div className="inputContainer">
+//           {[0, 1, 2, 3].map((index) => (
+//             <input
+//               key={index}
+//               ref={inputRefs[index]}
+//               required
+//               maxLength={1}
+//               type="text"
+//               className="otp-input"
+//               onChange={(e) => handleInputChange(index, e.target.value)}
+//               onKeyDown={(e) => handleKeyDown(index, e)}
+//             />
+//           ))}
+//         </div>
+//         <button type="button" className="verifyButton" onClick={handleVerify}>
+//           Verify
+//         </button>
+//         <button className="exitBtn">×</button>
+//         <p className="resendNote">
+//           Didn't receive the code?{" "}
+//           <button onClick={handleGetOtp} className="resendBtn">
+//             Resend Code
+//           </button>
+//         </p>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default Otp;
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 import { toast } from "react-toastify";
 
-function Otp() {
-  const [enteredOtp, setEnteredOtp] = useState("");
-  const inputRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ];
-  const [error, setError] = useState<string>("");
+const Otp = () => {
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const [resendEnabled, setResendEnabled] = useState(false);
+  const [countdown, setCountdown] = useState(60);
   const navigate = useNavigate();
+  const [error, setError] = useState<string>("");
 
-  const handleGetOtp = async () => {
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    } else {
+      setResendEnabled(true);
+    }
+  }, [countdown]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const { value } = e.target;
+    if (/^[0-9]$/.test(value) || value === '') {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+    }
+  };
+
+  const handleVerify = async () => {
+    try {
+      const response = await axiosInstance.post("/api/auth/verifyOtp", {
+        enteredOtp: otp.join(''),
+      });
+
+      if (response.data && response.data.status) {
+        localStorage.removeItem("userEmail");
+        navigate("/login");
+        toast.success('Registration Completed')
+      } else {
+        setError("User registration failed");
+        toast.error("OTP verification failed");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setError("An error occurred during OTP verification");
+      toast.error("An error occurred during OTP verification");
+    }
+  };
+
+  const handleResend = async () => {
     try {
       const email = localStorage.getItem("userEmail");
-      const data = {
-        email,
-      };
+      const data = { email };
+
       const response = await axiosInstance.post("/api/auth/generateOtp", data);
       if (response) {
-        toast.success("OTP Sent Successfully");
+        toast.success("OTP Resent Successfully");
       } else {
         toast.error("Failed to Send OTP");
       }
@@ -31,92 +184,53 @@ function Otp() {
       console.error("Error sending OTP:", error);
       toast.error("Failed to Send OTP");
     }
-  };
-
-  const handleInputChange = (index: number, value: string) => {
-    // Handle input change and move to the next input field
-    if (value) {
-      setEnteredOtp((prevOtp) => prevOtp + value);
-    }
-
-    if (index < inputRefs.length - 1) {
-      inputRefs[index + 1].current?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    // Handle backspace to remove the last entered digit
-    if (e.key === "Backspace" && index > 0) {
-      const currentInput = inputRefs[index].current;
-      const previousInput = inputRefs[index - 1].current;
-
-      // If the current input is empty, remove the digit from the previous input
-      if (currentInput && previousInput && !currentInput.value) {
-        setEnteredOtp((prevOtp) => prevOtp.slice(0, -1));
-        previousInput.focus();
-      }
-    }
-  };
-
-  const handleVerify = async () => {
-    try {
-      console.log("hhhhhhhhhhhhh");
-      const response = await axiosInstance.post("/api/auth/verifyOtp", {
-        enteredOtp: enteredOtp,
-      });
-      
-      // Handle the response from the backend
-      console.log(response.data);
-      if (response.data && response.data.status) {
-        localStorage.removeItem("userEmail");
-
-        // Redirect to "/enterOtp" after successful registration
-        navigate("/login");
-      } else {
-        setError("User registration failed");
-      }
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-    }
+    setCountdown(60);
+    setResendEnabled(false);
   };
 
   return (
-    <div className="otpDiv">
-      <form className="otp-Form">
-        <span className="mainHeading">Enter OTP</span>
-        <p className="otpSubheading">
+    <div className="flex flex-col items-center justify-center ">
+      <div className="bg-slate-200 p-8 rounded shadow-md w-80">
+        <h2 className="text-xl font-bold mb-4 text-center">Enter OTP</h2>
+        <p className="text-gray-600 mb-6 text-center">
           We have sent a verification code to your Email
         </p>
-        <div className="inputContainer">
-          {[0, 1, 2, 3].map((index) => (
+        <div className="flex justify-center mb-4">
+          {otp.map((digit, index) => (
             <input
               key={index}
-              ref={inputRefs[index]}
-              required
-              maxLength={1}
               type="text"
-              className="otp-input"
-              onChange={(e) => handleInputChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(e, index)}
+              className="w-10 h-10 m-2 text-center text-xl border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-900"
             />
           ))}
         </div>
-        <button type="button" className="verifyButton" onClick={handleVerify}>
+        <button
+          onClick={handleVerify}
+          className="w-full py-2 bg-cyan-900 text-white rounded hover:bg-cyan-950 transition-colors"
+        >
           Verify
         </button>
-        <button className="exitBtn">×</button>
-        <p className="resendNote">
-          Didn't receive the code?{" "}
-          <button onClick={handleGetOtp} className="resendBtn">
-            Resend Code
-          </button>
-        </p>
-      </form>
+        {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+        <div className="mt-4 text-center">
+          {countdown > 0 ? (
+            <p className="text-gray-600">Resend Code in {countdown}s</p>
+          ) : (
+            <button
+              onClick={handleResend}
+              disabled={!resendEnabled}
+              className="text-purple-600 underline hover:text-purple-700 focus:outline-none"
+            >
+              Resend Code
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Otp;
+ 

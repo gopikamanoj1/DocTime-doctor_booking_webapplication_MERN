@@ -1,5 +1,5 @@
-import  DatabaseSchema  from './Schema';
+    import  DatabaseSchema  from './Schema';
 
-export {
-    DatabaseSchema
-}
+    export {
+        DatabaseSchema
+    }

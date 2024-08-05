@@ -1,7 +1,7 @@
 
 
 import { Request, Response } from "express";
-import {uploadToS3} from "../../../../utils/imagesService";
+import {uploadImage} from "../../../../utils/imagesService";
 
 export default (dependencies: any) => {
     const { kycUseCase } = dependencies.useCase;
@@ -14,8 +14,8 @@ export default (dependencies: any) => {
         try {
             const { certificateImage, qualificationImage, aadhaarNumber, yearsOfExperience, hospitalName, email } = req.body;
             
-            const certificateImageUrl = await uploadToS3(certificateImage, `${email}-certificate.jpg`);
-            const qualificationImageUrl = await uploadToS3(qualificationImage, `${email}-qualification.jpg`);
+            const certificateImageUrl = await uploadImage(certificateImage);
+            const qualificationImageUrl = await uploadImage(qualificationImage);
             
 
 

@@ -1,30 +1,28 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const imagesService_1 = require("../../../../utils/imagesService");
 exports.default = (dependencies) => {
     const { updateDoctorProfileUseCase } = dependencies.useCase;
     if (!updateDoctorProfileUseCase) {
-        console.log('EROOOOORRR');
+        console.log('error ');
     }
-    const updateDoctorProfileController = async (req, res) => {
+    const updateDoctorProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log(process.env.YOUR_ACCESS_KEY_ID, 'HHHHHHHHHHHHHHH');
-            const { name, email, phone, specialization, street, city, state, zipcode, fees, image, age, dob } = req.body;
-            let img = '';
+            const { name, email, phone, specialization, street, city, state, fees, image, age, dob } = req.body;
+            let imageUrl = null; // Default value for imageUrl
             if (image) {
-                const s3UrlRegex = /^https:\/\/doctime3\.s3\.amazonaws\.com/;
-                const base64Regex = /^data:image\/([a-zA-Z]*);base64,/;
-                if (s3UrlRegex.test(image)) {
-                    img = image;
-                    console.log('Image is hosted on Amazon S3');
-                }
-                else if (base64Regex.test(image)) {
-                    const imageUrl = await (0, imagesService_1.uploadToS3)(image, `${email}-profileImage`);
-                    img = imageUrl;
-                    console.log('Image is a base64 string');
-                }
+                // Upload to Cloudinary if an image is provided
+                imageUrl = yield (0, imagesService_1.uploadImage)(image);
             }
-            // 
             const data = {
                 name,
                 email,
@@ -33,16 +31,12 @@ exports.default = (dependencies) => {
                 street,
                 city,
                 state,
-                zipcode,
                 fees,
-                image: img,
                 age,
-                dob
+                dob,
+                image: imageUrl
             };
-            console.log(data, "data in updateDoctorProfileController");
-            // req.session.doctorProfile = data;
-            const response = await updateDoctorProfileUseCase(dependencies).executeFunction(data);
-            // console.log(response,"res in new contro");
+            const response = yield updateDoctorProfileUseCase(dependencies).executeFunction(data);
             if (response) {
                 res.status(200).json({ status: true, data: response.data });
             }
@@ -53,6 +47,6 @@ exports.default = (dependencies) => {
         catch (error) {
             console.log(error, "error in profile controller ");
         }
-    };
+    });
     return updateDoctorProfileController;
 };

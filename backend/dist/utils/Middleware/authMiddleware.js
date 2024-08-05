@@ -7,7 +7,7 @@ const generateToken_1 = require("../generateToken");
 // Middleware to verify JWT tokens
 const authMiddleware = (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
-    const token = authorizationHeader?.split(' ')[1]; // Extract Bearer token
+    const token = authorizationHeader === null || authorizationHeader === void 0 ? void 0 : authorizationHeader.split(' ')[1]; // Extract Bearer token
     if (!token) {
         return res.status(401).json({ status: false, message: 'No token provided' });
     }

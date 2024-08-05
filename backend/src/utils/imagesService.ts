@@ -63,88 +63,88 @@ const getAudioContentType = (extension: string): string => {
 
 
 //=================//====================//====================//====================//=====================//===================//
+//=================//====================//====================//====================//=====================//===================//
+//=================//====================//====================//====================//=====================//===================//
 
 
 
-const uploadToS3 = async (file: any, fileName: string): Promise<string> => {
 
-// const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
-    const fileExtension = getFileExtension(file); // Function to get the file extension
-    const contentType = getContentType(fileExtension); // Function to get the content type
+// const uploadToS3 = async (file: any, fileName: string): Promise<string> => {
 
-    const convertedFile: any =  Buffer.from(file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
-         console.log(convertedFile);
+// // const uploadToS3 = async (file: any, fileName: string): Promise<void> => {
+//     const fileExtension = getFileExtension(file); // Function to get the file extension
+//     const contentType = getContentType(fileExtension); // Function to get the content type
+
+//     const convertedFile: any =  Buffer.from(file.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+//          console.log(convertedFile);
          
-    const params = {
-        Bucket: 'doctime3',
-        Key: fileName,
-        Body: convertedFile,
-        ACL: 'public-read',
-        ContentType: contentType,
-    };
+//     const params = {
+//         Bucket: 'doctime3',
+//         Key: fileName,
+//         Body: convertedFile,
+//         // ACL: 'public-read',
+//         ContentType: contentType,
+//     };
 
 
-    return new Promise((resolve, reject) => {
-        s3.upload(params, (err: any, data: any) => {
-            if (err) {
-              console.log(err,'ERROR FROM S3');
+//     return new Promise((resolve, reject) => {
+//         s3.upload(params, (err: any, data: any) => {
+//             if (err) {
+//               console.log(err,'ERROR FROM S3');
               
-                reject(err);
-            } else {
-              console.log("SUCCESS FROM S3");
+//                 reject(err);
+//             } else {
+//               console.log("SUCCESS FROM S3");
               
-                resolve(data.Location);
-            }
-        });
+//                 resolve(data.Location);
+//             }
+//         });
+//     });
+// };
+import cloudinary from './cloudinaryConfig';
+import { UploadApiResponse } from 'cloudinary';
+
+const uploadImage = async (base64Image: string): Promise<string> => {
+  try {
+    const result: UploadApiResponse = await cloudinary.uploader.upload(base64Image, {
+      folder: 'images',
+      resource_type: 'image'  // Explicitly specify resource type as image
     });
+    return result.secure_url;
+  } catch (error) {
+    console.error('Error uploading to Cloudinary:', error);
+    throw error;
+  }
 };
 
+export default uploadImage;
 
-const deleteFromS3 = async (fileName: string): Promise<void> => {
-    const params = {
-        Bucket: 'doctime3',
-        Key: fileName,
-    };
 
-    return new Promise((resolve, reject) => {
-        s3.deleteObject(params, (err: any, data: any) => {
-            if (err) {
-                // Ignore error if the file doesn't exist
-                if (err.code === 'NoSuchKey') {
-                    resolve();
-                } else {
-                    reject(err);
-                }
-            } else {
-                resolve();
-            }
-        });
-    });
-};
 
-const getFileExtension = (file: string): string => {
-    // Extract the file extension from the data URI
-    const matches = /^data:image\/([a-zA-Z+]+);base64,/.exec(file);
-    if (matches && matches.length > 1) {
-        return matches[1];
-    }
-    return ''; // Return empty string if file extension is not found
-};
 
-const getContentType = (extension: string): string => {
-    // Map file extensions to content types
-    switch (extension.toLowerCase()) {
-        case 'jpeg':
-        case 'jpg':
-            return 'image/jpeg';
-        case 'png':
-            return 'image/png';
-        case 'gif':
-            return 'image/gif';
-        // Add more cases for other file types if needed
-        default:
-            return 'application/octet-stream'; // Default content type
-    }
-};
+// const getFileExtension = (file: string): string => {
+//     // Extract the file extension from the data URI
+//     const matches = /^data:image\/([a-zA-Z+]+);base64,/.exec(file);
+//     if (matches && matches.length > 1) {
+//         return matches[1];
+//     }
+//     return ''; // Return empty string if file extension is not found
+// };
 
-export { uploadToS3,uploadAudioToS3};
+// const getContentType = (extension: string): string => {
+//     // Map file extensions to content types
+//     switch (extension.toLowerCase()) {
+//         case 'jpeg':
+//         case 'jpg':
+//             return 'image/jpeg';
+//         case 'png':
+//             return 'image/png';
+//         case 'gif':
+//             return 'image/gif';
+//         // Add more cases for other file types if needed
+//         default:
+//             return 'application/octet-stream'; // Default content type
+//     }
+// };
+
+export { uploadImage,uploadAudioToS3};

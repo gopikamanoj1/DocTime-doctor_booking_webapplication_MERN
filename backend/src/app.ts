@@ -1,3 +1,5 @@
+import dotenv from 'dotenv'
+dotenv.config()
 import http from 'http'
 import serverConfig from './server'
 import connectDB from './config/db.connect'
@@ -6,14 +8,14 @@ import config from './config/config'
 import expresscofig from './express'
 import express from 'express'
 import dependencies from './frameworks/config/dependencies'
-import dotenv from 'dotenv'
+
 import session, { SessionOptions, MemoryStore, SessionData } from "express-session";
 import { Server, Socket } from 'socket.io';
 
 
 const app = express()
 const server = http.createServer(app)
-dotenv.config()
+
 connectDB(config)
 const store = new MemoryStore();
 
@@ -78,7 +80,7 @@ declare module 'express-session' {
 
 const io: Server = require('socket.io')(server,{
   cors: { origin:
-     ["http://localhost:5173", "https://doctime.live"] }
+     ["http://localhost:5173", "http://localhost:3000"] }
 });
 
 

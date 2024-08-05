@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {uploadToS3} from "../../../../utils/imagesService";
+import {uploadImage} from "../../../../utils/imagesService";
 
 
 export default (dependencies: any) => {
@@ -13,7 +13,7 @@ export default (dependencies: any) => {
         const {image}=req.body
         console.log(image,"image");
         
-        const imageUrl= await uploadToS3(image, '-sendImage');
+        const imageUrl= await uploadImage(image);
   
         const data={
           imageUrl

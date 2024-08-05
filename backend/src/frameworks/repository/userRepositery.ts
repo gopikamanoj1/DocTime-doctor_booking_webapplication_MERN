@@ -36,13 +36,8 @@ export default {
 
   createUser: async (data: any) => {
     // console.log(data,"createUserdata");
-
     try {
       const { name, email, password } = data;
-
-
-
-
       const user = new DatabaseSchema.User({
         name,
         email,

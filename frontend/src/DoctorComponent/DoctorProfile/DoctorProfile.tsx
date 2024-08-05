@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../Loading/Loading";
@@ -9,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const DoctorProfile: React.FC = () => {
   const navigate = useNavigate();
-  const Doctor = useSelector((state:any)=>state.persisted.doctorAuth);
+  const Doctor = useSelector((state: any) => state.persisted.doctorAuth);
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -18,11 +17,9 @@ const DoctorProfile: React.FC = () => {
   const [street, setStreet] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [state, setState] = useState<string>("");
-  const [zipcode, setZipcode] = useState<string>("");
   const [fees, setFees] = useState<string>("");
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
   const [age, setAge] = useState<string>("");
-  const [dob, setDOB] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
 
   // ===========================================================================
@@ -38,10 +35,8 @@ const DoctorProfile: React.FC = () => {
   const [streetError, setStreetError] = useState<string | null>(null);
   const [cityError, setCityError] = useState<string | null>(null);
   const [stateError, setStateError] = useState<string | null>(null);
-  const [zipcodeError, setZipcodeError] = useState<string | null>(null);
   const [feesError, setFeesError] = useState<string | null>(null);
   const [ageError, setAgeError] = useState<string | null>(null);
-  const [dobError, setDOBError] = useState<string | null>(null);
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -52,7 +47,6 @@ const DoctorProfile: React.FC = () => {
         file
       );
       if (event.target.id === "imageInput") {
-        
         setImage(convertedFile);
       }
     }
@@ -62,7 +56,7 @@ const DoctorProfile: React.FC = () => {
   };
 
   const handleUpdateEmailClick = () => {
-    navigate('/UpdateEmailForDoc')
+    navigate("/UpdateEmailForDoc");
   };
 
   const convertToBase64 = (
@@ -94,14 +88,7 @@ const DoctorProfile: React.FC = () => {
     return true;
   };
 
-  const validateDOB = (value: Date | null) => {
-    if (!value) {
-      setDOBError("Date of birth is required");
-      return false;
-    }
-    setDOBError(null);
-    return true;
-  };
+
 
   const validateName = (value: string) => {
     if (!value) {
@@ -176,19 +163,7 @@ const DoctorProfile: React.FC = () => {
     return true;
   };
 
-  const validateZipcode = (value: string) => {
-    const zipcodeRegex = /^\d{5}$/;
-    if (!value) {
-      setZipcodeError("Zipcode is required");
-      return false;
-    }
-    if (!zipcodeRegex.test(value)) {
-      setZipcodeError("Invalid zipcode format");
-      return false;
-    }
-    setZipcodeError(null);
-    return true;
-  };
+
 
   const validateFees = (value: string) => {
     if (!value) {
@@ -210,10 +185,8 @@ const DoctorProfile: React.FC = () => {
     const isStreetValid = validateStreet(street);
     const isCityValid = validateCity(city);
     const isStateValid = validateState(state);
-    const isZipcodeValid = validateZipcode(zipcode);
     const isFeesValid = validateFees(fees);
     const isAgeValid = validateAge(age);
-    const isDobValid = validateDOB(dob);
 
     if (
       isNameValid &&
@@ -223,10 +196,8 @@ const DoctorProfile: React.FC = () => {
       isStreetValid &&
       isCityValid &&
       isStateValid &&
-      isZipcodeValid &&
       isFeesValid &&
-      isAgeValid &&
-      isDobValid
+      isAgeValid 
     ) {
       try {
         setLoading(true); // Set loading to true when the form is submitted
@@ -239,11 +210,9 @@ const DoctorProfile: React.FC = () => {
           street: street,
           city: city,
           state: state,
-          zipcode: zipcode,
           fees: fees,
           image: image,
           age: age,
-          dob: dob,
         };
 
         const response = await axiosInstance.post(
@@ -258,7 +227,10 @@ const DoctorProfile: React.FC = () => {
           // Check the status property of the response data
           toast.success("Successfully Updated");
           localStorage.removeItem("doctorProfile");
-          localStorage.setItem("doctorProfile", JSON.stringify(response.data.data));
+          localStorage.setItem(
+            "doctorProfile",
+            JSON.stringify(response.data.data)
+          );
         } else {
           toast.error("Error updating doctor profile");
         }
@@ -278,10 +250,8 @@ const DoctorProfile: React.FC = () => {
       setStreetError(null);
       setCityError(null);
       setStateError(null);
-      setZipcodeError(null);
       setFeesError(null);
       setAgeError(null);
-      setDOBError(null);
     }, 5000);
     return () => clearTimeout(timer);
   }, [
@@ -292,10 +262,8 @@ const DoctorProfile: React.FC = () => {
     streetError,
     cityError,
     stateError,
-    zipcodeError,
     feesError,
     ageError,
-    dobError,
   ]);
 
   useEffect(() => {
@@ -305,54 +273,43 @@ const DoctorProfile: React.FC = () => {
     );
     console.log(doctorProfileData, "goooooooooooooo;opojzsp");
 
- 
-
     if (doctorProfileData) {
-      console.log('HERE',doctorProfileData);
-      
+      console.log("HERE", doctorProfileData);
+
       const storedSpecialization = doctorProfileData.specialization || "";
       const storedName = doctorProfileData.name || "";
       const storedEmail = doctorProfileData.email || "";
       const storedPhone = doctorProfileData.phone || "";
-      if(doctorProfileData.address && doctorProfileData.address.length >0  ){
+      if (doctorProfileData.address && doctorProfileData.address.length > 0) {
         const storedStreet = doctorProfileData?.address[0]?.street || "";
         const storedCity = doctorProfileData?.address[0]?.city || "";
         const storedState = doctorProfileData?.address[0]?.state || "";
-        const storedZipcode = doctorProfileData?.address[0]?.zipCode || "";
         setStreet(storedStreet);
         setCity(storedCity);
         setState(storedState);
-        setZipcode(storedZipcode);
       }
+
+      const storedFees = doctorProfileData.fees || "";
+      const storedImage = doctorProfileData.image || "";
+      const storedAge = doctorProfileData.age || "";
      
-   
 
-    const storedFees = doctorProfileData.fees || "";
-    const storedImage = doctorProfileData.image || "";
-    const storedAge = doctorProfileData.age || "";
-    const storedDob = doctorProfileData.dob || "";
-console.log(storedName,storedEmail,storedPhone,storedSpecialization,storedFees,storedImage,storedFees,storedImage,')))))))))))))))))))))))');
-
-    // Update state with fetched data 
-    setName(storedName);
-    setEmail(storedEmail);
-    setPhone(storedPhone);
-    setSpecialization(storedSpecialization);
-    setFees(storedFees);
-    setImage(storedImage);
-    setAge(storedAge);
-    setDOB(storedDob);
-    console.log('updated');
-    
-  } else {
-    console.warn("Address data is missing or undefined");
-  }
+      // Update state with fetched data
+      setName(storedName);
+      setEmail(storedEmail);
+      setPhone(storedPhone);
+      setSpecialization(storedSpecialization);
+      setFees(storedFees);
+      setImage(storedImage);
+      setAge(storedAge);
+      console.log("updated");
+    } else {
+      console.warn("Address data is missing or undefined");
+    }
   }, []);
 
-  useEffect(()=>{
-console.log(name,email,phone,specialization,age,fees,dob,'TTTTTT');
-
-  },[name,email,phone,specialization,age,fees,dob])
+  useEffect(() => {
+  }, [name, email, phone, specialization, age, fees]);
   return (
     <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
       {loading ? (
@@ -549,26 +506,26 @@ console.log(name,email,phone,specialization,age,fees,dob,'TTTTTT');
                       </div>
 
                       <div>
-                        <label htmlFor="dob" className="text-slate-400">
-                          Date of Birth
+                        <label htmlFor="fees" className="text-slate-400">
+                          Fees
                         </label>
-                        <br />
-
-                        <DatePicker
-                          selected={dob}
-                          onChange={(date: Date | null) => {
-                            setDOB(date);
-                            validateDOB(date);
-                          }}
-                          dateFormat="yyyy-MM-dd"
+                        <input
+                          style={{ fontWeight: "bold", color: "black" }}
+                          type="text"
+                          name="fees"
+                          id="fees"
                           className={`h-10 border mt-1 rounded px-4 w-full ${
-                            dobError ? "border-red-500" : "bg-gray-50"
+                            feesError ? "border-red-500" : "bg-gray-50"
                           }`}
+                          value={fees}
+                          onChange={(e) => {
+                            setFees(e.target.value);
+                            validateFees(e.target.value);
+                          }}
                         />
-
-                        {dobError && (
+                        {feesError && (
                           <p className="text-red-500 text-xs mt-1">
-                            {dobError}
+                            {feesError}
                           </p>
                         )}
                       </div>
@@ -625,30 +582,7 @@ console.log(name,email,phone,specialization,age,fees,dob,'TTTTTT');
                           </p>
                         )}
                       </div>
-                      <div className="md:col-span-2">
-                        <label htmlFor="fees" className="text-slate-400">
-                          Fees
-                        </label>
-                        <input
-                          style={{ fontWeight: "bold", color: "black" }}
-                          type="text"
-                          name="fees"
-                          id="fees"
-                          className={`h-10 border mt-1 rounded px-4 w-full ${
-                            feesError ? "border-red-500" : "bg-gray-50"
-                          }`}
-                          value={fees}
-                          onChange={(e) => {
-                            setFees(e.target.value);
-                            validateFees(e.target.value);
-                          }}
-                        />
-                        {feesError && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {feesError}
-                          </p>
-                        )}
-                      </div>
+                    
 
                       <div className="md:col-span-2">
                         <label htmlFor="address" className="text-slate-400">
@@ -725,30 +659,7 @@ console.log(name,email,phone,specialization,age,fees,dob,'TTTTTT');
                         )}
                       </div>
 
-                      <div>
-                        <label htmlFor="zipcode" className="text-slate-400">
-                          Zipcode
-                        </label>
-                        <input
-                          style={{ fontWeight: "bold", color: "black" }}
-                          type="text"
-                          name="zipcode"
-                          id="zipcode"
-                          className={`h-10 border mt-1 rounded px-4 w-full ${
-                            zipcodeError ? "border-red-500" : "bg-gray-50"
-                          }`}
-                          value={zipcode}
-                          onChange={(e) => {
-                            setZipcode(e.target.value);
-                            validateZipcode(e.target.value);
-                          }}
-                        />
-                        {zipcodeError && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {zipcodeError}
-                          </p>
-                        )}
-                      </div>
+                     
                     </div>
                   </div>
                 </div>

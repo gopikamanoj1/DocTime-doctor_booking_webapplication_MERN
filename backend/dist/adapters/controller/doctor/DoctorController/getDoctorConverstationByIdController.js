@@ -1,14 +1,23 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (dependecies) => {
     const { getDoctorConverstationByIdUseCase } = dependecies.useCase;
-    const getDoctorConverstationByIdController = async (req, res) => {
+    const getDoctorConverstationByIdController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id } = req.query;
             const data = {
                 id
             };
-            const response = await getDoctorConverstationByIdUseCase(dependecies).executeFunction(data);
+            const response = yield getDoctorConverstationByIdUseCase(dependecies).executeFunction(data);
             if (response && response.status && response.data) {
                 res.json({ status: true, data: response.data });
             }
@@ -19,6 +28,6 @@ exports.default = (dependecies) => {
         catch (error) {
             console.log(error, "error in viewDoctorDetailsController ");
         }
-    };
+    });
     return getDoctorConverstationByIdController;
 };

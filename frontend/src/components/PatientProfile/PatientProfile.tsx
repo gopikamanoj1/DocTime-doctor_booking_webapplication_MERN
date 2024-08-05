@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, Link } from "react-router-dom";
 import Loading from "../../Loading/Loading";
@@ -16,7 +15,6 @@ const PatientProfile: React.FC = () => {
   const [state, setState] = useState<string>("");
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
   const [age, setAge] = useState<string>("");
-  const [dob, setDOB] = useState<Date | null>(null);
   const [bloodGroup, setBloodGroup] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +27,6 @@ const PatientProfile: React.FC = () => {
   const [cityError, setCityError] = useState<string | null>(null);
   const [stateError, setStateError] = useState<string | null>(null);
   const [ageError, setAgeError] = useState<string | null>(null);
-  const [dobError, setDOBError] = useState<string | null>(null);
   const [bloodGroupError, setBloodGroupError] = useState<string | null>(null);
   const [genderError, setGenderError] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -109,14 +106,7 @@ const PatientProfile: React.FC = () => {
     return true;
   };
 
-  const validateDOB = (value: Date | null) => {
-    if (!value) {
-      setDOBError("Date of birth is required");
-      return false;
-    }
-    setDOBError(null);
-    return true;
-  };
+  
 
   const validateName = (value: string) => {
     if (!value) {
@@ -209,7 +199,6 @@ const PatientProfile: React.FC = () => {
     const isCityValid = validateCity(city);
     const isStateValid = validateState(state);
     const isAgeValid = validateAge(age);
-    const isDobValid = validateDOB(dob);
     const isBloodValid = validateBloodGroup(bloodGroup);
     const isGenderValid = validateGender(gender);
     if (
@@ -220,7 +209,6 @@ const PatientProfile: React.FC = () => {
       isCityValid &&
       isStateValid &&
       isAgeValid &&
-      isDobValid &&
       isBloodValid &&
       isGenderValid
     ) {
@@ -236,10 +224,11 @@ const PatientProfile: React.FC = () => {
           state: state,
           image: image,
           age: age,
-          dob: dob,
           bloodGroup: bloodGroup,
           gender: gender,
         };
+        console.log(data, "ddaattaatttaat");
+        
 
         const response = await axiosInstance.post(
           "/api/auth/updatePatientProfile",
@@ -284,7 +273,6 @@ const PatientProfile: React.FC = () => {
       setCityError(null);
       setStateError(null);
       setAgeError(null);
-      setDOBError(null);
       setBloodGroupError(null);
       setGenderError(null);
     }, 5000);
@@ -297,7 +285,6 @@ const PatientProfile: React.FC = () => {
     cityError,
     stateError,
     ageError,
-    dobError,
     bloodGroupError,
     genderError,
   ]);
@@ -339,7 +326,6 @@ const PatientProfile: React.FC = () => {
     setBloodGroup(storedBloodGroup);
     setImage(storedImage);
     setAge(storedAge);
-    setDOB(storedDob);
   }, []);
 
   return (
@@ -438,28 +424,8 @@ const PatientProfile: React.FC = () => {
                         )}
                       </div>
 
-                      {/* <div>
-                        <label  className="text-slate-400"  htmlFor="email">Email Address</label>
-                        <input
-                          style={{ fontWeight: "bold", color: "black" }}
-                          type="text"
-                          name="email"
-                          id="email"
-                          className={`h-10 border mt-1 rounded px-4 w-full ${
-                            emailError ? "border-red-500" : "bg-gray-50"
-                          }`}
-                          value={email}
-                          onChange={(e) => {
-                            setEmail(e.target.value);
-                            validateEmail(e.target.value);
-                          }}
-                        />
-                        {emailError && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {emailError}
-                          </p>
-                        )}
-                      </div> */}
+                  
+                    
 
                       <div style={{ position: "relative" }}>
                         <div>
@@ -546,30 +512,7 @@ const PatientProfile: React.FC = () => {
                         )}
                       </div>
 
-                      <div>
-                        <label className="text-slate-400" htmlFor="dob">
-                          Date of Birth
-                        </label>
-                        <br />
-
-                        <DatePicker
-                          selected={dob}
-                          onChange={(date: Date | null) => {
-                            setDOB(date);
-                            validateDOB(date);
-                          }}
-                          dateFormat="yyyy-MM-dd"
-                          className={`h-10 border mt-1 rounded px-4 w-full ${
-                            dobError ? "border-red-500" : "bg-gray-50"
-                          }`}
-                        />
-
-                        {dobError && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {dobError}
-                          </p>
-                        )}
-                      </div>
+                  
                       <div>
                         <label className="text-slate-400" htmlFor="blood_group">
                           Blood Group

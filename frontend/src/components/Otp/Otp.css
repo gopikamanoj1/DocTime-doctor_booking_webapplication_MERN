@@ -1,4 +1,4 @@
-.otp-Form {
+/* .otp-Form {
     width: 500px;
     height: 400px;
     background-color: rgb(255, 255, 255);
@@ -19,8 +19,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* height: 100vh; */
-    margin: 0 auto; /* This centers the div horizontally */
+    margin: 0 auto;
   }
   
   .mainHeading {
@@ -114,4 +113,4 @@
     cursor: pointer;
     font-size: 1.1em;
     font-weight: 700;
-  }
+  } */

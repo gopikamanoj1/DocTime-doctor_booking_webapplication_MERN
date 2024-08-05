@@ -10,6 +10,7 @@ const controller_3 = require("../../controller");
 const controller_4 = require("../../controller");
 const controller_5 = require("../../controller");
 const controller_6 = require("../../controller");
+const multerConfig_1 = __importDefault(require("../../../utils/multerConfig"));
 exports.default = (dependencies) => {
     const router = (0, express_1.default)();
     // ===============================================================================================
@@ -22,7 +23,7 @@ exports.default = (dependencies) => {
     router.get('/logout', logoutController);
     router.get('/resendOtp', resendOtpController);
     router.get('/findDoctor', findDoctorController);
-    router.post('/updatePatientProfile', updatePatientProfileController);
+    router.post('/updatePatientProfile', multerConfig_1.default.single('image'), updatePatientProfileController);
     router.get('/viewDoctorDetails/:id', viewDoctorDetailsController);
     router.get('/getAvailableSlot/:id', getAvailableSlotController);
     router.post('/generateOtp', generateOtpController);
@@ -51,7 +52,7 @@ exports.default = (dependencies) => {
     router.post('/doctorVerifyOtp', doctorVerifyOtpController);
     router.get('/doctorLogout', doctorLogoutController);
     router.post('/kycAuth', kycController);
-    router.post('/updateDoctorProfile', updateDoctorProfileController);
+    router.post('/updateDoctorProfile', multerConfig_1.default.single('image'), updateDoctorProfileController);
     router.get('/google', googleRegisterController);
     // router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
     router.post('/addSlot', addSlotController);

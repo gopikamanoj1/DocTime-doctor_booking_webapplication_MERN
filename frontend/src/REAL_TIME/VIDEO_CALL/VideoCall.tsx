@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRef, useEffect } from 'react'; // Import useRef and useEffect
 import axiosInstance from '../../AxiosConfig/axiosInstance';
-import { error } from 'console';
+
 const VideoCall = () => {
     let { roomId,appoinmentId }: any = useParams();
     const containerRef = useRef(null);

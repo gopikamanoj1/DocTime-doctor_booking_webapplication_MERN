@@ -1,8 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 function logoutUseCase(dependencies) {
     // Assuming you have session-related dependencies or cleanup logic
-    const executeFunction = async () => {
+    const executeFunction = () => __awaiter(this, void 0, void 0, function* () {
         try {
             // Place any necessary logic here for cleaning up or handling the logout process
             // For example, if you're using express-session, you might want to destroy the session
@@ -13,7 +22,7 @@ function logoutUseCase(dependencies) {
             console.error('Error during logout:', error);
             return { status: false, message: 'Internal Server Error' };
         }
-    };
+    });
     return { executeFunction };
 }
 exports.default = logoutUseCase;

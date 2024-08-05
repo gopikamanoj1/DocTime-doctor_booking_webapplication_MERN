@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,10 +16,10 @@ const database_1 = require("../database");
 const Schema_1 = __importDefault(require("../database/Schema"));
 let otp;
 exports.default = {
-    findDoctor: async (email) => {
+    findDoctor: (email) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log("finding Doctor");
-            const findDoctor = await database_1.DatabaseSchema.Doctor.findOne({
+            const findDoctor = yield database_1.DatabaseSchema.Doctor.findOne({
                 email: email,
             });
             console.log(findDoctor, "findDoctorfindDoctor");
@@ -24,11 +33,11 @@ exports.default = {
         catch (error) {
             console.log("error in repositery authencation repo in userEmailexist", error);
         }
-    },
-    getkycStatus: async (data) => {
+    }),
+    getkycStatus: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id } = data;
-            const doctor = await database_1.DatabaseSchema.Doctor.findById(id);
+            const doctor = yield database_1.DatabaseSchema.Doctor.findById(id);
             if (doctor) {
                 const kycStatus = doctor.kycStatus;
                 console.log(kycStatus, "kyc status");
@@ -41,8 +50,8 @@ exports.default = {
         catch (error) {
             console.log("error", error);
         }
-    },
-    createDoctor: async (data) => {
+    }),
+    createDoctor: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { name, email, password } = data;
             const doctor = new database_1.DatabaseSchema.Doctor({
@@ -50,7 +59,7 @@ exports.default = {
                 email,
                 password
             });
-            const response = await doctor.save();
+            const response = yield doctor.save();
             if (response) {
                 return { status: true, data: response };
             }
@@ -61,10 +70,10 @@ exports.default = {
         catch (error) {
             console.log("error in repository authentication repo in create user ", error);
         }
-    },
-    getDoctorByEmail: async (email) => {
+    }),
+    getDoctorByEmail: (email) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const doctor = await database_1.DatabaseSchema.Doctor.findOne({
+            const doctor = yield database_1.DatabaseSchema.Doctor.findOne({
                 email: email,
             });
             return doctor;
@@ -73,8 +82,8 @@ exports.default = {
             console.error('Error in getUserByEmail:', error);
             throw error;
         }
-    },
-    kycAuth: async (data) => {
+    }),
+    kycAuth: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log(data, "repo data");
             if (!data) {
@@ -82,7 +91,7 @@ exports.default = {
                 return { status: false, message: 'Data is undefined' };
             }
             const { email, kycDetails } = data;
-            const doctor = await database_1.DatabaseSchema.Doctor.findOne({ email });
+            const doctor = yield database_1.DatabaseSchema.Doctor.findOne({ email });
             if (!doctor) {
                 console.error('Doctor not found');
                 return { status: false, message: 'Doctor not found' };
@@ -91,7 +100,7 @@ exports.default = {
             kycDetails.forEach((detail) => {
                 doctor.kycDetails.push(detail);
             });
-            const response = await doctor.save();
+            const response = yield doctor.save();
             console.log(response, "kiokookokokoko");
             if (response) {
                 return { status: true, data: response };
@@ -104,12 +113,12 @@ exports.default = {
             console.error('Error in kycAuth:', error);
             return { status: false, message: 'Internal Server Error' };
         }
-    },
-    updateDoctorProfile: async (data) => {
+    }),
+    updateDoctorProfile: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { name, email, phone, specialization, street, city, state, zipcode, fees, image, age, dob } = data;
             // Find the doctor by email
-            const findDoctor = await database_1.DatabaseSchema.Doctor.findOne({ email });
+            const findDoctor = yield database_1.DatabaseSchema.Doctor.findOne({ email });
             if (findDoctor) {
                 // Update doctor's profile fields
                 findDoctor.name = name;
@@ -143,7 +152,7 @@ exports.default = {
                     findDoctor.address.push(newAddress);
                 }
                 // Save the changes to the database
-                await findDoctor.save();
+                yield findDoctor.save();
                 console.log(findDoctor, "true");
                 return { status: true, data: findDoctor };
             }
@@ -155,10 +164,10 @@ exports.default = {
             console.error('Error in updateDoctorProfile repo:', error);
             return { status: false, message: 'Error updating doctor profile' };
         }
-    },
-    getAllDoctors: async () => {
+    }),
+    getAllDoctors: () => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const Doctors = await database_1.DatabaseSchema.Doctor.find({ kycStatus: 'approved' });
+            const Doctors = yield database_1.DatabaseSchema.Doctor.find({ kycStatus: 'approved' });
             if (Doctors) {
                 return { status: true, doctors: Doctors };
             }
@@ -169,12 +178,12 @@ exports.default = {
         catch (error) {
             console.log(error);
         }
-    },
-    addSlot: async (data) => {
+    }),
+    addSlot: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { doctorId, startDate, endDate, slotTime } = data;
             // Check if slot with the same doctor, startDate, and endDate already exists
-            const existingSlot = await database_1.DatabaseSchema.Slot.findOne({
+            const existingSlot = yield database_1.DatabaseSchema.Slot.findOne({
                 doctor: doctorId,
                 startDate,
                 endDate
@@ -182,7 +191,7 @@ exports.default = {
             if (existingSlot) {
                 // Update the slotTime array if slot already exists
                 existingSlot.slotTime = [...new Set([...existingSlot.slotTime, ...slotTime])];
-                await existingSlot.save();
+                yield existingSlot.save();
                 return { status: true, message: 'Slots updated successfully' };
             }
             else {
@@ -193,7 +202,7 @@ exports.default = {
                     endDate,
                     slotTime
                 });
-                await slot.save();
+                yield slot.save();
                 return { status: true, message: 'Slots added successfully' };
             }
         }
@@ -201,14 +210,14 @@ exports.default = {
             console.log(error, "error in add slot repository");
             return { status: false, message: 'Error adding slots' };
         }
-    },
-    appointmentList: async (data) => {
+    }),
+    appointmentList: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { doctorId } = data;
-            const appointment = await database_1.DatabaseSchema.Appointment.findOne({ doctorId: doctorId });
+            const appointment = yield database_1.DatabaseSchema.Appointment.findOne({ doctorId: doctorId });
             if (appointment) {
-                const doctor = await database_1.DatabaseSchema.Doctor.findById(appointment?.doctorId);
-                const user = await database_1.DatabaseSchema.User.findById(appointment?.userId);
+                const doctor = yield database_1.DatabaseSchema.Doctor.findById(appointment === null || appointment === void 0 ? void 0 : appointment.doctorId);
+                const user = yield database_1.DatabaseSchema.User.findById(appointment === null || appointment === void 0 ? void 0 : appointment.userId);
                 return { status: true, data: { appointment, doctor, user } };
             }
             else {
@@ -218,11 +227,11 @@ exports.default = {
         catch (error) {
             console.log(error, "error in appoinment data repo");
         }
-    },
-    getAlreadyScheduledSlotes: async (data) => {
+    }),
+    getAlreadyScheduledSlotes: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { doctorId } = data;
-            const appointments = await database_1.DatabaseSchema.Slot.find({ doctor: doctorId });
+            const appointments = yield database_1.DatabaseSchema.Slot.find({ doctor: doctorId });
             console.log(appointments, "hyhy");
             if (appointments) {
                 return { status: true, data: appointments };
@@ -234,11 +243,11 @@ exports.default = {
         catch (error) {
             console.log(error, "error in getAlreadyScheduledSlotes repository ");
         }
-    },
-    getConverstationById: async (data) => {
+    }),
+    getConverstationById: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id } = data;
-            const response = await database_1.DatabaseSchema.Messages.find({ converstationId: id });
+            const response = yield database_1.DatabaseSchema.Messages.find({ converstationId: id });
             if (response) {
                 return { status: true, data: response };
             }
@@ -250,15 +259,15 @@ exports.default = {
             console.log(error);
             return { status: false, message: `Messages not found ..!${error}` };
         }
-    },
-    getDoctorConverstation: async (data) => {
+    }),
+    getDoctorConverstation: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id } = data;
-            const conversation = await database_1.DatabaseSchema.Conversation.find({ "members.doctorId": id });
+            const conversation = yield database_1.DatabaseSchema.Conversation.find({ "members.doctorId": id });
             const userConversations = [];
             for (let i = 0; i < conversation.length; i++) {
                 const userId = conversation[i].members[0].userId;
-                const user = await database_1.DatabaseSchema.User.findById(userId);
+                const user = yield database_1.DatabaseSchema.User.findById(userId);
                 console.log(userId, "THIS IS USER ", i);
                 if (user) {
                     const userConversation = {
@@ -279,11 +288,11 @@ exports.default = {
             console.log(error);
             return { status: true, data: [] };
         }
-    },
-    getAppoinmentDetails: async (data) => {
+    }),
+    getAppoinmentDetails: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id } = data; // Extract the doctorId from the data object
-            const appointments = await database_1.DatabaseSchema.Appointment.find({ doctorId: id }); // Use 'find' with query object
+            const appointments = yield database_1.DatabaseSchema.Appointment.find({ doctorId: id }); // Use 'find' with query object
             if (appointments.length > 0) {
                 console.log(appointments, "Appointments");
                 return { status: true, data: appointments }; // Return all matching appointments
@@ -296,11 +305,11 @@ exports.default = {
             console.error(error);
             return { status: false, data: "An error occurred while fetching appointments" };
         }
-    },
-    getConvetsationIdForVideoCall: async (data) => {
+    }),
+    getConvetsationIdForVideoCall: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { userId, doctorId } = data;
-            const response = await database_1.DatabaseSchema.Conversation.findOne({
+            const response = yield database_1.DatabaseSchema.Conversation.findOne({
                 userId: userId,
                 doctorId: doctorId,
             });
@@ -316,12 +325,12 @@ exports.default = {
             console.log(error);
             return { status: false, messege: "data not found" };
         }
-    },
-    addPrescription: async (data) => {
+    }),
+    addPrescription: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { appointmentId, prescriptionDate, medicines, fees } = data;
             // Find the appointment by its ID
-            const appointment = await Schema_1.default.Appointment.findById(appointmentId);
+            const appointment = yield Schema_1.default.Appointment.findById(appointmentId);
             if (!appointment) {
                 return { status: false, message: "Appointment not found" };
             }
@@ -338,7 +347,7 @@ exports.default = {
                 medicines,
             });
             // Save the new prescription
-            const savedPrescription = await newPrescription.save();
+            const savedPrescription = yield newPrescription.save();
             return {
                 status: true,
                 data: savedPrescription,
@@ -351,11 +360,11 @@ exports.default = {
                 message: "Internal Server Error",
             };
         }
-    },
-    createConsultation: async (data) => {
+    }),
+    createConsultation: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { userId, doctorId, appointmentId, roomId } = data;
-            const responce = await database_1.DatabaseSchema.Consult.create({
+            const responce = yield database_1.DatabaseSchema.Consult.create({
                 userId,
                 doctorId,
                 appointmentId,
@@ -371,11 +380,11 @@ exports.default = {
         catch (error) {
             return { status: false, message: `something went wrong ${error}` };
         }
-    },
-    updateConsultCallStatus: async (data) => {
+    }),
+    updateConsultCallStatus: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { appoinmentId } = data;
-            const response = await database_1.DatabaseSchema.Consult.findOneAndUpdate({ appoinmentId: appoinmentId }, {
+            const response = yield database_1.DatabaseSchema.Consult.findOneAndUpdate({ appoinmentId: appoinmentId }, {
                 read: true
             }, { new: true });
             if (response) {
@@ -389,10 +398,10 @@ exports.default = {
             console.log(error);
             return { status: false, data: " something weny wrong" };
         }
-    },
-    findDoctorForChangePassword: async (email) => {
+    }),
+    findDoctorForChangePassword: (email) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const doctor = await Schema_1.default.Doctor.findOne({ email: email });
+            const doctor = yield Schema_1.default.Doctor.findOne({ email: email });
             console.log(doctor, "iceeee");
             if (doctor) {
                 return { status: true, data: doctor };
@@ -404,19 +413,19 @@ exports.default = {
         catch (error) {
             console.log(error);
         }
-    },
-    changePasswordForDoc: async (data) => {
+    }),
+    changePasswordForDoc: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { email, currentPassword, hashedNewPassword } = data;
             console.log("uiui", data);
             // Find the user by email
-            const user = await database_1.DatabaseSchema.Doctor.findOne({ email: email });
+            const user = yield database_1.DatabaseSchema.Doctor.findOne({ email: email });
             console.log(user, "user in repo");
             if (user) {
                 // Update the password field
                 user.password = hashedNewPassword;
                 // Save the updated user
-                await user.save();
+                yield user.save();
                 return { status: true, data: "Password changed successfully" };
             }
             else {
@@ -429,16 +438,16 @@ exports.default = {
             console.log(error, "error in changing password repo");
             return { status: false, data: "Internal Server Error" };
         }
-    },
-    forgotPasswordForDoc: async (data) => {
+    }),
+    forgotPasswordForDoc: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log("hai ");
             const { email, hashedNewPassword } = data;
-            const user = await database_1.DatabaseSchema.Doctor.findOne({ email: email });
+            const user = yield database_1.DatabaseSchema.Doctor.findOne({ email: email });
             console.log(user, "user  user");
             if (user) {
                 user.password = hashedNewPassword;
-                await user.save();
+                yield user.save();
                 return { status: true, data: " password Updated succesfully " };
             }
             else {
@@ -449,16 +458,16 @@ exports.default = {
             console.log(error);
             return { status: false, data: " something went wrong " };
         }
-    },
-    updateEmailDoc: async (data) => {
+    }),
+    updateEmailDoc: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { email, newEmail } = data;
             console.log(newEmail, "ppp");
-            const user = await database_1.DatabaseSchema.Doctor.findOne({ email: email });
+            const user = yield database_1.DatabaseSchema.Doctor.findOne({ email: email });
             console.log(user, "user in repo");
             if (user) {
                 user.email = newEmail;
-                await user.save();
+                yield user.save();
                 return { status: true, data: user };
             }
             else {
@@ -469,5 +478,5 @@ exports.default = {
             console.log(error, "error in update email repo");
             return { status: false, data: "Password updation failed" };
         }
-    },
+    }),
 };
