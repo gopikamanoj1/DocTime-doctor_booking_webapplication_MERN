@@ -13,7 +13,7 @@ import axios from 'axios';
 
 
 const axiosInstance = axios.create({
-  baseURL: "/api", // Adjust the base URL to use the proxy
+  baseURL: "https://doctime-doctor-booking-webapplication-42qm.onrender.com", // Adjust the base URL to use the proxy
   timeout: 30000, // 30 seconds timeout
   headers: {
     'Content-Type': 'application/json',
