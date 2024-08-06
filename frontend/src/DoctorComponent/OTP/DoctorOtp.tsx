@@ -41,8 +41,10 @@ const DoctorOtp = () => {
     // Add your OTP verification logic here
     setIsLoading(true);
     try {
+      const enteredOtp = otp.join('');
+
             const response = await axiosInstance.post('/api/auth/doctorVerifyOtp', {
-              enteredOtp: otp.join(''),
+              enteredOtp: enteredOtp
             });
       
             // Handle the response from the backend

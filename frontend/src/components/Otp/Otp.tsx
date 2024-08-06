@@ -34,11 +34,12 @@ const Otp = () => {
 
   const handleVerify = async () => {
     try {
+      const enteredOtp = otp.join('');
       const response = await axiosInstance.post("/api/auth/verifyOtp", {
-        enteredOtp: otp.join(''),
+        enteredOtp: enteredOtp
       });
 
-      if (response.data && response.data.status) {
+      if (response.data && response.data.status)  {
         localStorage.removeItem("userEmail");
         navigate("/login");
         toast.success('Registration Completed')

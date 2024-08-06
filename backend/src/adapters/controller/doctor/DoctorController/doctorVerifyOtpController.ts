@@ -9,7 +9,17 @@ export default (dependecies: any) => {
         const { enteredOtp } = req.body
         console.log(req.body, "reqqqqqqqqqbodyyyyyyyyy")
         const doctorData = req.session.doctorData
-        if (req.session.Otp == enteredOtp) {
+
+
+
+        // Ensure both OTPs are strings and trimmed of whitespace
+        const sessionOtp = (req.session.Otp || '').toString().trim();
+        const inputOtp = (enteredOtp || '').toString().trim();
+
+        console.log("Trimmed Entered OTP:", inputOtp); // Add this for debugging
+        console.log("Trimmed Session OTP:", sessionOtp); // Add this for debugging
+
+        if (sessionOtp == inputOtp) {
             const response = await doctorVerifyOtpUseCase(dependecies).executeFunction(doctorData);
             if (response.status) {
                 res.status(200).json({ status: true, data: response.data })
