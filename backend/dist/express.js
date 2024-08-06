@@ -85,7 +85,7 @@ const expressConfig = (app) => {
     app.use(express_1.default.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.COOKIEPARSERSECRET));
     // Serve static files from the React app
-    const staticPath = path_1.default.join(__dirname, '..', 'frontend', 'dist');
+    const staticPath = path_1.default.join(__dirname, '..', '..', 'frontend', 'dist');
     console.log("Static path:", staticPath);
     app.use(express_1.default.static(staticPath));
     app.use((0, cors_1.default)({
@@ -116,10 +116,9 @@ const expressConfig = (app) => {
             res.status(500).json({ error: 'Failed to upload image' });
         }
     }));
-    // Catch-all route to serve the React app's index.html
     app.get('*', (req, res) => {
         const indexPath = path_1.default.join(staticPath, 'index.html');
-        console.log("Serving index.html from:", indexPath);
+        // console.log("Serving index.html from:", indexPath);
         res.sendFile(indexPath);
     });
     return server;

@@ -98,10 +98,10 @@ const expressConfig = (app: Express) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser(process.env.COOKIEPARSERSECRET));
 
-  // Serve static files from the React app
-  const staticPath = path.join(__dirname, '..', 'frontend', 'dist');
-  console.log("Static path:", staticPath);
-  app.use(express.static(staticPath));
+// Serve static files from the React app
+const staticPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
+console.log("Static path:", staticPath);
+app.use(express.static(staticPath));
 
   app.use(
     cors({
@@ -137,10 +137,9 @@ const expressConfig = (app: Express) => {
     }
   });
 
-  // Catch-all route to serve the React app's index.html
   app.get('*', (req: Request, res: Response) => {
     const indexPath = path.join(staticPath, 'index.html');
-    console.log("Serving index.html from:", indexPath);
+    // console.log("Serving index.html from:", indexPath);
     res.sendFile(indexPath);
   });
 
