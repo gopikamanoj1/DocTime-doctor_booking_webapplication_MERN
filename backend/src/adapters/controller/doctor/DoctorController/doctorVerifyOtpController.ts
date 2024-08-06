@@ -9,7 +9,7 @@ export default (dependecies: any) => {
         const { enteredOtp } = req.body
         console.log(req.body, "reqqqqqqqqqbodyyyyyyyyy")
         const doctorData = req.session.doctorData
-        if (req.session.Otp === enteredOtp) {
+        if (req.session.Otp == enteredOtp) {
             const response = await doctorVerifyOtpUseCase(dependecies).executeFunction(doctorData);
             if (response.status) {
                 res.status(200).json({ status: true, data: response.data })

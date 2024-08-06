@@ -15,7 +15,7 @@ exports.default = (dependecies) => {
         const { enteredOtp } = req.body;
         console.log(req.body, "reqqqqqqqqqbodyyyyyyyyy");
         const userData = req.session.userData;
-        if (req.session.Otp === enteredOtp) {
+        if (req.session.Otp == enteredOtp) {
             const responce = yield verifyOtpUseCase(dependecies).executeFunction(userData);
             if (responce.status) {
                 res.json({ status: true, data: responce.data });

@@ -10,7 +10,7 @@ export default (dependecies: any) => {
       
         const userData=req.session.userData
 
-        if(req.session.Otp===enteredOtp){
+        if(req.session.Otp==enteredOtp){
             const responce =await verifyOtpUseCase(dependecies).executeFunction(userData) 
            if(responce.status){
              res.json({status:true,data:responce.data})
