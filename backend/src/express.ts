@@ -3,7 +3,6 @@ dotenv.config();
 import express, { Express } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import AWS from "aws-sdk";
 import http from "http";
 import uploadImage from "./utils/imagesService";
 import fs from 'fs';
@@ -16,9 +15,6 @@ const cookieParser = require("cookie-parser");
 import session, { MemoryStore } from "express-session";
 
 const expressConfig = (app: Express) => {
-
-
-
 
 
   const server = http.createServer(app);
@@ -40,7 +36,7 @@ const expressConfig = (app: Express) => {
   );
 
 
-
+ 
 
   const upload = multer({ dest: 'uploads/' });
 

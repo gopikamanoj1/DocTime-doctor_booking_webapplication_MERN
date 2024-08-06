@@ -29,8 +29,8 @@ export default (dependecies: any) => {
                     }
                 ],
                 mode: "payment",
-                success_url: `https://doctime.live/successAppointment`,
-                cancel_url: "https://doctime.live/findDoctor",
+                success_url: `https://doctime-doctor-booking-webapplication-42qm.onrender.com/successAppointment`,
+                cancel_url: "https://doctime-doctor-booking-webapplication-42qm.onrender.com/findDoctor",
                 billing_address_collection: 'required',
                 customer_email: 'customer@example.com',
            
