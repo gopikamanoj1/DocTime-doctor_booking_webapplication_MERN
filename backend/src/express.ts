@@ -109,7 +109,8 @@ app.use(express.static(staticPath));
         "http://localhost:5173",
         "http://localhost:3000",
         'https://doctime-doctor-booking-webapplication-42qm.onrender.com',
-        'https://doctime-doctor-booking-webapplication.onrender.com'
+        'https://doctime-doctor-booking-webapplication.onrender.com',
+        'https://doc-time-doctor-booking-webapplication-mern.vercel.app'
       ],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
