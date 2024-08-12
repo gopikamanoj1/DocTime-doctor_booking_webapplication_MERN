@@ -33,7 +33,7 @@ const expressConfig = (app) => {
     app.use(cookieParser(process.env.COOKIEPARSERSECRET));
     app.use(express_1.default.static("public/"));
     app.use((0, cors_1.default)({
-        origin: ["http://localhost:5173", "http://localhost:3000", 'https://doctime-doctor-booking-webapplication-42qm.onrender.com', 'https://doctime-doctor-booking-webapplication.onrender.com'],
+        origin: ["http://localhost:5173", "http://localhost:3000", 'https://doctime-doctor-booking-webapplication-42qm.onrender.com', 'https://doctime-doctor-booking-webapplication.onrender.com', 'https://doctime.live', 'http://doctime.live'],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         credentials: true,
     }));

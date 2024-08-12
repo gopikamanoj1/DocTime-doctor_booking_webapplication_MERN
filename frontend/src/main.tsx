@@ -52,6 +52,8 @@ import ChangePasswordForDocPage from './DoctorPages/changePasswordForDocPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import ForgotPasswordForDocPage from './DoctorPages/ForgotPasswordForDocPage';
 import UpdateEmailForDoc from './DoctorComponent/DoctorProfile/UpdateEmailForDoc';
+import SlotPage from './DoctorPages/SlotPage';
+import SlotCreatePage from './DoctorPages/SlotCreatePage';
 
 // USER_ROUTES
 // ==========================================================================================================
@@ -101,6 +103,10 @@ const doctorRouter=(
         <Route path='/doctorVerifyOtp' element={<DoctorOtpPage/>}></Route>
         <Route path='/doctorProfile' element={<DoctorProfilePage/>}> </Route>
         <Route path='/kycAuth' element={<KYC/>}></Route>
+        <Route path='/addingSlot' element={<SlotPage/>}></Route>
+
+        <Route path='/createSlot' element={<SlotCreatePage/>}></Route>
+
         <Route path='/addSlot' element={<CelenderPage/>}></Route>
         <Route path='/showAppoinments' element={<AppointmentListPage/>}></Route>
         <Route path='/showChat/:convesationId' element={<ChatPageForDoc/>}> </Route>

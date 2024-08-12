@@ -1,8 +1,10 @@
 
-import mongoose, { Types } from "mongoose";
+
+
+
+import mongoose from 'mongoose';
 
 const slotSchema = new mongoose.Schema({
-
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Doctor',
@@ -13,28 +15,25 @@ const slotSchema = new mongoose.Schema({
     required: true
   },
   endDate: {
-    type: Date,
-    required: true
+    type: Date
   },
-  slotTime: {
-    type: [String], 
-    required: true
-  },
-
-  
-  available: {
+  isMultipleDays: {
     type: Boolean,
-    default: true
-  }
-
+    default: false
+  },
+  daysOfWeek: [String],
+  slots: [{
+    time: String,
+    duration: String, 
+    available: {
+      type: Boolean,
+      default: true
+    }
+  }],
 
 });
 
-slotSchema.index({ doctor: 1, startDate: 1, endDate: 1 }, { unique: true });
 
+const Slot = mongoose.model('Slot', slotSchema);
 
-const Slot = mongoose.model("Slot", slotSchema);
-
-export {
-  Slot
-};
+export { Slot };

@@ -19,13 +19,21 @@ export interface Doctor {
     kycDetails: [{ yearsOfExperience: number; hospitalName: string }];
   }
 
-  export interface Slot {
-    data:any;  
-    _id: string;
-    doctor: string;
-    startDate: Date;
-    endDate: Date;
-    slotTime: string[];
+  export interface SlotData {
+    doctorId: string;
+    startDate: string;
+    endDate: string;
+    daysOfWeek: string[];
+    startTime: string;
+    endTime: string;
+    breakDuration: number;
+    consultationDuration: number;
+  }
+  
+  export interface SlotTime {
+    time: string;
+    duration: number;
+    available: boolean;
   }
   
 

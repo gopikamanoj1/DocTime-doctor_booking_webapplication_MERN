@@ -51,11 +51,7 @@ const DoctorNavbar = () => {
           onClick={() => !isAuthenticated && toast.warn("Please login")}
         />
 
-        <NavItem
-          to={isAuthenticated ? "/addSlot" : "/doctorLogin"}
-          label="Add Slot"
-          onClick={() => !isAuthenticated && toast.warn("Please login")}
-        />
+      
 
         <NavItem
           to={isAuthenticated ? "/showDoctorAppoinment" : "/doctorLogin"}
@@ -69,9 +65,20 @@ const DoctorNavbar = () => {
           onClick={() => !isAuthenticated && toast.warn("Please login")}
         />
 
-        <NavItem
+        {/* <NavItem
           to={isAuthenticated ? "/kycAuth" : "/doctorLogin"}
           label="KYC"
+          onClick={() => !isAuthenticated && toast.warn("Please login")}
+        /> */}
+  <NavItem
+          to={isAuthenticated ? "/addingSlot" : "/doctorLogin"}
+          label="Slot"
+          onClick={() => !isAuthenticated && toast.warn("Please login")}
+        />
+
+<NavItem
+          to={isAuthenticated ? "/createSlot" : "/doctorLogin"}
+          label="Manage Slots"
           onClick={() => !isAuthenticated && toast.warn("Please login")}
         />
 

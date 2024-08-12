@@ -195,34 +195,76 @@ export default {
 
   addSlot: async (data: any) => {
     try {
-      const { doctorId, startDate, endDate, slotTime } = data;
-
-      // Check if slot with the same doctor, startDate, and endDate already exists
-      const existingSlot = await DatabaseSchema.Slot.findOne({
+      const {
+        doctorId,
+        startDate,
+        endDate,
+        daysOfWeek,
+        startTime,
+        endTime,
+        breakDuration,
+        consultationDuration,
+        slots,
+        isMultipleDays
+      } = data;
+  
+      console.log('Received data:', data);
+  
+    
+  
+      if (isMultipleDays) {
+        // Check if the doctor has already reached the maximum allowed slots
+        const existingSlotsCount = await databaseSchemas.Slot.countDocuments({
+          doctor: doctorId,
+          isMultipleDays: true
+        });
+  
+        if (existingSlotsCount >= 5) {
+          return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
+        }
+  
+        // Refine the query to check for overlapping slots more accurately
+        const existingMultipleDaySlot = await databaseSchemas.Slot.findOne({
+          doctor: doctorId,
+          $or: [
+            { 
+              startDate: { $lte: endDate }, 
+              endDate: { $gte: startDate }
+            }
+          ],
+          isMultipleDays: true,
+        });
+  
+        if (existingMultipleDaySlot) {
+          console.log('Overlapping slots found:', existingMultipleDaySlot);
+          return { status: false, message: 'Multiple day slot already exists for the given date range' };
+        }
+      }
+  
+      const formattedSlots = slots.map((time: string) => ({
+        time: time,
+        duration: consultationDuration,
+        available: true
+      }));
+  
+      const newSlot = new databaseSchemas.Slot({
         doctor: doctorId,
         startDate,
-        endDate
+        endDate,
+        daysOfWeek,
+        slots: formattedSlots,
+        isMultipleDays
       });
-
-      if (existingSlot) {
-        // Update the slotTime array if slot already exists
-        existingSlot.slotTime = [...new Set([...existingSlot.slotTime, ...slotTime])];
-        await existingSlot.save();
-        return { status: true, message: 'Slots updated successfully' };
-      } else {
-        // Create a new slot if it doesn't exist
-        const slot = new DatabaseSchema.Slot({
-          doctor: doctorId,
-          startDate,
-          endDate,
-          slotTime
-        });
-        await slot.save();
-        return { status: true, message: 'Slots added successfully' };
+  
+      await newSlot.save();
+      console.log('New slot added successfully:', newSlot);
+      return { status: true, message: 'Slot added successfully' };
+    } catch (error: any) {
+      if (error.code === 11000) {
+        return { status: false, message: 'Duplicate slot detected' };
       }
-    } catch (error) {
-      console.log(error, "error in add slot repository");
-      return { status: false, message: 'Error adding slots' };
+      console.log('Error in add slot repository:', error);
+      return { status: false, message: 'Error in add slot repository' };
     }
   },
 
@@ -304,16 +346,16 @@ export default {
 
 
         const user: any = await DatabaseSchema.User.findById(userId);
-        console.log(userId,"THIS IS USER ",i);
-        
-        if(user){
+        console.log(userId, "THIS IS USER ", i);
+
+        if (user) {
           const userConversation = {
             user: user,
             conversation: conversation[i]
           };
           userConversations.push(userConversation);
         }
-       
+
       }
 
       if (userConversations.length > 0) {
@@ -382,17 +424,17 @@ export default {
 
       // Find the appointment by its ID
       const appointment = await databaseSchemas.Appointment.findById(appointmentId);
-  
+
       if (!appointment) {
         return { status: false, message: "Appointment not found" };
       }
-  
+
       const { userId, doctorId } = appointment; // Extract the doctorId and userId
-  
+
       if (!prescriptionDate || !medicines.length) {
         return { status: false, message: "Required fields are missing" };
       }
-  
+
       // Create the new Prescription document
       const newPrescription = new databaseSchemas.Prescription({
         appointmentId,
@@ -401,10 +443,10 @@ export default {
         prescriptionDate,
         medicines,
       });
-  
+
       // Save the new prescription
       const savedPrescription = await newPrescription.save();
-  
+
       return {
         status: true,
         data: savedPrescription,
@@ -443,27 +485,27 @@ export default {
   updateConsultCallStatus: async (data: any) => {
     try {
       const { appoinmentId } = data
-      const response = await DatabaseSchema.Consult.findOneAndUpdate({ appoinmentId : appoinmentId }, {
+      const response = await DatabaseSchema.Consult.findOneAndUpdate({ appoinmentId: appoinmentId }, {
         read: true
       }, { new: true })
       if (response) {
         return { status: true, data: response }
       } else {
-        return { status: false , data : " data not found"}
+        return { status: false, data: " data not found" }
       }
 
     } catch (error) {
-      console.log(error);   
-      return { status: false , data : " something weny wrong"}
+      console.log(error);
+      return { status: false, data: " something weny wrong" }
 
     }
   },
 
-  findDoctorForChangePassword : async (email:any)=>{
+  findDoctorForChangePassword: async (email: any) => {
     try {
-      const doctor= await databaseSchemas.Doctor.findOne({email:email})
-      console.log(doctor,"iceeee");
-      
+      const doctor = await databaseSchemas.Doctor.findOne({ email: email })
+      console.log(doctor, "iceeee");
+
       if (doctor) {
         return { status: true, data: doctor };
       } else {
@@ -471,7 +513,7 @@ export default {
       }
     } catch (error) {
       console.log(error);
-      
+
     }
 
   },
@@ -509,59 +551,59 @@ export default {
 
 
 
-  forgotPasswordForDoc: async(data:any)=>{
-   try { 
-    console.log("hai ");
-    
-    const { email, hashedNewPassword } = data
-    const user = await DatabaseSchema.Doctor.findOne({ email: email })
-    console.log(user, "user  user");
-    if (user) {
-      user.password = hashedNewPassword
-      await user.save()
-      return { status: true, data: " password Updated succesfully " }
-    }
-    else {
+  forgotPasswordForDoc: async (data: any) => {
+    try {
+      console.log("hai ");
+
+      const { email, hashedNewPassword } = data
+      const user = await DatabaseSchema.Doctor.findOne({ email: email })
+      console.log(user, "user  user");
+      if (user) {
+        user.password = hashedNewPassword
+        await user.save()
+        return { status: true, data: " password Updated succesfully " }
+      }
+      else {
+        return { status: false, data: " something went wrong " }
+      }
+    } catch (error) {
+      console.log(error);
+
       return { status: false, data: " something went wrong " }
-    }
-  } catch (error) {
-    console.log(error);
-
-    return { status: false, data: " something went wrong " }
-
-  }
-
-
-},
-
-
-
-updateEmailDoc: async (data: any) => {
-  try {
-    const { email, newEmail } = data
-    console.log(newEmail, "ppp");
-
-
-    const user = await DatabaseSchema.Doctor.findOne({ email: email })
-    console.log(user, "user in repo");
-
-    if (user) {
-      user.email = newEmail
-      await user.save()
-      return { status: true, data: user };
-
-
-    } else {
-      return { status: false, data: "Email Updating failed" };
 
     }
 
-  } catch (error) {
-    console.log(error, "error in update email repo");
-    return { status: false, data: "Password updation failed" }
 
-  }
-},
+  },
+
+
+
+  updateEmailDoc: async (data: any) => {
+    try {
+      const { email, newEmail } = data
+      console.log(newEmail, "ppp");
+
+
+      const user = await DatabaseSchema.Doctor.findOne({ email: email })
+      console.log(user, "user in repo");
+
+      if (user) {
+        user.email = newEmail
+        await user.save()
+        return { status: true, data: user };
+
+
+      } else {
+        return { status: false, data: "Email Updating failed" };
+
+      }
+
+    } catch (error) {
+      console.log(error, "error in update email repo");
+      return { status: false, data: "Password updation failed" }
+
+    }
+  },
 
 
 
