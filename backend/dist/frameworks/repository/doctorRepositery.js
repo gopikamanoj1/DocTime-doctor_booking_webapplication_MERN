@@ -181,34 +181,56 @@ exports.default = {
     }),
     addSlot: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { doctorId, startDate, endDate, slotTime } = data;
-            // Check if slot with the same doctor, startDate, and endDate already exists
-            const existingSlot = yield database_1.DatabaseSchema.Slot.findOne({
+            const { doctorId, startDate, endDate, daysOfWeek, startTime, endTime, breakDuration, consultationDuration, slots, isMultipleDays } = data;
+            console.log('Received data:', data);
+            if (isMultipleDays) {
+                // Check if the doctor has already reached the maximum allowed slots
+                const existingSlotsCount = yield Schema_1.default.Slot.countDocuments({
+                    doctor: doctorId,
+                    isMultipleDays: true
+                });
+                if (existingSlotsCount >= 5) {
+                    return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
+                }
+                // Refine the query to check for overlapping slots more accurately
+                const existingMultipleDaySlot = yield Schema_1.default.Slot.findOne({
+                    doctor: doctorId,
+                    $or: [
+                        {
+                            startDate: { $lte: endDate },
+                            endDate: { $gte: startDate }
+                        }
+                    ],
+                    isMultipleDays: true,
+                });
+                if (existingMultipleDaySlot) {
+                    console.log('Overlapping slots found:', existingMultipleDaySlot);
+                    return { status: false, message: 'Multiple day slot already exists for the given date range' };
+                }
+            }
+            const formattedSlots = slots.map((time) => ({
+                time: time,
+                duration: consultationDuration,
+                available: true
+            }));
+            const newSlot = new Schema_1.default.Slot({
                 doctor: doctorId,
                 startDate,
-                endDate
+                endDate,
+                daysOfWeek,
+                slots: formattedSlots,
+                isMultipleDays
             });
-            if (existingSlot) {
-                // Update the slotTime array if slot already exists
-                existingSlot.slotTime = [...new Set([...existingSlot.slotTime, ...slotTime])];
-                yield existingSlot.save();
-                return { status: true, message: 'Slots updated successfully' };
-            }
-            else {
-                // Create a new slot if it doesn't exist
-                const slot = new database_1.DatabaseSchema.Slot({
-                    doctor: doctorId,
-                    startDate,
-                    endDate,
-                    slotTime
-                });
-                yield slot.save();
-                return { status: true, message: 'Slots added successfully' };
-            }
+            yield newSlot.save();
+            console.log('New slot added successfully:', newSlot);
+            return { status: true, message: 'Slot added successfully' };
         }
         catch (error) {
-            console.log(error, "error in add slot repository");
-            return { status: false, message: 'Error adding slots' };
+            if (error.code === 11000) {
+                return { status: false, message: 'Duplicate slot detected' };
+            }
+            console.log('Error in add slot repository:', error);
+            return { status: false, message: 'Error in add slot repository' };
         }
     }),
     appointmentList: (data) => __awaiter(void 0, void 0, void 0, function* () {
