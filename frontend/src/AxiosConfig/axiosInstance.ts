@@ -12,13 +12,28 @@ import axios from 'axios';
 // });
 
 
+// const axiosInstance = axios.create({
+//   baseURL: "https://doctime.live", // Adjust the base URL to use the proxy
+//   timeout: 30000, // 30 seconds timeout
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   withCredentials: true, 
+// });
+// export default axiosInstance;
+
+
+
+// axios.js
+
 const axiosInstance = axios.create({
-  baseURL: "https://doctime.live", // Adjust the base URL to use the proxy
+  baseURL: process.env.NODE_ENV === 'production' ? "https://doctime.live" : "/api",
   timeout: 30000, // 30 seconds timeout
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, 
+  withCredentials: true,
 });
+
 export default axiosInstance;
 
