@@ -14,7 +14,7 @@ import multer from 'multer';
 const cookieParser = require("cookie-parser");
 import session, { MemoryStore } from "express-session";
 
-const expressConfig = (app: Express) => {
+const expressConfig = (app: Express) => { 
 
 
   const server = http.createServer(app);
