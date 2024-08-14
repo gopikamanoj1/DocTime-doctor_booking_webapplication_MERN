@@ -58,7 +58,7 @@ const ViewDoctorDetails: React.FC = () => {
       };
 
       const response = await axiosInstance.post(
-        "/api/auth/createConversation",
+        "/api/auth/createConverstation",
         data
       );
       if (response.status) {
