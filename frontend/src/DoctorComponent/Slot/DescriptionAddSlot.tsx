@@ -5,7 +5,7 @@ const DescriptionAddSlot: React.FC = () => {
     <div className="p-6 sm:p-12 bg-gradient-to-r from-white to-gray-100 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-6 sm:p-12">
-          <h1 className="text-4xl font-bold mb-6 text-center text-blue-700">Creating Your Availability Slots</h1>
+          <h4 className="text-3xl font-bold mb-6 text-center text-blue-700">Creating Your Availability Slots</h4>
           <p className="text-lg mb-8 text-gray-700 text-center">
             <strong>Welcome, Doctor!</strong><br />
             To help patients book appointments, you need to set up your availability slots. Follow the steps below to create single-day and multiple-day slots.
@@ -27,12 +27,12 @@ const DescriptionAddSlot: React.FC = () => {
               Set the Time:
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li><strong>Start Time:</strong> Choose the start time for your slot.</li>
-                <li><strong>Duration :</strong> Choose the Duration for your slot.</li>
+                <li><strong>End Time:</strong> Choose the end time for your slots.</li>
+                <li><strong>Consultation Duration (minutes):</strong> Choose the  Duration for your Consultation.</li>
+                <li><strong>Break Duration (minutes)</strong> Choose the Duration for your Break .</li>
               </ul>
             </li>
-            <li>
-              Repeat: If you have more than one slot on the same day, click <strong>'Add Another Slot'</strong> and set the start and end times for each slot.
-            </li>
+          
             <li>
               Save: Click the <strong>'Save Slot'</strong> button to save your availability.
             </li>
@@ -48,11 +48,9 @@ const DescriptionAddSlot: React.FC = () => {
               Select <strong>'Add Multiple Day Slot'</strong>: Click on the <strong>'Add Multiple Day Slot'</strong> button.
             </li>
             <li>
-              Choose the Date Range: Select the start and end dates for the period you want to create slots.
+              Choose the <strong>Date Range</strong>: Select the <strong>start </strong> and <strong>end</strong> dates for the period you want to create slots.
             </li>
-            <li>
-              Set the Days of the Week: Choose which days of the week you want to be available (e.g., Monday, Wednesday, Friday).
-            </li>
+          
             <li>
               Set the Time:
               <ul className="list-disc list-inside ml-4 space-y-1">

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
-import { log } from "util";
 import { toast } from "react-toastify";
 
 const AddMultipleDaySlot: React.FC = () => {
@@ -12,7 +11,6 @@ const AddMultipleDaySlot: React.FC = () => {
   const [endTime, setEndTime] = useState("0");
   const [breakDuration, setBreakDuration] = useState(0);
   const [consultationDuration, setConsultationDuration] = useState(0);
-  const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
   const [totalConsultationCount, setTotalConsultationCount] = useState<
     number | null
   >(null);
@@ -71,11 +69,7 @@ const AddMultipleDaySlot: React.FC = () => {
     return `${formattedHours}:${formattedMinutes} ${period}`;
   };
 
-  const handleDayChange = (day: string) => {
-    setDaysOfWeek((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
-  };
+
 
   const handleDeleteSlot = (index: number) => {
     setTimeSlots((prevSlots) => prevSlots.filter((_, i) => i !== index));
@@ -92,7 +86,6 @@ const AddMultipleDaySlot: React.FC = () => {
       doctorId,
       startDate,
       endDate,
-      daysOfWeek,
       startTime,
       endTime,
       breakDuration,
@@ -105,7 +98,6 @@ const AddMultipleDaySlot: React.FC = () => {
         doctorId,
         startDate,
         endDate,
-        daysOfWeek,
         startTime,
         endTime,
         breakDuration,
@@ -116,9 +108,18 @@ const AddMultipleDaySlot: React.FC = () => {
 
       const response = await axiosInstance.post("/api/auth/addSlot", slotsData);
       console.log(response, "oooooooooooooooooooooooooooooooooooo");
-      if (response.data.data == true) {
+      if (response.data.status === true) {
         console.log("success");
         toast.success(response.data.message);
+        setTimeSlots([])
+        setStartDate('')
+        setEndDate('')
+        setStartTime('0')
+        setEndTime('0')
+        setBreakDuration(0)
+        setConsultationDuration(0)
+        setTotalConsultationCount(null)
+
       } else {
         console.log("failed");
         toast.warn(response.data.message);
@@ -266,34 +267,7 @@ const AddMultipleDaySlot: React.FC = () => {
         </div>
       )}
 
-      <div className="mb-6">
-        <label className="block text-lg font-semibold text-gray-800 mb-2">
-          Days of the Week
-        </label>
-        <div className="flex flex-wrap gap-4">
-          {[
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ].map((day) => (
-            <button
-              key={day}
-              onClick={() => handleDayChange(day)}
-              className={`px-4 py-2 rounded-lg border ${
-                daysOfWeek.includes(day)
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-gray-100 text-gray-800 border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
-            >
-              {day}
-            </button>
-          ))}
-        </div>
-      </div>
+  
 
       <button
         onClick={submitSlots}

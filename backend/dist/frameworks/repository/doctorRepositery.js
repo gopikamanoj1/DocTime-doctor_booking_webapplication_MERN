@@ -181,32 +181,23 @@ exports.default = {
     }),
     addSlot: (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { doctorId, startDate, endDate, daysOfWeek, startTime, endTime, breakDuration, consultationDuration, slots, isMultipleDays } = data;
+            const { doctorId, startDate, endDate, startTime, endTime, breakDuration, consultationDuration, slots, isMultipleDays } = data;
             console.log('Received data:', data);
-            if (isMultipleDays) {
-                // Check if the doctor has already reached the maximum allowed slots
-                const existingSlotsCount = yield Schema_1.default.Slot.countDocuments({
-                    doctor: doctorId,
-                    isMultipleDays: true
-                });
-                if (existingSlotsCount >= 5) {
-                    return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
-                }
-                // Refine the query to check for overlapping slots more accurately
-                const existingMultipleDaySlot = yield Schema_1.default.Slot.findOne({
-                    doctor: doctorId,
-                    $or: [
-                        {
-                            startDate: { $lte: endDate },
-                            endDate: { $gte: startDate }
-                        }
-                    ],
-                    isMultipleDays: true,
-                });
-                if (existingMultipleDaySlot) {
-                    console.log('Overlapping slots found:', existingMultipleDaySlot);
-                    return { status: false, message: 'Multiple day slot already exists for the given date range' };
-                }
+            // Check if the doctor has already reached the maximum allowed slots
+            const existingSlotsCount = yield Schema_1.default.Slot.countDocuments({ doctor: doctorId });
+            if (existingSlotsCount >= 5) {
+                return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
+            }
+            // Check for overlapping date ranges
+            const overlappingSlot = yield Schema_1.default.Slot.findOne({
+                doctor: doctorId,
+                $or: [
+                    { startDate: { $lte: endDate }, endDate: { $gte: startDate } }
+                ]
+            });
+            if (overlappingSlot) {
+                console.log('Overlapping slots found:', overlappingSlot);
+                return { status: false, message: 'Slot date range overlaps with an existing slot' };
             }
             const formattedSlots = slots.map((time) => ({
                 time: time,
@@ -217,7 +208,6 @@ exports.default = {
                 doctor: doctorId,
                 startDate,
                 endDate,
-                daysOfWeek,
                 slots: formattedSlots,
                 isMultipleDays
             });
@@ -227,6 +217,7 @@ exports.default = {
         }
         catch (error) {
             if (error.code === 11000) {
+                console.log('Duplicate error details:', error.keyValue);
                 return { status: false, message: 'Duplicate slot detected' };
             }
             console.log('Error in add slot repository:', error);

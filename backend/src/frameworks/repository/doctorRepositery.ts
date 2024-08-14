@@ -199,7 +199,6 @@ export default {
         doctorId,
         startDate,
         endDate,
-        daysOfWeek,
         startTime,
         endTime,
         breakDuration,
@@ -210,35 +209,23 @@ export default {
   
       console.log('Received data:', data);
   
-    
+      // Check if the doctor has already reached the maximum allowed slots
+      const existingSlotsCount = await databaseSchemas.Slot.countDocuments({ doctor: doctorId });
+      if (existingSlotsCount >= 5) {
+        return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
+      }
   
-      if (isMultipleDays) {
-        // Check if the doctor has already reached the maximum allowed slots
-        const existingSlotsCount = await databaseSchemas.Slot.countDocuments({
-          doctor: doctorId,
-          isMultipleDays: true
-        });
+      // Check for overlapping date ranges
+      const overlappingSlot = await databaseSchemas.Slot.findOne({
+        doctor: doctorId,
+        $or: [
+          { startDate: { $lte: endDate }, endDate: { $gte: startDate } }
+        ]
+      });
   
-        if (existingSlotsCount >= 5) {
-          return { status: false, message: 'Maximum of 5 slots allowed per doctor' };
-        }
-  
-        // Refine the query to check for overlapping slots more accurately
-        const existingMultipleDaySlot = await databaseSchemas.Slot.findOne({
-          doctor: doctorId,
-          $or: [
-            { 
-              startDate: { $lte: endDate }, 
-              endDate: { $gte: startDate }
-            }
-          ],
-          isMultipleDays: true,
-        });
-  
-        if (existingMultipleDaySlot) {
-          console.log('Overlapping slots found:', existingMultipleDaySlot);
-          return { status: false, message: 'Multiple day slot already exists for the given date range' };
-        }
+      if (overlappingSlot) {
+        console.log('Overlapping slots found:', overlappingSlot);
+        return { status: false, message: 'Slot date range overlaps with an existing slot' };
       }
   
       const formattedSlots = slots.map((time: string) => ({
@@ -251,7 +238,6 @@ export default {
         doctor: doctorId,
         startDate,
         endDate,
-        daysOfWeek,
         slots: formattedSlots,
         isMultipleDays
       });
@@ -261,12 +247,14 @@ export default {
       return { status: true, message: 'Slot added successfully' };
     } catch (error: any) {
       if (error.code === 11000) {
+        console.log('Duplicate error details:', error.keyValue);
         return { status: false, message: 'Duplicate slot detected' };
       }
       console.log('Error in add slot repository:', error);
       return { status: false, message: 'Error in add slot repository' };
     }
   },
+  
 
 
 

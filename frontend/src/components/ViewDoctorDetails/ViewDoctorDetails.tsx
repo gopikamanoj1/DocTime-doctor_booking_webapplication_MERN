@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Doctor, SlotData } from "../../Interfaces/Doctor/DoctorInteface";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 import { useSocket } from "../../REAL_TIME/Socket";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/formatDate"; // Utility function for date formatting
 import { FaTimesCircle } from "react-icons/fa";
 
 const ViewDoctorDetails: React.FC = () => {
