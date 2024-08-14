@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Doctor } from "../../Interfaces/Doctor/DoctorInteface";
-import { Slot } from "../../Interfaces/Doctor/DoctorInteface";
+import { Doctor, SlotData } from "../../Interfaces/Doctor/DoctorInteface";
 import axiosInstance from "../../AxiosConfig/axiosInstance";
 import { useSocket } from "../../REAL_TIME/Socket";
+import { formatDate } from "../../utils/formatDate";
+import { FaTimesCircle } from "react-icons/fa";
+
 const ViewDoctorDetails: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: any) => state.persisted.auth.isAuthenticated
@@ -17,11 +17,9 @@ const ViewDoctorDetails: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
-  const [availableSlots, setAvailableSlots] = useState<Slot[] | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [availableSlots, setAvailableSlots] = useState<SlotData[] | null>(null);
+  const [selectedTime, setSelectedTime] = useState<any>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [userName, setUserName] = useState<string>("");
-  const [conversationId, setConversationId] = useState("");
   const User = useSelector((state: any) => state.persisted.auth);
   const socket: any = useSocket();
   const navigate = useNavigate();
@@ -29,17 +27,12 @@ const ViewDoctorDetails: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get<Doctor>(
-          `/api/auth/viewDoctorDetails/${id}`
-        );
-        const slotsResponse = await axiosInstance.get<Slot[]>(
-          `/api/auth/getAvailableSlot/${id}`
-        );
+        const [doctorResponse, slotsResponse] = await Promise.all([
+          axiosInstance.get<Doctor>(`/api/auth/viewDoctorDetails/${id}`),
+          axiosInstance.get<SlotData[]>(`/api/auth/getAvailableSlot/${id}`),
+        ]);
 
-        console.log(slotsResponse.data, "Response for available slots");
-        console.log(response.data, "Response in ViewDoctorDetails component");
-
-        setDoctor(response.data.data);
+        setDoctor(doctorResponse.data.data);
         setAvailableSlots(slotsResponse.data.data);
       } catch (error) {
         console.error("Error fetching doctor details:", error);
@@ -50,261 +43,287 @@ const ViewDoctorDetails: React.FC = () => {
   }, [id]);
 
   const handleTimeSelection = (time: string) => {
-    setSelectedTime(time);
-    // setSelectedDate(null); // Reset selected date when a new time is selected
+    setSelectedTime(time === selectedTime ? null : time);
   };
 
   const handleDateSelection = (date: Date | null) => {
     setSelectedDate(date);
   };
 
-  const handleMessege = async () => {
+  const handleMessage = async () => {
     try {
       const data = {
         senderId: User.user._id,
-        recieverId: doctor?._id,
+        receiverId: doctor?._id,
       };
 
       const response = await axiosInstance.post(
-        "/api/auth/createConverstation",
+        "/api/auth/createConversation",
         data
       );
       if (response.status) {
-        console.log(response, "iioioio");
-        // console.log();
-
-        toast.success("conversation Created");
+        toast.success("Conversation Created");
         navigate(`/showChatPage/${response.data.data._id}`);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+    }
   };
-  const HandleLogin = async () => {
+
+  const handleLogin = () => {
     toast.warn("Please Login");
     navigate("/login");
   };
 
   const bookAppointment = async () => {
     try {
-      if (!selectedTime) {
+      if (!selectedTime || !selectedDate) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Please select a time!",
-        });
-        return;
-      }
-      if (!selectedDate) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Please select a date!",
+          text: "Please select a date and time!",
         });
         return;
       }
 
-      localStorage.setItem(
-        "selectedDateTime",
-        JSON.stringify({
-          date: selectedDate.toLocaleDateString(),
-          time: selectedTime,
-        })
-      );
-
-      // Assume the user's name is available in a state variable called userName
       const data = {
         doctorEmail: doctor?.email,
         selectedTime: selectedTime,
         selectedDate: selectedDate,
       };
-      console.log(data, "emaa");
+      console.log(data, "faytyyttyty");
+      
 
       const response = await axiosInstance.post(
         "/api/auth/bookAppointment",
         data
       );
 
+      console.log(response,"rrrrrrrrrrrrrrrrrrr");
+      
       if (response.data.status === true) {
         localStorage.setItem("appointmentData", JSON.stringify(response.data));
         navigate("/bookAppointment");
-      } else if (response.data.status === false) {
+      } else {
         toast.warn(response.data.data);
       }
-      console.log("res:", response.data);
     } catch (error) {
       console.error("Error booking appointment:", error);
     }
   };
 
   return (
-    <div className="p-16">
+    <div className="p-4 md:p-8 lg:p-16 bg-gray-100 min-h-screen">
       {doctor && (
-        <div className="p-8 bg-slate-300 shadow ">
-          <div className="grid grid-cols-1 md:grid-cols-3">
-            <div className="  text-center order-last md:order-first mt-20 md:mt-0">
-              <div className=" mt-8 bg-slate-100  rounded-lg shadow-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                  {doctor.kycStatus == "approved" ? (
-                    <span className="text-green-500 flex items-center">
-                      <FaCheckCircle className="mr-1" />
-                      VERIFIED
-                    </span>
-                  ) : null}
-                </div>
-                <div className="">
-                  <p className="text-gray-800  text-left">
-                    <span className="font-semibold">Name:</span> Dr.{" "}
-                    {doctor.name}
-                  </p>
-                  <p className="text-gray-800 text-left">
-                    <span className="font-semibold">Fees:</span> {doctor.fees}
-                  </p>
-                  <p className="text-gray-800 text-left">
-                    <span className="font-semibold">Specialization:</span>{" "}
-                    {doctor.specialization}
-                  </p>
-
-                  <p className="text-gray-800 text-left">
-                    <span className="font-semibold">Age:</span> {doctor.age}
-                  </p>
-                  {doctor.kycStatus === "approved" ? (
-                    <>
-                      <p className="text-gray-800 text-left">
-                        <span className="font-semibold">Experience:</span>{" "}
-                        {` ${doctor.kycDetails[0].yearsOfExperience} years of experience`}
-                      </p>
-                      <p className="text-gray-800 text-left">
-                        <span className="font-semibold">Hospital Name:</span>{" "}
-                        {doctor.kycDetails[0].hospitalName}
-                      </p>
-                    </>
-                  ) : null}
-                  <p className="text-gray-800 text-left">
-                    <span className="font-semibold">Place:</span>{" "}
-                    {doctor.address[0].city}
-                  </p>
+        <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/3 p-4 md:p-8 bg-gray-50">
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-32 h-32 md:w-48 md:h-48 bg-indigo-100 rounded-full overflow-hidden">
+                  <img
+                    src={doctor.image}
+                    alt="Doctor's Profile"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
-            </div>
-
-            <div className="relative">
-              <div className=" text-center  pb-12">
-                <h1 className="text-4xl font-medium text-gray-700">
-                  {` Dr.${doctor.name}`}
-                </h1>
-                <p className="font-light text-gray-600 mt-3">{doctor.email}</p>
+              <div className="text-center">
+                {doctor.kycStatus === "approved" && (
+                  <span className="text-green-500 flex items-center justify-center mb-4">
+                    <FaCheckCircle className="mr-1" />
+                    VERIFIED
+                  </span>
+                )}
+                <h2 className="text-2xl font-semibold text-gray-800">
+                  Dr. {doctor.name}
+                </h2>
+                <p className="text-gray-600">{doctor.email}</p>
+                <p className="text-gray-800 mt-2">
+                  <strong>Specialization:</strong> {doctor.specialization}
+                </p>
+                <p className="text-gray-800 mt-1">
+                  <strong>Fees:</strong> ${doctor.fees}
+                </p>
+                <p className="text-gray-800 mt-1">
+                  <strong>Age:</strong> {doctor.age}
+                </p>
+                {doctor.kycStatus === "approved" && (
+                  <>
+                    <p className="text-gray-800 mt-1">
+                      <strong>Experience:</strong>{" "}
+                      {doctor.kycDetails[0].yearsOfExperience} years
+                    </p>
+                    <p className="text-gray-800 mt-1">
+                      <strong>Hospital Name:</strong>{" "}
+                      {doctor.kycDetails[0].hospitalName}
+                    </p>
+                  </>
+                )}
+                <p className="text-gray-800 mt-1">
+                  <strong>Location:</strong> {doctor.address[0].city}
+                </p>
               </div>
-              <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl relative">
-                <img
-                  src={doctor.image}
-                  alt="Doctor's Profile"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              <div className="space-x-8 p-5 flex justify-center items-center">
+              <div className="mt-4 flex justify-center space-x-4">
                 {isAuthenticated ? (
                   <button
-                    onClick={handleMessege}
-                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                    onClick={handleMessage}
+                    className="text-white py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 transition duration-200"
                   >
                     Message
                   </button>
                 ) : (
                   <button
-                    onClick={HandleLogin}
-                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                    onClick={handleLogin}
+                    className="text-white py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 transition duration-200"
                   >
                     Message
                   </button>
                 )}
               </div>
-              <div className="bg-transparent  p-6">
-                {selectedDate && (
-                  <p className="text-gray-800 mt-4">
-                    {userName} Selected Date is :{" "}
-                    <strong className="text-red-900">
-                      {selectedDate.toLocaleDateString()}
-                    </strong>{" "}
-                    <p>
-                      {" "}
-                      Time is :{" "}
-                      <strong className="text-red-900">{selectedTime}</strong>
-                    </p>
-                  </p>
-                )}
-              </div>
             </div>
 
-            <div className="mt-8">
+            <div className="w-full md:w-2/3 p-4 md:p-8">
+              <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-800">
+                  About Dr. {doctor.name}
+                </h1>
+                <p className="text-gray-600 mt-4">
+                  Hello, I'm <strong>Dr. {doctor.name}</strong>, a passionate
+                  and dedicated medical professional committed to providing
+                  comprehensive healthcare to my patients. With a strong
+                  educational background and years of practical experience, I
+                  strive to deliver personalized and compassionate medical care
+                  to individuals and families.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  <strong className="text-cyan-700 text-xl">
+                    Background and Qualifications:
+                  </strong>
+                  <br />
+                  - Completed medical degree at [University Name].
+                  <br />- Specialized in{" "}
+                  <strong>{doctor.specialization}</strong>.
+                  <br />- Remain updated with the latest advancements in medical
+                  research and technology.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  <strong className="text-cyan-700 text-xl">
+                    Philosophy of Care:
+                  </strong>
+                  <br />
+                  - Foster strong doctor-patient relationships built on trust,
+                  communication, and mutual respect.
+                  <br />- Holistic approach to medicine, addressing physical,
+                  emotional, social, and psychological well-being.
+                </p>
+              </div>
+
               {availableSlots && availableSlots.length > 0 ? (
                 availableSlots.map((slot, index) => (
                   <div
                     key={index}
-                    className="mb-2 mt-8 bg-slate-100 rounded-lg shadow-lg p-6"
+                    className="bg-white rounded-lg shadow-md p-6 mb-4"
                   >
-                    <h2 className="text-lg font-semibold mb-2">
+                    <h2 className="text-xl font-semibold mb-2">
                       Available Slots
                     </h2>
-                    <p className="text-gray-500">
+                    <p className="text-gray-600">
                       Start Date:{" "}
-                      <strong className="text-red-700">
-                        {new Date(slot.startDate).toLocaleDateString()}
+                      <strong className="text-red-600">
+                        {formatDate(slot.startDate)}
                       </strong>{" "}
                       - End Date:{" "}
-                      <strong className="text-red-700">
-                        {new Date(slot.endDate).toLocaleDateString()}
+                      <strong className="text-red-600">
+                        {formatDate(slot.endDate)}
                       </strong>
                     </p>
 
-                    <div className="text-left mt-4">
-                      <h2>Select Date</h2>
-                      <DatePicker
-                        selected={selectedDate}
-                        onChange={handleDateSelection}
-                        minDate={slot.startDate}
-                        maxDate={slot.endDate}
-                        inline
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold mb-2">
+                        Select Date
+                      </h3>
+                      {/* Replace DatePicker with a modern date selection component */}
+                      <input
+                        type="date"
+                        value={
+                          selectedDate
+                            ? selectedDate.toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          handleDateSelection(new Date(e.target.value))
+                        }
+                        min={slot.startDate.split("T")[0]}
+                        max={slot.endDate.split("T")[0]}
+                        className="w-full p-2 border border-gray-300 rounded"
                       />
                     </div>
 
                     {selectedDate && (
-                      <div>
-                        <h3 className="font-semibold mb-1">Slot Time:</h3>
-                        <ul>
-                          {slot.slotTime.map((time, i) => (
-                            <li key={i}>
-                              <label className="inline-flex items-center">
-                                <input
-                                  type="radio"
-                                  name="selectedTime"
-                                  value={time}
-                                  onChange={(e) =>
-                                    handleTimeSelection(e.target.value)
-                                  }
-                                  checked={selectedTime === time}
-                                  className="form-radio h-5 w-5 text-indigo-600"
-                                />
-                                <span className="ml-2 text-gray-700">
-                                  {time}
-                                </span>
-                              </label>
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="mt-4">
+                        <h3 className="text-lg font-semibold mb-2">
+                          Select Time Slot
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {availableSlots && availableSlots.length > 0 ? (
+                            availableSlots[0].slots.map((timeSlot: any) => (
+                              <div
+                                key={timeSlot._id}
+                                className={`p-4 rounded-lg  shadow-sm cursor-pointer transition duration-150 ${
+                                  timeSlot.booked
+                                    ? "bg-red-100 text-red-500"
+                                    : "bg-green-200 text-green-800"
+                                } ${
+                                  selectedTime === timeSlot.time &&
+                                  !timeSlot.booked
+                                    ? " border  border-green-800 bg-green-600 text-white"
+                                    : ""
+                                }`}
+                                onClick={() =>
+                                  !timeSlot.booked &&
+                                  handleTimeSelection(timeSlot.time)
+                                }
+                              >
+                                <div className="flex items-center space-x-2">
+                                  {timeSlot.booked ? (
+                                    <>
+                                      <FaTimesCircle className="text-red-500" />
+                                      <span className="font-medium text-sm">
+                                        {timeSlot.time} - Booked
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <FaCheckCircle className="text-green-500" />
+                                      <span className="font-medium text-sm">
+                                        {timeSlot.time} - Available
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-2 text-center text-gray-500">
+                              No available slots for the selected date
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
 
-                    <div className="text-left mt-8">
+                    <div className="mt-6">
                       {isAuthenticated ? (
                         <button
-                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                          className="bg-cyan-600 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                           onClick={bookAppointment}
                         >
                           Book Appointment
                         </button>
                       ) : (
                         <button
-                          className="text-red-600 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                          onClick={HandleLogin}
+                          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                          onClick={handleLogin}
                         >
                           Please Login
                         </button>
@@ -313,62 +332,13 @@ const ViewDoctorDetails: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <div className="flex justify-center items-center h-64">
-                  <h2 className="text-xl text-gray-500 font-semibold">
+                <div className="bg-white rounded-lg shadow-md p-6 text-center">
+                  <h2 className="text-xl font-semibold text-gray-600">
                     No available slots
                   </h2>
                 </div>
               )}
             </div>
-          </div>
-          <div className="mt-12 flex flex-col justify-center">
-            <p className="text-gray-800 text-center font-light lg:px-16">
-              {doctor && (
-                <>
-                  <p>
-                    Hello, I'm{" "}
-                    <strong className="font-medium">Dr.{doctor.name}</strong>, a
-                    passionate and dedicated medical professional committed to
-                    providing comprehensive healthcare to my patients. With a
-                    strong educational background and years of practical
-                    experience, I strive to deliver personalized and
-                    compassionate medical care to individuals and families.
-                  </p>
-                  <p>
-                    <strong className="text-cyan-950 text-xl font-medium">
-                      Background and Qualifications:
-                    </strong>
-                    <br />
-                    - I completed my medical degree at [University Name], where
-                    I developed a solid foundation in medical science and
-                    patient care.
-                    <br />- Subsequently, I pursued specialized training in{" "}
-                    <strong className=" font-medium">
-                      {doctor.specialization}
-                    </strong>
-                    <br />- Throughout my career, I have remained dedicated to
-                    staying updated with the latest advancements in medical
-                    research and technology, ensuring that my patients receive
-                    the highest standard of care.
-                  </p>
-                  <p>
-                    <strong className="text-cyan-950 text-xl font-medium">
-                      Philosophy of Care:
-                    </strong>
-                    <br />
-                    - I believe in fostering strong doctor-patient relationships
-                    built on trust, communication, and mutual respect. I strive
-                    to create a comfortable and supportive environment where
-                    patients feel empowered to participate in their healthcare
-                    decisions.
-                    <br />- My approach to medicine is holistic, addressing not
-                    only the physical aspects of health but also considering the
-                    emotional, social, and psychological well-being of my
-                    patients.
-                  </p>
-                </>
-              )}
-            </p>
           </div>
         </div>
       )}
