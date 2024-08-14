@@ -24,6 +24,8 @@ const ViewDoctorDetails: React.FC = () => {
   const socket: any = useSocket();
   const navigate = useNavigate();
 
+  console.log(selectedDate,"dddddd", selectedTime);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,13 +44,27 @@ const ViewDoctorDetails: React.FC = () => {
     fetchData();
   }, [id]);
 
-  const handleTimeSelection = (time: string) => {
-    setSelectedTime(time === selectedTime ? null : time);
-  };
+  console.log(selectedDate, "dddddd", selectedTime);
 
+  const handleTimeSelection = (time: string) => {
+    const newSelectedTime = time === selectedTime ? null : time;
+    setSelectedTime(newSelectedTime);
+  
+    if (newSelectedTime) {
+      localStorage.removeItem('selectedTime');
+      localStorage.setItem('selectedTime', newSelectedTime);
+    } 
+  };
+  
   const handleDateSelection = (date: Date | null) => {
     setSelectedDate(date);
+  
+    if (date) {
+      localStorage.removeItem('selectedDate');
+      localStorage.setItem('selectedDate', date.toISOString());
+    } 
   };
+  
 
   const handleMessage = async () => {
     try {
@@ -56,13 +72,16 @@ const ViewDoctorDetails: React.FC = () => {
         senderId: User.user._id,
         receiverId: doctor?._id,
       };
+      console.log(data, 'jjjj');
+      
 
       const response = await axiosInstance.post(
         "/api/auth/createConverstation",
         data
       );
+      console.log(response,"oooo");
+      
       if (response.status) {
-        toast.success("Conversation Created");
         navigate(`/showChatPage/${response.data.data._id}`);
       }
     } catch (error) {
