@@ -50,18 +50,18 @@ const ViewDoctorDetails: React.FC = () => {
     const newSelectedTime = time === selectedTime ? null : time;
     setSelectedTime(newSelectedTime);
   
-    if (newSelectedTime) {
+    if (selectedTime) {
       localStorage.removeItem('selectedTime');
-      localStorage.setItem('selectedTime', newSelectedTime);
+      localStorage.setItem('selectedTime', selectedTime);
     } 
   };
   
   const handleDateSelection = (date: Date | null) => {
     setSelectedDate(date);
   
-    if (date) {
+    if (selectedDate) {
       localStorage.removeItem('selectedDate');
-      localStorage.setItem('selectedDate', date.toISOString());
+      localStorage.setItem('selectedDate', selectedDate.toISOString());
     } 
   };
   
