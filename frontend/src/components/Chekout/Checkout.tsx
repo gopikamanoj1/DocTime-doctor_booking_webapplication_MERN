@@ -243,6 +243,7 @@ const Checkout: React.FC = () => {
     }
   }, []);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {

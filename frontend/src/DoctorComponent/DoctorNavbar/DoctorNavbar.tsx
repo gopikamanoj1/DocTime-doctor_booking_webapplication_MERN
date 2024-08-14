@@ -30,7 +30,8 @@ const DoctorNavbar = () => {
     <nav className="navbar bg-cyan-950 flex justify-between items-center mx-auto px-4 text-white">
       <div className="flex items-center space-x-4">
         <Link to="/">
-          <img src="/public/imgs/logo 2 p222.png" alt="logo" width={100} height={100} />
+          <img src="https://res.cloudinary.com/dik3qbts6/image/upload/v1723634538/images/orglogo_eyotqj.png"
+           alt="logo" width={100} height={100} />
         </Link>
       </div>
 
